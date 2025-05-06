@@ -21,6 +21,16 @@ class Users extends Component
         $this->stats = $this->getStatsData();
     }
 
+    public function crearUsuario()
+    {
+        $this->dispatch('user-created', nombre: 'David');
+    }
+
+    public function editarUsuario($id)
+    {
+        $this->dispatch('user-edited', $id);
+    }
+
     public function getStatsData()
     {
         return [
