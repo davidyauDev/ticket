@@ -5,57 +5,6 @@
         <flux:spacer />
     </div>
     <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-        <!-- Selects de rango de fechas -->
-        <div class="flex items-center flex-wrap gap-2">
-            <select class="text-sm px-3 py-1.5 rounded border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-800">
-                <option>Last 7 days</option>
-                <option>Last 14 days</option>
-                <option selected>Last 30 days</option>
-                <option>Last 60 days</option>
-                <option>Last 90 days</option>
-            </select>
-
-            <span class="text-sm text-zinc-600 dark:text-zinc-300 max-md:hidden whitespace-nowrap">compared to</span>
-
-            <select
-                class="text-sm px-3 py-1.5 rounded border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-800 max-md:hidden">
-                <option selected>Previous period</option>
-                <option>Same period last year</option>
-                <option>Last month</option>
-                <option>Last quarter</option>
-                <option>Last 6 months</option>
-                <option>Last 12 months</option>
-            </select>
-            <!-- Separador -->
-            <div class="h-6 w-px bg-zinc-300 dark:bg-zinc-600 mx-2 my-1 max-lg:hidden"></div>
-            <!-- Filtros -->
-            <div class="flex items-center gap-2 max-lg:hidden">
-                <span class="text-sm text-zinc-600 dark:text-zinc-300 whitespace-nowrap">Filter by:</span>
-
-                <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-700 text-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor">
-                        <!-- icon plus -->
-                    </svg>
-                    Amount
-                </button>
-
-                <button
-                    class="flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-700 text-sm max-md:hidden">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor">
-                        <!-- icon plus -->
-                    </svg>
-                    Status
-                </button>
-
-                <button class="flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-700 text-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor">
-                        <!-- icon plus -->
-                    </svg>
-                    More filters...
-                </button>
-            </div>
-        </div>
-
     </div>
 
     <div class="flex gap-6 mb-6">
@@ -83,10 +32,9 @@
         </div>
         @endforeach
     </div>
-
-    <div class="mb-4">
-        <input type="text" wire:model="search" placeholder="Search by name..." 
-               class="text-sm px-3 py-1.5 rounded border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-800 w-full" />
+    <div class="mb-4 flex justify-between items-center gap-4">
+        <flux:input wire:model.live="search" as="text" variant="filled" placeholder="Search..." icon="magnifying-glass" />
+        <flux:button icon="plus" variant="primary">Agregar Nuevo Usuario</flux:button>
     </div>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -99,6 +47,7 @@
                     <th scope="col" class="px-6 py-3">Lastname</th>
                     <th scope="col" class="px-6 py-3">DNI</th>
                     <th scope="col" class="px-6 py-3">Created At</th>
+                    <th scope="col" class="px-6 py-3">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,16 +59,24 @@
                     <td class="px-6 py-4">{{ $user->lastname }}</td>
                     <td class="px-6 py-4">{{ $user->dni }}</td>
                     <td class="px-6 py-4">{{ $user->created_at }}</td>
+                    <td class="px-6 py-4 flex items-center">
+                        <flux:icon.pencil class="mr-2" />
+                        <flux:icon.trash />
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-6 flex justify-center">
-            <div class="inline-flex rounded-md shadow px-4 py-2">
-                {{ $users->links() }}
+        <div class="mt-5 flex justify-between items-center">
+              <!-- Información de items con estilos personalizados -->
+              <div class="text-sm ml-3 opacity-50 mb-2">
+                Mostrando {{ $users->firstItem() }} a {{ $users->lastItem() }} de {{ $users->total() }} usuarios
+            </div>
+            <!-- Paginación -->
+            <div class="inline-flex rounded-md px-4 py-2 mb-2">
+                {{ $users->links('vendor.livewire.custom-tailwind') }}
             </div>
         </div>
-
-
+        </div>
     </div>
 </div>

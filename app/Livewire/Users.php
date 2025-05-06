@@ -10,6 +10,8 @@ class Users extends Component
 {
     use WithPagination;
 
+    protected $listeners = ['userUpdated' => '$refresh'];
+
     public $stats;
     public $search = '';
     protected $queryString = ['search'];
@@ -60,7 +62,7 @@ class Users extends Component
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
-            ->paginate(10); // Cambiado de get() a paginate()
+            ->paginate(10);
 
         return view('livewire.users', [
             'users' => $users,
