@@ -1,8 +1,11 @@
 <?php
 
+use App\Livewire\IndexTic;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
+use App\Livewire\Tickets;
+use App\Livewire\Tickets\Index;
 use App\Livewire\Users;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +18,11 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::prefix('users')->name('users.')->group(function () {
-    Route::get('/', Users::class)->name('index');
+    Route::get('/', Index::class)->name('index');
+});
+
+Route::prefix('tickets')->name('tickets.')->group(function () {
+    Route::get('/', IndexTic::class)->name('index');
 });
 
 Route::middleware(['auth'])->group(function () {

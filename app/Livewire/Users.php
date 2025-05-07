@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 
 class Users extends Component
@@ -29,6 +30,11 @@ class Users extends Component
     public function editarUsuario($id)
     {
         $this->dispatch('user-edited', $id);
+    }
+
+    public function miMetodo($valor)
+    {
+        Log::info($valor);
     }
 
     public function getStatsData()
