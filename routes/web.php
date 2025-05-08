@@ -18,7 +18,7 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::prefix('users')->name('users.')->group(function () {
-    Route::get('/', Index::class)->name('index');
+    Route::get('/', Users::class)->name('index');
 });
 
 Route::prefix('tickets')->name('tickets.')->group(function () {

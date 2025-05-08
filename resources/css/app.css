@@ -61,6 +61,18 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+.border-b {
+    border-bottom-width: 1px;
+}
+
+.bg-muted\/50 {
+    background-color: hsl(240 4.8% 95.9% / 0.5);
+}
+
+
+.text-muted-foreground{
+    color: hsl(240 3.8% 46.1%);
+}
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */

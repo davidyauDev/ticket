@@ -19,12 +19,13 @@ class UserForm extends Component
     public string $direccion = '';
     public string $phone = '';
     public string $dni = '';
+    public string $firstname = '';
+    public string $lastname = '';
 
-    #[Validate('required|string|min:6')]
-
+    #[Validate('nullable|string|min:6')]
     public ?User $editing = null;
     public bool $showModal = false;
-    public string $message = ''; // Propiedad para mensajes de estado
+    public string $message = ''; 
 
     public $listeners = [
         'edit-user' => 'edit',
@@ -49,35 +50,47 @@ class UserForm extends Component
 
     #[On('user-created')]
     public function handleUserCreated($nombre)
-    {
-        $this->reset(['name', 'email', 'password', 'editing']);
+    {   
+        $this->message = 'Crear Usuario'; 
+        $this->reset(['name', 'email', 'password', 'editing' ,'lastname']);
     }
 
     #[On('user-edited')]
     public function handleUserEdited($id)
     {
+        $this->message = 'Editar Usuario'; 
+
         $this->editing = User::find($id);
         if ($this->editing) {
             $this->name = $this->editing->name;
             $this->email = $this->editing->email;
+            $this->direccion = $this->editing->direccion ?? '';
+            $this->phone = $this->editing->phone;
+            
         }
     }
 
     public function create()
-    {
-        Log::info('Creating new user');
+    {   
         $this->reset(['name', 'email', 'password', 'editing']);
     }
 
     public function save()
     {
         try {
-            $this->validate();
+            $rules = [
+                'name' => 'required|string|min:3',
+                'email' => 'required|email|unique:users,email' . ($this->editing ? ',' . $this->editing->id : ''),
+                'password' => $this->editing ? 'nullable|string|min:6' : 'required|string|min:6',
+            ];
+
+            $this->validate($rules);
+
             if ($this->editing) {
                 $this->editing->update([
                     'name' => $this->name,
                     'email' => $this->email,
-                    'password' => bcrypt($this->password),
+                    'password' => $this->password ? bcrypt($this->password) : $this->editing->password,
                 ]);
             } else {
                 User::create([
@@ -86,6 +99,7 @@ class UserForm extends Component
                     'password' => bcrypt($this->password),
                 ]);
             }
+
             $this->dispatch('user-saved');
             $this->message = 'Usuario guardado exitosamente.';
             $this->showModal = false;

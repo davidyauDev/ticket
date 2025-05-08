@@ -1,29 +1,52 @@
 <!-- resources/views/livewire/ticket-search.blade.php -->
-<div class="p-4 bg-gray-100 rounded-lg shadow-md">
-    <div class="flex flex-wrap gap-4 mb-4">
-        <input
-            type="text"
-            wire:model.live.debounce.500ms="search"
-            placeholder="Buscar por código o comentario..."
-            class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <select
-            wire:model.live="estado"
-            class="w-full md:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            {{-- @foreach($estados as $estadoOption)
-                <option value="{{ $estadoOption }}">{{ $estadoOption }}</option>
-            @endforeach --}}
-        </select>
-        <input
-            wire:model.live="usuario"
-            class="w-full md:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Usuario asignado...">
-        <button
-            wire:click="$toggle('showModal')"
-            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-            Crear Nuevo Ticket
-        </button>
+<div>
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm mt-4 p-5">
+        <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <flux:input wire:model.live="search" as="text" placeholder="Buscar Usuario..." icon="magnifying-glass"
+                class="w-full sm:w-auto" />
+            <flux:modal.trigger name="edit-profile">
+                <flux:button wire:click="crearUsuario" icon="plus" class="w-full sm:w-auto"
+                    wire:click="$toggle('showModal')">Crear Nuevo Ticket</flux:button>
+            </flux:modal.trigger>
+        </div>
+        <div class="mt-4 border rounded-md overflow-x-auto">
+            <table class="w-full min-w-[600px]">
+                <thead>
+                    <tr class="border-b bg-muted/50">
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Correo</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Nombres</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Apellidos</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">DNI</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Fecha de Creación</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($tickets as $ticket)
+                    <tr class="border-b ">
+                        <td class="py-3 px-4 text-sm">{{ $ticket->source }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->user_id }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->status_id }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->dni }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->created_at }}</td>
+                        {{-- <td class="py-3 px-4">
+                            <flux:dropdown position="bottom" offset="-15">
+                                <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
+                                </flux:button>
+                                <flux:menu>
+                                    <flux:modal.trigger name="edit-profile">
+                                    <flux:menu.item wire:click="editarUsuario({{$user->id}})" icon="user">Editar Usuario</flux:menu.item>
+                                </flux:modal.trigger>
+                                    <flux:menu.item icon="trash">Eliminar Usuario</flux:menu.item>
+                                </flux:menu>
+                            </flux:dropdown>
+                        </td> --}}
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
-
     <!-- Modal -->
     <x-modal wire:model="showModal">
         <div class="space-y-6">
@@ -32,57 +55,51 @@
                 <p class="mt-2 text-gray-600">Ingrese el código para el nuevo ticket</p>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <input
-                    wire:model="codigoInput"
+                <input wire:model="codigoInput"
                     class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Ingresa el código">
-                <button
-                    wire:click="buscarTicket"
-                    wire:loading.attr="disabled"
+                <button wire:click="buscarTicket" wire:loading.attr="disabled"
                     class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center justify-center gap-2">
                     <span wire:loading.remove>Buscar</span>
                     <span wire:loading>Buscando...</span>
                     <svg wire:loading.remove class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </button>
             </div>
 
             <!-- Resultado del ticket -->
             @if($ticketData)
-                <div class="mt-6 bg-gray-50 p-4 rounded shadow text-sm text-gray-700">
-                    <h3 class="text-base font-bold mb-2">🎫 Ticket {{ $ticketData['number'] }}</h3>
-                    <p><strong>ID:</strong> {{ $ticketData['ticket_id'] }}</p>
-                    <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
-                    <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
-                    <p><strong>Fecha de solicitud:</strong> {{ $ticketData['tkt_fhsolicitud'] }}</p>
-                    <p><strong>Estado ID:</strong> {{ $ticketData['status_id'] }}</p>
-                    <p><strong>Departamento ID:</strong> {{ $ticketData['dept_id'] }}</p>
-                    <p><strong>Prioridad:</strong> {{ $ticketData['priority'] }}</p>
-                    <p><strong>Fuente:</strong> {{ $ticketData['source'] }}</p>
-                    <p><strong>Equipo:</strong> {{ $ticketData['id_equipo'] ?? 'N/A' }}</p>
-                    <p><strong>Activo:</strong> {{ $ticketData['activo'] }}</p>
-                    <p><strong>Fecha estimada vencimiento:</strong> {{ $ticketData['est_duedate'] ?? 'No definida' }}</p>
-                </div>
+            <div class="mt-6 bg-gray-50 p-4 rounded shadow text-sm text-gray-700">
+                <h3 class="text-base font-bold mb-2">🎫 Ticket {{ $ticketData['number'] }}</h3>
+                <p><strong>ID:</strong> {{ $ticketData['ticket_id'] }}</p>
+                <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
+                <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
+                <p><strong>Fecha de solicitud:</strong> {{ $ticketData['tkt_fhsolicitud'] }}</p>
+                <p><strong>Estado ID:</strong> {{ $ticketData['status_id'] }}</p>
+                <p><strong>Departamento ID:</strong> {{ $ticketData['dept_id'] }}</p>
+                <p><strong>Prioridad:</strong> {{ $ticketData['priority'] }}</p>
+                <p><strong>Fuente:</strong> {{ $ticketData['source'] }}</p>
+                <p><strong>Equipo:</strong> {{ $ticketData['id_equipo'] ?? 'N/A' }}</p>
+                <p><strong>Activo:</strong> {{ $ticketData['activo'] }}</p>
+                <p><strong>Fecha estimada vencimiento:</strong> {{ $ticketData['est_duedate'] ?? 'No definida' }}</p>
+            </div>
             @endif
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Notas del ticket</label>
-                <textarea
-                    wire:model="notes"
+                <textarea wire:model="notes"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Detalles adicionales..."></textarea>
             </div>
 
             <div class="flex justify-end gap-2">
-                <button
-                    wire:click="$set('showModal', false)"
+                <button wire:click="$set('showModal', false)"
                     class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
                     Cancelar
                 </button>
-                <button
-                    wire:click="registrarTicket"
-                    wire:loading.attr="disabled"
+                <button wire:click="registrarTicket" wire:loading.attr="disabled"
                     class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
                     <span wire:loading.remove>Registrar Ticket</span>
                     <span wire:loading>Registrando...</span>

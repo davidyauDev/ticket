@@ -11,7 +11,7 @@ class Users extends Component
 {
     use WithPagination;
 
-    protected $listeners = ['userUpdated' => '$refresh'];
+    protected $listeners = ['user-saved' => '$refresh'];
 
     public $stats;
     public $search = '';
@@ -41,29 +41,18 @@ class Users extends Component
     {
         return [
             [
-                'title' => 'Total revenue',
-                'value' => '$38,393.12',
+                'title' => 'Cantidad de Usuarios',
+                'value' => '550',
                 'trend' => '16.2%',
                 'trendUp' => true
             ],
             [
-                'title' => 'Total transactions',
+                'title' => 'Usuarios Online',
                 'value' => '428',
                 'trend' => '12.4%',
                 'trendUp' => false
             ],
-            [
-                'title' => 'Total customers',
-                'value' => '376',
-                'trend' => '12.6%',
-                'trendUp' => true
-            ],
-            [
-                'title' => 'Average order value',
-                'value' => '$87.12',
-                'trend' => '13.7%',
-                'trendUp' => true
-            ]
+            
         ];
     }
 

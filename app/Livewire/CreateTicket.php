@@ -25,11 +25,9 @@ class CreateTicket extends Component
                 $response = Http::get('http://54.197.148.155/numbers.php', [
                     'search' => $this->searchQuery
                 ]);
-
                 $this->apiResults = $response->successful()
                     ? $response->json()
                     : [];
-
             } catch (\Exception $e) {
                 $this->apiResults = [];
             }
