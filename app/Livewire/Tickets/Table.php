@@ -3,6 +3,7 @@
 namespace App\Livewire\Tickets;
 
 use App\Models\Ticket;
+use App\Models\Area; // Importar el modelo de áreas
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -27,6 +28,10 @@ class Table extends Component
     public $notes = '';
     public $sla_id;
     public $topic_id;
+    public $mostrarArea = true;
+    public $selectedArea = null; // Propiedad para el área seleccionada
+    public $estados = ''; // Inicializa la variable
+    public $areas = []; // Lista de áreas disponibles
 
     public function buscarTicket()
     {
@@ -41,6 +46,21 @@ class Table extends Component
             $this->addError('ticketError', 'Error al obtener datos del ticket');
         }
     }
+
+    public function derivar()
+    {
+        $this->mostrarArea = true;
+    }
+
+    public function mount()
+    {
+        $this->areas = [
+            ['id' => 1, 'name' => 'Soporte Técnico'],
+            ['id' => 2, 'name' => 'Atención al Cliente'],
+            ['id' => 3, 'name' => 'Desarrollo'],
+        ];
+    }
+
 
     public function registrarTicket()
     {
@@ -74,9 +94,15 @@ class Table extends Component
         }
     }
 
+    public function mostrarArea()
+    {
+        return $this->mostrarArea;
+    }
+
     public function render()
     {
         $tickets = Ticket::paginate(10);
-        return view('livewire.tickets.table', compact('tickets'));
+        $areas = Area::all(); 
+        return view('livewire.tickets.table', compact('tickets', 'areas'));
     }
 }

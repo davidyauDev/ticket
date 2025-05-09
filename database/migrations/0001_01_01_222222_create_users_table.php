@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('dni')->nullable();
             $table->string('direccion')->nullable();
             $table->string('phone')->nullable();
+            $table->foreignId('area_id')->nullable()->constrained('areas');
             $table->rememberToken();
             $table->timestamps();
         });

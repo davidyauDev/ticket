@@ -18,9 +18,7 @@
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Falla Reportada</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Fecha de Creación</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Id Equipo</th>
-
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Fecha de creacion</th>
-
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Acciones</th>
                     </tr>
                 </thead>
@@ -65,15 +63,13 @@
                     placeholder="Ingresa el código">
                 <button wire:click="buscarTicket" wire:loading.attr="disabled"
                     class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center justify-center gap-2">
-                    <span wire:loading.remove>Buscar</span>
-                    <span wire:loading>Buscando...</span>
-                    <svg wire:loading.remove class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span>Buscar</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </button>
             </div>
-
             <!-- Resultado del ticket -->
             @if($ticketData)
             <div class="mt-6 bg-gray-50 p-4 rounded shadow text-sm text-gray-700">
@@ -91,14 +87,28 @@
                 <p><strong>Fecha estimada vencimiento:</strong> {{ $ticketData['est_duedate'] ?? 'No definida' }}</p>
             </div>
             @endif
-
+            <div>
+                <flux:select wire:model.live="estado" placeholder="Seleccionar estado">
+                    <flux:select.option value="Pendiente">Pendiente</flux:select.option>
+                    <flux:select.option value="En Proceso">En Proceso</flux:select.option>
+                    <flux:select.option value="Solucionado">Solucionado</flux:select.option>
+                    <flux:select.option value="Resuelto">Resuelto</flux:select.option>
+                    <flux:select.option value="Derivado">Derivado</flux:select.option>
+                </flux:select>
+            </div>
+            @if($estado === 'Derivado')
+                <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
+                    @foreach($areas as $area)
+                        <flux:select.option value="{{ $area['id'] }}">{{ $area['name'] }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+            @endif
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
                 <textarea wire:model="notes"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Detalles adicionales..."></textarea>
             </div>
-
             <div class="flex justify-end gap-2">
                 <button wire:click="$set('showModal', false)"
                     class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
@@ -106,8 +116,7 @@
                 </button>
                 <button wire:click="registrarTicket" wire:loading.attr="disabled"
                     class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                    <span wire:loading.remove>Registrar Ticket</span>
-                    <span wire:loading>Registrando...</span>
+                    <span>Registrar Ticket</span>
                 </button>
             </div>
         </div>
