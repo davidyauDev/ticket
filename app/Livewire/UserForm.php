@@ -25,7 +25,7 @@ class UserForm extends Component
     #[Validate('nullable|string|min:6')]
     public ?User $editing = null;
     public bool $showModal = false;
-    public string $message = ''; 
+    public string $message = '';
 
     public $listeners = [
         'edit-user' => 'edit',
@@ -50,28 +50,30 @@ class UserForm extends Component
 
     #[On('user-created')]
     public function handleUserCreated($nombre)
-    {   
-        $this->message = 'Crear Usuario'; 
-        $this->reset(['name', 'email', 'password', 'editing' ,'lastname']);
+    {
+        $this->message = 'Crear Usuario';
+        $this->reset(['name', 'email', 'password', 'editing', 'lastname', 'direccion', 'phone', 'dni']);
     }
 
     #[On('user-edited')]
     public function handleUserEdited($id)
     {
-        $this->message = 'Editar Usuario'; 
+        $this->message = 'Editar Usuario';
 
         $this->editing = User::find($id);
         if ($this->editing) {
             $this->name = $this->editing->name;
             $this->email = $this->editing->email;
             $this->direccion = $this->editing->direccion ?? '';
-            $this->phone = $this->editing->phone;
-            
+            $this->phone = $this->editing->phone ?? '';
+            $this->dni = $this->editing->dni ?? '';
+            $this->firstname = $this->editing->firstname ?? '';
+            $this->lastname = $this->editing->lastname ?? '';
         }
     }
 
     public function create()
-    {   
+    {
         $this->reset(['name', 'email', 'password', 'editing']);
     }
 
@@ -91,12 +93,23 @@ class UserForm extends Component
                     'name' => $this->name,
                     'email' => $this->email,
                     'password' => $this->password ? bcrypt($this->password) : $this->editing->password,
+                    'direccion' => $this->direccion,
+                    'phone' => $this->phone,
+                    'dni' => $this->dni,
+                    'firstname' => $this->firstname,
+                    'lastname' => $this->lastname,
                 ]);
             } else {
                 User::create([
                     'name' => $this->name,
                     'email' => $this->email,
                     'password' => bcrypt($this->password),
+                    'direccion' => $this->direccion,
+                    'phone' => $this->phone,
+                    'dni' => $this->dni,
+                    'firstname' => $this->firstname,
+                    'lastname' => $this->lastname,
+
                 ]);
             }
 

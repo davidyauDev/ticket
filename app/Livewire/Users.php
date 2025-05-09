@@ -52,7 +52,7 @@ class Users extends Component
                 'trend' => '12.4%',
                 'trendUp' => false
             ],
-            
+
         ];
     }
 

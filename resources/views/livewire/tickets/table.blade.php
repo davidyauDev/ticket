@@ -13,34 +13,39 @@
             <table class="w-full min-w-[600px]">
                 <thead>
                     <tr class="border-b bg-muted/50">
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Correo</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Nombres</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Apellidos</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">DNI</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">ID</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Codigo Ticket</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Falla Reportada</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Fecha de Creación</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Id Equipo</th>
+
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Fecha de creacion</th>
+
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($tickets as $ticket)
                     <tr class="border-b ">
-                        <td class="py-3 px-4 text-sm">{{ $ticket->source }}</td>
-                        <td class="py-3 px-4 text-sm">{{ $ticket->user_id }}</td>
-                        <td class="py-3 px-4 text-sm">{{ $ticket->status_id }}</td>
-                        <td class="py-3 px-4 text-sm">{{ $ticket->dni }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->id }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->number }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->falla_reportada }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->subject }}</td>
+                        <td class="py-3 px-4 text-sm">{{ $ticket->id_equipo }}</td>
                         <td class="py-3 px-4 text-sm">{{ $ticket->created_at }}</td>
-                        {{-- <td class="py-3 px-4">
+
+                        <td class="py-3 px-4">
                             <flux:dropdown position="bottom" offset="-15">
                                 <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
                                 </flux:button>
                                 <flux:menu>
                                     <flux:modal.trigger name="edit-profile">
-                                    <flux:menu.item wire:click="editarUsuario({{$user->id}})" icon="user">Editar Usuario</flux:menu.item>
-                                </flux:modal.trigger>
-                                    <flux:menu.item icon="trash">Eliminar Usuario</flux:menu.item>
+                                        <flux:menu.item icon="user">Modificar</flux:menu.item>
+                                    </flux:modal.trigger>
+                                    <flux:menu.item icon="trash">Anular Ticket</flux:menu.item>
                                 </flux:menu>
                             </flux:dropdown>
-                        </td> --}}
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -88,7 +93,7 @@
             @endif
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Notas del ticket</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
                 <textarea wire:model="notes"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Detalles adicionales..."></textarea>

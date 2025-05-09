@@ -14,7 +14,7 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <flux:field placeholder="email">
-                        <flux:label badge="Required">Email</flux:label>
+                        <flux:label badge="Requerido">Email</flux:label>
                         <flux:input type="email" required wire:model="email" />
                         <flux:error name="email" />
                     </flux:field>
@@ -22,8 +22,12 @@
                     <flux:error name="password" />
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <flux:input label="Direccion" badge="Optional" placeholder="Direccion" wire:model="direccion" class="flex-1" />
+                    <flux:input label="Direccion" badge="Opcional" placeholder="Direccion" wire:model="direccion" class="flex-1" />
                     <flux:input label="Numero celular" placeholder="Numero celular" wire:model="phone" class="flex-1" />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <flux:input label="DNI" placeholder="DNI" wire:model="dni" type='number' />
+                    <flux:error name="dni" />
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <flux:spacer />
@@ -35,7 +39,7 @@
 </div>
 
 <script>
-    window.addEventListener('user-saved', () => {
-        alert('¡Usuario guardado correctamente!');
-    });
+    // window.addEventListener('user-saved', () => {
+    //     alert('¡Usuario guardado correctamente!');
+    // });
 </script>

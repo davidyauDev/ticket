@@ -76,8 +76,8 @@
             <table class="w-full min-w-[600px]">
                 <thead>
                     <tr class="border-b bg-muted/50">
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Correo</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Nombres</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Correo</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Apellidos</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">DNI</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Fecha de Creación</th>
@@ -87,8 +87,8 @@
                 <tbody>
                     @foreach ($users as $user)
                     <tr class="border-b ">
+                        <td class="py-3 px-4 text-sm">{{ $user->name }}</td>
                         <td class="py-3 px-4 text-sm">{{ $user->email }}</td>
-                        <td class="py-3 px-4 text-sm">{{ $user->firstname }}</td>
                         <td class="py-3 px-4 text-sm">{{ $user->lastname }}</td>
                         <td class="py-3 px-4 text-sm">{{ $user->dni }}</td>
                         <td class="py-3 px-4 text-sm">{{ $user->created_at }}</td>
@@ -98,8 +98,8 @@
                                 </flux:button>
                                 <flux:menu>
                                     <flux:modal.trigger name="edit-profile">
-                                    <flux:menu.item wire:click="editarUsuario({{$user->id}})" icon="user">Editar Usuario</flux:menu.item>
-                                </flux:modal.trigger>
+                                        <flux:menu.item wire:click="editarUsuario({{$user->id}})" icon="user">Editar Usuario</flux:menu.item>
+                                    </flux:modal.trigger>
                                     <flux:menu.item icon="trash">Eliminar Usuario</flux:menu.item>
                                 </flux:menu>
                             </flux:dropdown>
