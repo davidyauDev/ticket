@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
-
 use Livewire\Component;
 use Livewire\Attributes\Url;
 
 class Table extends Component
 {   
     use WithPagination;
-
     #[Url]
     public $search = '';
     #[Url]
@@ -61,7 +59,6 @@ class Table extends Component
         ];
     }
 
-
     public function registrarTicket()
     {
         try {
@@ -76,7 +73,6 @@ class Table extends Component
                 'dept_id' => $this->dept_id ?? 1,
                 'sla_id' => $this->sla_id?? 1,
                 'topic_id' => $this->topic_id ?? 1,
-                'source' => $this->source ?? 'web',
                 'est_duedate' => $this->ticketData['est_duedate'] ?? null,
                 'subject' => $this->ticketData['subject'],
                 'priority' => $this->priority ?? 'normal',
@@ -84,8 +80,9 @@ class Table extends Component
                 'falla_reportada' => $this->ticketData['falla_reportada'] ?? $this->notes,
                 'id_equipo' => $this->ticketData['id_equipo'] ?? null,
                 'activo' => $this->ticketData['activo'] ?? null,
-                'tkt_billeteadulterado' => $this->codigoInput
-            ]);
+                'tkt_billeteadulterado' => $this->codigoInput,
+                'created_by' => 1,
+            ]);       
             $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal']);
             $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
         } catch (\Exception $e) {

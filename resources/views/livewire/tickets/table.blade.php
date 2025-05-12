@@ -77,14 +77,18 @@
                 <p><strong>ID:</strong> {{ $ticketData['ticket_id'] }}</p>
                 <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
                 <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
-                <p><strong>Fecha de solicitud:</strong> {{ $ticketData['tkt_fhsolicitud'] }}</p>
-                <p><strong>Estado ID:</strong> {{ $ticketData['status_id'] }}</p>
-                <p><strong>Departamento ID:</strong> {{ $ticketData['dept_id'] }}</p>
-                <p><strong>Prioridad:</strong> {{ $ticketData['priority'] }}</p>
-                <p><strong>Fuente:</strong> {{ $ticketData['source'] }}</p>
-                <p><strong>Equipo:</strong> {{ $ticketData['id_equipo'] ?? 'N/A' }}</p>
-                <p><strong>Activo:</strong> {{ $ticketData['activo'] }}</p>
-                <p><strong>Fecha estimada vencimiento:</strong> {{ $ticketData['est_duedate'] ?? 'No definida' }}</p>
+                <p><strong>Equipo:</strong> {{ $ticketData['id_equipo'] }}</p>
+                <p><strong>Serie:</strong> {{ $ticketData['serie'] }}</p>
+                <p><strong>Modelo:</strong> {{ $ticketData['modelo'] }}</p>
+                <p><strong>DNI:</strong> {{ $ticketData['dni'] }}</p>
+                <p><strong>Nombres:</strong> {{ $ticketData['nombres'] }}</p>
+                <p><strong>Apellidos:</strong> {{ $ticketData['apellidos'] }}</p>
+                <p><strong>ID Agencia:</strong> {{ $ticketData['id_agencia'] }}</p>
+                <p><strong>Agencia:</strong> {{ $ticketData['agencia'] }}</p>
+                <p><strong>ID Cliente:</strong> {{ $ticketData['id_cliente'] }}</p>
+                <p><strong>Cliente:</strong> {{ $ticketData['cliente'] }}</p>
+                <p><strong>ID Empresa:</strong> {{ $ticketData['id_empresa'] }}</p>
+                <p><strong>Empresa:</strong> {{ $ticketData['empresa'] }}</p>
             </div>
             @endif
             <div>

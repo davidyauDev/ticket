@@ -52,6 +52,22 @@ class User extends Authenticatable
         ];
     }
 
+    public function ticketsAsignados()
+    {
+        return $this->hasMany(Ticket::class, 'assigned_to');
+    }
+
+    public function ticketsCreados()
+    {
+        return $this->hasMany(Ticket::class, 'created_by');
+    }
+
+    public function historiales()
+{
+    return $this->hasMany(TicketHistorial::class, 'usuario_id');
+}
+
+
     /**
      * Get the user's initials
      */

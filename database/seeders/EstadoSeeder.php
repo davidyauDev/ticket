@@ -14,11 +14,11 @@ class EstadoSeeder extends Seeder
     public function run(): void
 {
     DB::table('estados')->insert([
-        ['nombre' => 'Pendiente'],
-        ['nombre' => 'Derivado'],
-        ['nombre' => 'En proceso'],
-        ['nombre' => 'Resuelto'],
-        ['nombre' => 'Cerrado'],
+        ['id' => 1, 'nombre' => 'Pendiente'],
+        ['id' => 2, 'nombre' => 'Derivado'],
+        ['id' => 3, 'nombre' => 'En proceso'],
+        ['id' => 4, 'nombre' => 'Resuelto'],
+        ['id' => 5, 'nombre' => 'Cerrado'],
     ]);
 }
 

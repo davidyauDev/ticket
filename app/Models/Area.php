@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,4 +12,20 @@ class Area extends Model
     protected $fillable = [
         'nombre',
     ];
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+
+    public function historialesDesdeArea()
+    {
+        return $this->hasMany(TicketHistorial::class, 'from_area_id');
+    }
+
+    public function historialesHaciaArea()
+    {
+        return $this->hasMany(TicketHistorial::class, 'to_area_id');
+    }
 }

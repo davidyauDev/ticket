@@ -9,53 +9,48 @@ class Ticket extends Model
 {
     use HasFactory;
 
+   use HasFactory;
+
     protected $fillable = [
-        'external_ticket_id',
-        'number',
-        'user_id',
-        'status_id',
-        'dept_id',
-        'sla_id',
-        'topic_id',
-        'source',
-        'est_duedate',
-        'tkt_billeteadulterado',
-        'subject',
-        'priority',
-        'tkt_fhsolicitud',
+        'codigo',
+        'asunto',
         'falla_reportada',
-        'id_equipo',
-        'serie',
-        'activo'
+        'equipo_id',
+        'agencia_id',
+        'tecnico_dni',
+        'tecnico_nombres',
+        'tecnico_apellidos',
+        'area_id',
+        'assigned_to',
+        'created_by',
     ];
 
-    protected $casts = [
-        'est_duedate' => 'datetime',
-        'tkt_fhsolicitud' => 'datetime'
-    ];
+    public function historiales()
+{
+    return $this->hasMany(TicketHistorial::class);
+}
 
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
+    public function equipo()
+    {
+        return $this->belongsTo(Equipo::class);
+    }
 
-    // public function status()
-    // {
-    //     return $this->belongsTo(Status::class);
-    // }
+    public function agencia()
+    {
+        return $this->belongsTo(Agencia::class);
+    }
 
-    // public function department()
-    // {
-    //     return $this->belongsTo(Department::class, 'dept_id');
-    // }
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
+    public function assignedUser()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
 
-    // public function sla()
-    // {
-    //     return $this->belongsTo(Sla::class);
-    // }
-
-    // public function topic()
-    // {
-    //     return $this->belongsTo(Topic::class);
-    // }
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }
