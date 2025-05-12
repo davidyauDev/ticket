@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('codigo'); 
             $table->string('asunto');
             $table->text('falla_reportada');
-            $table->enum('estado', ['pending', 'resolved', 'derived'])->default('pending');
             $table->enum('tipo', ['ticket', 'consulta'])->default('ticket');
 
             $table->string('tecnico_dni');
@@ -31,6 +30,7 @@ return new class extends Migration
             $table->foreignId('area_id')->nullable()->constrained('areas');
             $table->foreignId('assigned_to')->nullable()->constrained('users');
             $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('estado_id')->constrained('estados');
 
             $table->timestamps();
         });

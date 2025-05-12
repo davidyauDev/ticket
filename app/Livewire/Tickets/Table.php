@@ -8,6 +8,7 @@ use App\Models\Area; // Importar el modelo de áreas
 use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Equipo;
+use App\Models\Estado;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -32,9 +33,14 @@ class Table extends Component
     public $sla_id;
     public $topic_id;
     public $mostrarArea = true;
-    public $selectedArea = null; // Propiedad para el área seleccionada
-    public $estados = ''; // Inicializa la variable
-    public $areas = []; // Lista de áreas disponibles
+    public $selectedArea = null;
+    public $estados = '';
+    public $areas = [];
+    public $tipoTicket = 'ticket';
+    public $observacion = '';
+    public $comentario = '';
+    public $estado_id;
+    public $tipo = 'todos';
 
     public function buscarTicket()
     {
@@ -55,11 +61,9 @@ class Table extends Component
     }
     public function mount()
     {
-        $this->areas = [
-            ['id' => 1, 'name' => 'Soporte Técnico'],
-            ['id' => 2, 'name' => 'Atención al Cliente'],
-            ['id' => 3, 'name' => 'Desarrollo'],
-        ];
+        $this->areas = Area::all();
+        $this->estados = Estado::all();
+
     }
     public function registrarTicket()
     {
@@ -76,7 +80,6 @@ class Table extends Component
             if (!$empresa->exists) {
                 $empresa->save();
             }
-
             $cliente = Cliente::firstOrNew([
                 'id' => $this->ticketData['id_cliente'],
             ], [
@@ -86,7 +89,6 @@ class Table extends Component
             if (!$cliente->exists) {
                 $cliente->save();
             }
-
             $equipo = Equipo::firstOrNew([
                 'serie' => $this->ticketData['serie'],
             ], [
@@ -95,7 +97,6 @@ class Table extends Component
             if (!$equipo->exists) {
                 $equipo->save();
             }
-
             $agencia = Agencia::firstOrNew([
                 'id' => $this->ticketData['id_agencia'],
             ], [
@@ -105,6 +106,17 @@ class Table extends Component
             if (!$agencia->exists) {
                 $agencia->save();
             }
+            $assignedTo = Auth::id();
+            if ($this->estado_id == 2) { // Suponiendo que 2 es el ID del estado "Derivado"
+                if (!$this->selectedArea) {
+                    throw new \Exception('Debe seleccionar un área si el estado es "Derivado".');
+                }
+                $areaId = $this->selectedArea;
+            } else {
+                $areaId = null;
+                $assignedTo = Auth::id(); // Asignar al usuario actual si no es derivado
+            }
+
             $ticket = Ticket::create([
                 'codigo' => $this->ticketData['ticket_id'],
                 'asunto' => $this->ticketData['subject'],
@@ -116,8 +128,12 @@ class Table extends Component
                 'tecnico_dni' => $this->ticketData['dni'],
                 'tecnico_nombres' => $this->ticketData['nombres'],
                 'tecnico_apellidos' => $this->ticketData['apellidos'],
-                'area_id' => $this->area_id ?? 1,
-                'assigned_to' => $this->assigned_to ?? null,
+                'comentario' => $this->comentario,
+                'tipo' => $this->tipoTicket,
+                'estado_id' => $this->estado_id,
+                'observacion' => $this->observacion,
+                'area_id' => $areaId,
+                'assigned_to' => $assignedTo,
                 'created_by' => Auth::id(),
             ]);
             DB::commit();
@@ -130,8 +146,6 @@ class Table extends Component
         }
     }
 
-
-
     public function mostrarArea()
     {
         return $this->mostrarArea;
@@ -139,8 +153,12 @@ class Table extends Component
 
     public function render()
     {
-        $tickets = Ticket::paginate(10);
-        $areas = Area::all();
-        return view('livewire.tickets.table', compact('tickets', 'areas'));
+        if ($this->tipo === 'mis') {
+            $tickets = Ticket::where('created_by', Auth::id())->paginate(10);
+        } else {
+            $tickets = Ticket::paginate(10);
+        }
+
+        return view('livewire.tickets.table', compact('tickets'));
     }
 }

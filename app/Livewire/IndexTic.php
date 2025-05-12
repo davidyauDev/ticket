@@ -16,7 +16,8 @@ class IndexTic extends Component
     }
 
     public function render()
-    {
+    {   
+        Log::info('Render method called');
         return view('livewire.index-tic');
     }
 }

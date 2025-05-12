@@ -31,7 +31,7 @@
     </header>
     <div class="p-4 space-y-4">
         
-        
+{{--         
         <div class="mb-12 rounded-xl bg-gray-50 p-6">
             <div class="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
                 <h2 class="text-sm font-medium text-gray-700">Resumen de Tickets</h2>
@@ -100,16 +100,16 @@
             {{-- <div class="mt-6 rounded-lg border border-gray-100 bg-white p-5 shadow-sm">
                 
               
-            </div> --}}
+            </div> 
             <div class="mt-4 text-center">
                 <p class="text-xs text-gray-500">Mis tickets: 1 (100% del total)</p>
             </div>
-        </div>
+        </div> --}}
 
         <div class="border-b border-gray-100 px-6 pt-4">
             <div role="tablist" aria-orientation="horizontal" class="h-10 items-center justify-center rounded-md text-muted-foreground grid w-full grid-cols-2 gap-4 bg-transparent p-0" tabindex="0" data-orientation="horizontal" style="outline: none;">
-                <button type="button" role="tab" aria-selected="true" aria-controls="radix-«r0»-content-mis-tickets" data-state="active" id="radix-«r0»-trigger-mis-tickets" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:shadow-sm border-b-2 border-transparent px-0 py-2 text-sm font-normal text-gray-500 hover:text-gray-900 data-[state=active]:border-gray-900 data-[state=active]:text-gray-900" tabindex="0" data-orientation="horizontal" data-radix-collection-item="">Mis Tickets</button>
-                <button type="button" role="tab" aria-selected="false" aria-controls="radix-«r0»-content-todos-tickets" data-state="inactive" id="radix-«r0»-trigger-todos-tickets" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:shadow-sm border-b-2 border-transparent px-0 py-2 text-sm font-normal text-gray-500 hover:text-gray-900 data-[state=active]:border-gray-900 data-[state=active]:text-gray-900" tabindex="-1" data-orientation="horizontal" data-radix-collection-item="">Todos los Tickets</button>
+                <button type="button" role="tab" aria-selected="{{ $tab === 'mis' ? 'true' : 'false' }}" aria-controls="radix-«r0»-content-mis-tickets" data-state="{{ $tab === 'mis' ? 'active' : 'inactive' }}" id="radix-«r0»-trigger-mis-tickets" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:shadow-sm border-b-2 border-transparent px-0 py-2 text-sm font-normal text-gray-500 hover:text-gray-900 data-[state=active]:border-gray-900 data-[state=active]:text-gray-900" tabindex="0" data-orientation="horizontal" data-radix-collection-item="" wire:click="$set('tab', 'mis')">Mis Tickets</button>
+                <button type="button" role="tab" aria-selected="{{ $tab === 'todos' ? 'true' : 'false' }}" aria-controls="radix-«r0»-content-todos-tickets" data-state="{{ $tab === 'todos' ? 'active' : 'inactive' }}" id="radix-«r0»-trigger-todos-tickets" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:shadow-sm border-b-2 border-transparent px-0 py-2 text-sm font-normal text-gray-500 hover:text-gray-900 data-[state=active]:border-gray-900 data-[state=active]:text-gray-900" tabindex="-1" data-orientation="horizontal" data-radix-collection-item="" wire:click="$set('tab', 'todos')">Todos los Tickets</button>
             </div>
         </div>
 
@@ -117,7 +117,7 @@
             
         </div>
 
-     
+        
         <div>
             @if ($tab === 'mis')
                 <livewire:tickets.table :tipo="'mis'" />

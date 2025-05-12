@@ -4,10 +4,9 @@ use App\Livewire\IndexTic;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
-use App\Livewire\Tickets;
-use App\Livewire\Tickets\Index;
 use App\Livewire\Users;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TicketController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +22,7 @@ Route::prefix('users')->name('users.')->group(function () {
 
 Route::prefix('tickets')->name('tickets.')->group(function () {
     Route::get('/', IndexTic::class)->name('index');
+    Route::get('/{ticket}', App\Livewire\DetalleTicket::class)->name('show');
 });
 
 Route::middleware(['auth'])->group(function () {

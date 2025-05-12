@@ -37,9 +37,24 @@
         </div>
     </flux:modal>
 </div>
-
 <script>
-    // window.addEventListener('user-saved', () => {
-    //     alert('¡Usuario guardado correctamente!');
-    // });
+    document.addEventListener('livewire:load', function () {
+        Livewire.on('user-saved', function () {
+            Swal.fire({
+                title: '¡Registro exitoso!',
+                text: 'El usuario ha sido guardado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        });
+
+        Livewire.on('errorRegistro', function (message) {
+            Swal.fire({
+                title: 'Error',
+                text: message,
+                icon: 'error',
+                confirmButtonText: 'Cerrar'
+            });
+        });
+    });
 </script>

@@ -9,15 +9,17 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    use HasFactory;
-
     protected $fillable = [
         'codigo',
         'asunto',
+        'comentario',
+        'observacion',
         'falla_reportada',
         'equipo_id',
         'agencia_id',
         'tecnico_dni',
+        'estado_id',
+        'tipo',
         'tecnico_nombres',
         'tecnico_apellidos',
         'area_id',
@@ -52,5 +54,9 @@ class Ticket extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class);
     }
 }

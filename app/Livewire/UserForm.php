@@ -114,6 +114,7 @@ class UserForm extends Component
             }
 
             $this->dispatch('user-saved');
+            Log::info('Evento user-saved emitido correctamente.');
             $this->message = 'Usuario guardado exitosamente.';
             $this->showModal = false;
         } catch (\Exception $e) {
