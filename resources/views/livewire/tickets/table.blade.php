@@ -91,7 +91,8 @@
                 <p><strong>Empresa:</strong> {{ $ticketData['empresa'] }}</p>
             </div>
             @endif
-            <div>
+
+            <div class="mt-4">
                 <flux:select wire:model.live="estado" placeholder="Seleccionar estado">
                     <flux:select.option value="Pendiente">Pendiente</flux:select.option>
                     <flux:select.option value="En Proceso">En Proceso</flux:select.option>
@@ -100,26 +101,27 @@
                     <flux:select.option value="Derivado">Derivado</flux:select.option>
                 </flux:select>
             </div>
+
             @if($estado === 'Derivado')
-                <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
-                    @foreach($areas as $area)
-                        <flux:select.option value="{{ $area['id'] }}">{{ $area['name'] }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                <div class="mt-4">
+                    <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
+                        @foreach($areas as $area)
+                            <flux:select.option value="{{ $area['id'] }}">{{ $area['name'] }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                </div>
             @endif
-            <div>
+
+            <div class="mt-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
-                <textarea wire:model="notes"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Detalles adicionales..."></textarea>
+                <textarea wire:model="notes" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Detalles adicionales..."></textarea>
             </div>
-            <div class="flex justify-end gap-2">
-                <button wire:click="$set('showModal', false)"
-                    class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+
+            <div class="flex justify-end gap-2 mt-4">
+                <button wire:click="$set('showModal', false)" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
                     Cancelar
                 </button>
-                <button wire:click="registrarTicket" wire:loading.attr="disabled"
-                    class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                <button wire:click="registrarTicket" wire:loading.attr="disabled" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
                     <span>Registrar Ticket</span>
                 </button>
             </div>

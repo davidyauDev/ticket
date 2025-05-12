@@ -9,7 +9,7 @@ class Agencia extends Model
 {
       use HasFactory;
 
-    protected $fillable = ['nombre', 'cliente_id'];
+    protected $fillable = ['id','nombre', 'cliente_id'];
 
     public function cliente()
     {

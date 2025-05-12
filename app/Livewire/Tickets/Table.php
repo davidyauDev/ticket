@@ -2,9 +2,14 @@
 
 namespace App\Livewire\Tickets;
 
+use App\Models\Agencia;
 use App\Models\Ticket;
 use App\Models\Area; // Importar el modelo de áreas
+use App\Models\Cliente;
+use App\Models\Empresa;
+use App\Models\Equipo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
@@ -12,7 +17,7 @@ use Livewire\Component;
 use Livewire\Attributes\Url;
 
 class Table extends Component
-{   
+{
     use WithPagination;
     #[Url]
     public $search = '';
@@ -37,19 +42,17 @@ class Table extends Component
             'codigoInput' => 'required|string'
         ]);
         try {
-            $response = Http::get("http://54.197.148.155/numbers.php?search=".urlencode($this->codigoInput));
+            $response = Http::get("http://54.197.148.155/numbers.php?search=" . urlencode($this->codigoInput));
             $data = $response->json();
             $this->ticketData = count($data) ? $data[0] : null;
         } catch (\Exception $e) {
             $this->addError('ticketError', 'Error al obtener datos del ticket');
         }
     }
-
     public function derivar()
     {
         $this->mostrarArea = true;
     }
-
     public function mount()
     {
         $this->areas = [
@@ -58,38 +61,76 @@ class Table extends Component
             ['id' => 3, 'name' => 'Desarrollo'],
         ];
     }
-
     public function registrarTicket()
     {
+        DB::beginTransaction();
         try {
             if (!$this->ticketData) {
                 throw new \Exception('No hay datos del ticket para registrar.');
             }
-            Ticket::create([
-                'external_ticket_id' => $this->ticketData['ticket_id'],
-                'number' => $this->ticketData['number'],
-                'user_id' => Auth::id(),
-                'status_id' => $this->status_id ?? 1,
-                'dept_id' => $this->dept_id ?? 1,
-                'sla_id' => $this->sla_id?? 1,
-                'topic_id' => $this->topic_id ?? 1,
-                'est_duedate' => $this->ticketData['est_duedate'] ?? null,
-                'subject' => $this->ticketData['subject'],
-                'priority' => $this->priority ?? 'normal',
-                'tkt_fhsolicitud' => $this->ticketData['tkt_fhsolicitud'] ?? now(),
+            $empresa = Empresa::firstOrNew([
+                'id' => $this->ticketData['id_empresa'],
+            ], [
+                'nombre' => $this->ticketData['empresa'] ?? 'Empresa Desconocida',
+            ]);
+            if (!$empresa->exists) {
+                $empresa->save();
+            }
+
+            $cliente = Cliente::firstOrNew([
+                'id' => $this->ticketData['id_cliente'],
+            ], [
+                'nombre' => $this->ticketData['cliente'] ?? 'Cliente Desconocido',
+                'empresa_id' => $empresa->id,
+            ]);
+            if (!$cliente->exists) {
+                $cliente->save();
+            }
+
+            $equipo = Equipo::firstOrNew([
+                'serie' => $this->ticketData['serie'],
+            ], [
+                'modelo' => $this->ticketData['modelo'] ?? 'Modelo Desconocido',
+            ]);
+            if (!$equipo->exists) {
+                $equipo->save();
+            }
+
+            $agencia = Agencia::firstOrNew([
+                'id' => $this->ticketData['id_agencia'],
+            ], [
+                'nombre' => $this->ticketData['agencia'] ?? 'Agencia Desconocida',
+                'cliente_id' => $this->ticketData['id_cliente'],
+            ]);
+            if (!$agencia->exists) {
+                $agencia->save();
+            }
+            $ticket = Ticket::create([
+                'codigo' => $this->ticketData['ticket_id'],
+                'asunto' => $this->ticketData['subject'],
                 'falla_reportada' => $this->ticketData['falla_reportada'] ?? $this->notes,
-                'id_equipo' => $this->ticketData['id_equipo'] ?? null,
-                'activo' => $this->ticketData['activo'] ?? null,
-                'tkt_billeteadulterado' => $this->codigoInput,
-                'created_by' => 1,
-            ]);       
+                'equipo_id' => $equipo->id,
+                'agencia_id' => $agencia->id,
+                'cliente_id' => $cliente->id,
+                'empresa_id' => $empresa->id,
+                'tecnico_dni' => $this->ticketData['dni'],
+                'tecnico_nombres' => $this->ticketData['nombres'],
+                'tecnico_apellidos' => $this->ticketData['apellidos'],
+                'area_id' => $this->area_id ?? 1,
+                'assigned_to' => $this->assigned_to ?? null,
+                'created_by' => Auth::id(),
+            ]);
+            DB::commit();
             $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal']);
             $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
         } catch (\Exception $e) {
-            Log::info($e->getMessage());
+            DB::rollBack();
+            Log::error('Error al registrar el ticket: ' . $e->getMessage());
             $this->addError('ticketError', 'Error al registrar el ticket: ' . $e->getMessage());
         }
     }
+
+
 
     public function mostrarArea()
     {
@@ -99,7 +140,7 @@ class Table extends Component
     public function render()
     {
         $tickets = Ticket::paginate(10);
-        $areas = Area::all(); 
+        $areas = Area::all();
         return view('livewire.tickets.table', compact('tickets', 'areas'));
     }
 }

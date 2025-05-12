@@ -9,7 +9,7 @@ class Ticket extends Model
 {
     use HasFactory;
 
-   use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'codigo',
@@ -26,9 +26,9 @@ class Ticket extends Model
     ];
 
     public function historiales()
-{
-    return $this->hasMany(TicketHistorial::class);
-}
+    {
+        return $this->hasMany(TicketHistorial::class);
+    }
 
     public function equipo()
     {
