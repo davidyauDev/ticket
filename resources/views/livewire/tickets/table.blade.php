@@ -1,4 +1,3 @@
-<!-- resources/views/livewire/ticket-search.blade.php -->
 <div>
     <div class="rounded-lg border bg-card text-card-foreground shadow-sm mt-4 p-5">
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -19,8 +18,8 @@
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Falla Reportada</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Tipo</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Técnico</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Comentario</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Observación</th>
+                        {{-- <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Comentario</th>
+                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Observación</th> --}}
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Equipo</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Agencia</th>
                         <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Área</th>
@@ -49,7 +48,7 @@
                         </td>
                         <td class="py-3 px-4 text-sm">{{ $ticket->tecnico_nombres }} {{ $ticket->tecnico_apellidos }}
                         </td>
-                        <td class="py-3 px-4 text-sm">
+                        {{-- <td class="py-3 px-4 text-sm">
                             <div x-data="{ expanded: false }">
                                 <span x-show="!expanded">
                                     {{ Str::limit($ticket->comentario, 50, '...') }}
@@ -62,8 +61,8 @@
                                     <span x-show="expanded">Ver menos</span>
                                 </button>
                             </div>
-                        </td>
-                        <td class="py-3 px-4 text-sm">
+                        </td> --}}
+                        {{-- <td class="py-3 px-4 text-sm">
                             <div x-data="{ expanded: false }">
                                 <span x-show="!expanded">
                                     {{ Str::limit($ticket->observacion, 50, '...') }}
@@ -76,7 +75,7 @@
                                     <span x-show="expanded">Ver menos</span>
                                 </button>
                             </div>
-                        </td>
+                        </td> --}}
                         <td class="py-3 px-4 text-sm">{{ $ticket->equipo->serie }} - {{ $ticket->equipo->modelo}}</td>
                         <td class="py-3 px-4 text-sm font-medium">{{ $ticket->agencia->nombre }}</td>
                         <td class="py-3 px-4 text-sm">{{ $ticket->area->nombres ?? 'Sin Area' }}</td>
@@ -154,7 +153,6 @@
                     @endforeach
                 </flux:select>
             </div>
-
             <div class="mt-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
                 <textarea wire:model="observacion"
@@ -171,7 +169,6 @@
                 </flux:select>
             </div>
             @endif
-
             <div class="mt-2">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
                 <flux:select wire:model.live="tipoTicket" placeholder="Seleccionar tipo">
