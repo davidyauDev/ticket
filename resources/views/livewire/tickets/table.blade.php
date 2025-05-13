@@ -4,85 +4,61 @@
             <flux:input wire:model.live="search" as="text" placeholder="Buscar Usuario..." icon="magnifying-glass"
                 class="w-full sm:w-auto" />
             <flux:modal.trigger name="edit-profile">
-                <flux:button wire:click="crearUsuario" icon="plus" class="w-full sm:w-auto"
-                    wire:click="$toggle('showModal')">Crear Nuevo Ticket</flux:button>
+                <flux:modal.trigger name="edit-profile">
+                    <flux:button wire:click="crearUsuario" icon="plus" class="w-full sm:w-auto bg-black"
+                        wire:click="$toggle('showModal')">Crear Nuevo Ticket</flux:button>
+                </flux:modal.trigger>
             </flux:modal.trigger>
         </div>
-        <div class="mt-4 border rounded-md overflow-x-auto">
-            <table class="w-full min-w-[600px]">
-                <thead>
-                    <tr class="border-b bg-muted/50">
-                        {{-- <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">ID</th> --}}
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Código</th>
-                        {{-- <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Asunto</th> --}}
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Falla Reportada</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Tipo</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Técnico</th>
-                        {{-- <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Comentario</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Observación</th> --}}
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Equipo</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Agencia</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Área</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Asignado a</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Creado por</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Estado</th>
-                        <th class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Acciones</th>
+        <div class="overflow-auto">
+            <table class="w-full text-sm text-left border border-gray-200 rounded-lg">
+                <thead class="bg-gray-50 text-gray-700">
+                    <tr>
+                        <th class="px-3 py-2"">Código</th>
+                        <th class=" px-3 py-2"">Falla Reportada</th>
+                        <th class="px-3 py-2"">Tipo</th>
+                        <th class=" px-3 py-2"">Técnico</th>
+                        <th class="px-3 py-2"">Equipo</th>
+                        <th class=" px-3 py-2"">Agencia</th>
+                        <th class="px-3 py-2"">Área</th>
+                        <th class=" px-3 py-2"">Asignado a</th>
+                        <th class="px-3 py-2"">Creado por</th>
+                        <th class=" px-3 py-2"">Estado</th>
+                        <th class="px-3 py-2"">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($tickets as $ticket)
-                    <tr class="border-b ">
-                        {{-- <td class="py-3 px-4 text-sm">{{ $ticket->id }}</td> --}}
+                <tbody class=" text-gray-800 font-medium">
+                            @foreach ($tickets as $ticket)
+                    <tr class="border-t">
                         <td class="p-4 align-middle font-medium">
                             <a href="{{ route('tickets.show', $ticket->id) }}" class="text-blue-500 hover:underline">
                                 {{ $ticket->codigo }}
                             </a>
                         </td>
-                        {{-- <td class="py-3 px-4 text-sm">{{ $ticket->asunto }}</td> --}}
-                        <td class="py-3 px-4 text-sm font-medium">{{ $ticket->falla_reportada }}</td>
-                        <td class="py-3 px-4 text-sm">
+                        <td class="py-3 px-4 ">{{ $ticket->falla_reportada }}</td>
+                        <td class="py-3 px-4 ">
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold {{ $ticket->tipo === 'ticket' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
                                 {{ ucfirst($ticket->tipo) }}
                             </span>
                         </td>
-                        <td class="py-3 px-4 text-sm">{{ $ticket->tecnico_nombres }} {{ $ticket->tecnico_apellidos }}
+                        <td class="py-3 px-4">{{ $ticket->tecnico_nombres }} {{ $ticket->tecnico_apellidos }}
                         </td>
-                        {{-- <td class="py-3 px-4 text-sm">
-                            <div x-data="{ expanded: false }">
-                                <span x-show="!expanded">
-                                    {{ Str::limit($ticket->comentario, 50, '...') }}
-                                </span>
-                                <span x-show="expanded">
-                                    {{ $ticket->comentario }}
-                                </span>
-                                <button @click="expanded = !expanded" class="text-blue-500 text-xs">
-                                    <span x-show="!expanded">Ver más</span>
-                                    <span x-show="expanded">Ver menos</span>
-                                </button>
-                            </div>
-                        </td> --}}
-                        {{-- <td class="py-3 px-4 text-sm">
-                            <div x-data="{ expanded: false }">
-                                <span x-show="!expanded">
-                                    {{ Str::limit($ticket->observacion, 50, '...') }}
-                                </span>
-                                <span x-show="expanded">
-                                    {{ $ticket->observacion }}
-                                </span>
-                                <button @click="expanded = !expanded" class="text-blue-500 text-xs">
-                                    <span x-show="!expanded">Ver más</span>
-                                    <span x-show="expanded">Ver menos</span>
-                                </button>
-                            </div>
-                        </td> --}}
-                        <td class="py-3 px-4 text-sm">{{ $ticket->equipo->serie }} - {{ $ticket->equipo->modelo}}</td>
-                        <td class="py-3 px-4 text-sm font-medium">{{ $ticket->agencia->nombre }}</td>
-                        <td class="py-3 px-4 text-sm">{{ $ticket->area->nombres ?? 'Sin Area' }}</td>
-                        <td class="py-3 px-4 text-sm font-medium">{{ $ticket->assignedUser->name ?? 'No asignado' }}
+                        <td class="py-3 px-4 ">{{ $ticket->equipo->serie }} - {{ $ticket->equipo->modelo}}</td>
+                        <td class="py-3 px-4 ">{{ $ticket->agencia->nombre }}</td>
+                        <td class="py-3 px-4 ">{{ $ticket->area->nombres ?? 'Sin Area' }}</td>
+                        <td class="py-3 px-4">
+                            @if ($ticket->assignedUser)
+                            {{ $ticket->assignedUser->name }}
+                            @else
+                            <flux:modal.trigger name="asignar-ticket-{{ $ticket->id }}">
+                                <span class="text-blue-600 hover:underline cursor-pointer">Asignarme</span>
+                            </flux:modal.trigger>
+                            @endif
                         </td>
-                        <td class="py-3 px-4 text-sm">{{ $ticket->createdBy->name }}</td>
-                        <td class="py-3 px-4 text-sm">
+                        </td>
+                        <td class="py-3 px-4 ">{{ $ticket->createdBy->name }}</td>
+                        <td class="py-3 px-4 ">
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold {{ $ticket->estado->nombre === 'Abierto' ? 'bg-green-100 text-green-800' : ($ticket->estado->nombre === 'Cerrado' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
                                 {{ ucfirst($ticket->estado->nombre) }}
@@ -102,7 +78,7 @@
                         </td>
                     </tr>
                     @endforeach
-                </tbody>
+                    </tbody>
             </table>
         </div>
     </div>
@@ -176,14 +152,12 @@
                     <flux:select.option value="consulta">Consulta</flux:select.option>
                 </flux:select>
             </div>
-
             <div class="mt-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
                 <textarea wire:model="comentario"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Detalles adicionales..."></textarea>
             </div>
-
             <div class="flex justify-end gap-2 mt-4">
                 <button wire:click="$set('showModal', false)"
                     class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
@@ -196,4 +170,34 @@
             </div>
         </div>
     </x-modal>
+    @foreach ($tickets as $ticket)
+    {{-- ... tu fila de tabla ... --}}
+    @if (!$ticket->assignedUser)
+    <flux:modal name="asignar-ticket-{{ $ticket->id }}" class="md:w-96">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">¿Quieres asignarte este ticket?</flux:heading>
+                <flux:text class="mt-2">Este ticket aún no ha sido asignado.</flux:text>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <flux:button variant="ghost" @click="$closeModal()">Cancelar</flux:button>
+                <flux:button variant="primary" wire:click="asignar({{ $ticket->id }})" wire:loading.attr="disabled">
+                    Confirmar
+                </flux:button>
+            </div>
+        </div>
+    </flux:modal>
+    @endif
+    @endforeach
 </div>
+@script
+<script>
+    $wire.on("notify", () =>{
+    Swal.fire({
+    icon: 'success',
+    title: 'Ticket',
+    text: 'Ticket registrado exitosamente',
+    });
+   })
+</script>
+@endscript

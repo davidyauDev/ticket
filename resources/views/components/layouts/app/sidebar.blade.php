@@ -24,6 +24,12 @@
                     {{ __('Tickets') }}
                 </flux:navlist.item>
             </flux:navlist.group>
+
+             <flux:navlist.group :heading="__('Tickets')" class="grid">
+                <flux:navlist.item icon="ticket" :href="route('ticket2')" :current="request()->routeIs('ticket2')" wire:navigate>
+                    {{ __('Tickets2') }}
+                </flux:navlist.item>
+            </flux:navlist.group>
         </flux:navlist>
         <flux:spacer />
         <flux:navlist variant="outline">

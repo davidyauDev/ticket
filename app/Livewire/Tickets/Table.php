@@ -9,6 +9,7 @@ use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Equipo;
 use App\Models\Estado;
+use App\Models\TicketHistorial;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -59,11 +60,46 @@ class Table extends Component
     {
         $this->mostrarArea = true;
     }
+
+    public function download()
+    {
+        $this->dispatch("confirm");
+    }
+
+    public function asignar($ticketId)
+    {
+        DB::beginTransaction();
+        try {
+            $ticket = Ticket::findOrFail($ticketId);
+            TicketHistorial::where('ticket_id', $ticket->id)
+                ->where('is_current', true)
+                ->update(['is_current' => false]);
+            $ticket->assigned_to = Auth::id();
+            $ticket->save();
+            // Crear historial
+            TicketHistorial::create([
+                'ticket_id'    => $ticketId,
+                'usuario_id'   => Auth::id(),
+                'from_area_id' => 1,
+                'asignado_a'   => Auth::id(),
+                'estado_id'    => 1,
+                'accion'       => 'El usuario se asignó el ticket',
+                'is_current'   => true,
+                'comentario'   => null
+            ]);
+            DB::commit();
+            $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al asignar ticket: ' . $e->getMessage());
+            $this->addError('asignacion', 'Ocurrió un error al asignar el ticket.');
+        }
+    }
+
     public function mount()
     {
         $this->areas = Area::all();
         $this->estados = Estado::all();
-
     }
     public function registrarTicket()
     {
@@ -106,17 +142,16 @@ class Table extends Component
             if (!$agencia->exists) {
                 $agencia->save();
             }
-            $assignedTo = Auth::id();
-            if ($this->estado_id == 2) { // Suponiendo que 2 es el ID del estado "Derivado"
+            $assignedTo = null;
+            if ($this->estado_id == 2) {
                 if (!$this->selectedArea) {
                     throw new \Exception('Debe seleccionar un área si el estado es "Derivado".');
                 }
                 $areaId = $this->selectedArea;
             } else {
                 $areaId = null;
-                $assignedTo = Auth::id(); // Asignar al usuario actual si no es derivado
+                $assignedTo = Auth::id();
             }
-
             $ticket = Ticket::create([
                 'codigo' => $this->ticketData['ticket_id'],
                 'asunto' => $this->ticketData['subject'],
@@ -158,7 +193,6 @@ class Table extends Component
         } else {
             $tickets = Ticket::paginate(10);
         }
-
         return view('livewire.tickets.table', compact('tickets'));
     }
 }

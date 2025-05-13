@@ -16,6 +16,10 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::view('ticket2', 'ticket2')
+    ->middleware(['auth', 'verified'])
+    ->name('ticket2');
+
 Route::prefix('users')->name('users.')->group(function () {
     Route::get('/', Users::class)->name('index');
 });
@@ -23,6 +27,7 @@ Route::prefix('users')->name('users.')->group(function () {
 Route::prefix('tickets')->name('tickets.')->group(function () {
     Route::get('/', IndexTic::class)->name('index');
     Route::get('/{ticket}', App\Livewire\DetalleTicket::class)->name('show');
+    
 });
 
 Route::middleware(['auth'])->group(function () {
