@@ -63,300 +63,118 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-            <div class="flex flex-col space-y-1.5 p-6">
-                <h3 class="text-2xl font-semibold leading-none tracking-tight flex items-center"><svg
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-clock mr-2 h-5 w-5">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>Historial del Ticket</h3>
+            <div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                    <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
+                        @foreach($estados as $estado)
+                        <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                </div>
+                @if($estado_id == 2)
+                <label class="block text-sm font-medium text-gray-700 mb-1">Areas</label>
+                <div class="mt-2">
+                    <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
+                        @foreach($areas as $area)
+                        <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                </div>
+                @endif
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
+                    <textarea wire:model="comentario"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Detalles adicionales..."></textarea>
+                </div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button wire:click="$set('showModal', false)"
+                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                        Cancelar
+                    </button>
+                    <button wire:click="ActualizarTicket" wire:loading.attr="disabled"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                        <span>Actualizar Ticket</span>
+                    </button>
+                </div>
             </div>
-            <div class="p-6 pt-0">
-                <div class="relative">
-                    <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-200"></div>
-                    <div class="flex mb-8 last:mb-0 relative">
-                        <div class="
-                    w-8 h-8 rounded-full flex items-center justify-center z-10
-                    bg-blue-100 text-blue-800
-                  "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-user h-4 w-4">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-medium">Ticket Creado</h4>
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ml-2 text-xs"
-                                    data-v0-t="badge">10/05/2025, 9:15 AM</div>
-                            </div>
-                            <p class="text-sm text-muted-foreground mt-1">Ticket #45474 creado en el sistema</p>
-                            <div class="flex items-center mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-user h-3 w-3 mr-1 text-muted-foreground">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">Rafael Luigi</p>
-                            </div>
-                        </div>
+        </div>
+        <div>
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm" data-v0-t="card">
+                <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-clock h-5 w-5 text-muted-foreground">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <h2 class="text-xl font-semibold">Historial del Ticket</h2>
                     </div>
-                    <div class="flex mb-8 last:mb-0 relative">
-                        <div class="
-                    w-8 h-8 rounded-full flex items-center justify-center z-10
-                    bg-indigo-100 text-indigo-800
-                  "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-user h-4 w-4">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-medium">Asignado a Técnico</h4>
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ml-2 text-xs"
-                                    data-v0-t="badge">10/05/2025, 9:30 AM</div>
+                </div>
+                <div class="p-6 pt-0">
+                    <div class="space-y-4">
+                        @forelse($historiales as $item)
+                        <div class="relative pb-4">
+                            <div class="absolute left-3.5 top-5 -bottom-4 w-px bg-border"></div>
+                            <div class="absolute left-0 flex items-center justify-center mt-1">
+                                <div
+                                    class="h-7 w-7 rounded-full border-2 border-border bg-blue-100 flex items-center justify-center">
+                                    <div class="h-2.5 w-2.5 rounded-full bg-blue-600"></div>
+                                </div>
                             </div>
-                            <p class="text-sm text-muted-foreground mt-1">El ticket fue asignado a un técnico para su
-                                revisión</p>
-                            <div class="flex items-center mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-user h-3 w-3 mr-1 text-muted-foreground">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">Sistema</p>
-                            </div>
-                            <div class="mt-2 flex items-center">
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs bg-slate-50"
-                                    data-v0-t="badge"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-clock h-3 w-3 mr-1">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>15 minutos después de creación</div>
-                            </div>
-                            <div class="mt-2 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-corner-down-right h-3 w-3 mr-1 text-muted-foreground">
-                                    <polyline points="15 10 20 15 15 20"></polyline>
-                                    <path d="M4 4v7a4 4 0 0 0 4 4h12"></path>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">Derivado a: Omar Humberto Julian Grillo</p>
+                            <div class="ml-12">
+                                <div class="flex items-start">
+                                    <div class="flex flex-col space-y-1">
+                                        <span class="font-medium">{{ $item->accion ?? 'Actualización' }}</span>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-muted-foreground">Estado: {{ $item->estado->nombre
+                                                ?? 'N/A' }}</span>
+                                            <span class="text-xs text-muted-foreground">{{
+                                                $item->created_at->format('d/m/Y H:i') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ml-6 mt-2 space-y-1">
+                                    <div class="text-sm"><span class="font-medium">Por:</span> {{ $item->usuario->name
+                                        ?? 'N/A' }}</div>
+                                    @if($item->from_area_id)
+                                    <div class="text-sm"><span class="font-medium">De área:</span> {{
+                                        $item->fromArea->nombre ?? '' }}</div>
+                                    @endif
+                                    @if($item->to_area_id)
+                                    <div class="text-sm"><span class="font-medium">Hacia área:</span> {{
+                                        $item->toArea->nombre ?? '' }}</div>
+                                    @endif
+                                    @if($item->asignado_a)
+                                    <div class="text-sm"><span class="font-medium">Asignado a:</span> {{
+                                        $item->asignadoA->name ?? '' }}</div>
+                                    @endif
+                                    @if($item->comentario)
+                                    <div class="text-sm italic text-muted-foreground">"{{ $item->comentario }}"</div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="flex mb-8 last:mb-0 relative">
-                        <div class="
-                    w-8 h-8 rounded-full flex items-center justify-center z-10
-                    bg-slate-100 text-slate-800
-                  "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-message-square h-4 w-4">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-medium">Comentario Añadido</h4>
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ml-2 text-xs"
-                                    data-v0-t="badge">10/05/2025, 10:45 AM</div>
-                            </div>
-                            <p class="text-sm text-muted-foreground mt-1">Se añadió un diagnóstico inicial al ticket</p>
-                            <div class="flex items-center mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-user h-3 w-3 mr-1 text-muted-foreground">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">Omar Humberto Julian Grillo</p>
-                            </div>
-                            <div class="mt-2 flex items-center">
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs bg-slate-50"
-                                    data-v0-t="badge"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-clock h-3 w-3 mr-1">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>1 hora y 15 minutos después de asignación</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex mb-8 last:mb-0 relative">
-                        <div class="
-                    w-8 h-8 rounded-full flex items-center justify-center z-10
-                    bg-purple-100 text-purple-800
-                  "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-corner-down-right h-4 w-4">
-                                <polyline points="15 10 20 15 15 20"></polyline>
-                                <path d="M4 4v7a4 4 0 0 0 4 4h12"></path>
-                            </svg></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-medium">Derivado a Soporte Nivel 2</h4>
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ml-2 text-xs"
-                                    data-v0-t="badge">10/05/2025, 11:30 AM</div>
-                            </div>
-                            <p class="text-sm text-muted-foreground mt-1">El ticket fue escalado a un nivel superior de
-                                soporte</p>
-                            <div class="flex items-center mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-user h-3 w-3 mr-1 text-muted-foreground">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">Omar Humberto Julian Grillo</p>
-                            </div>
-                            <div class="mt-2 flex items-center">
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs bg-slate-50"
-                                    data-v0-t="badge"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-clock h-3 w-3 mr-1">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>45 minutos después del diagnóstico</div>
-                            </div>
-                            <div class="mt-2 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-corner-down-right h-3 w-3 mr-1 text-muted-foreground">
-                                    <polyline points="15 10 20 15 15 20"></polyline>
-                                    <path d="M4 4v7a4 4 0 0 0 4 4h12"></path>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">Derivado a: Equipo de Soporte Nivel 2</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex mb-8 last:mb-0 relative">
-                        <div class="
-                    w-8 h-8 rounded-full flex items-center justify-center z-10
-                    bg-slate-100 text-slate-800
-                  "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-message-square h-4 w-4">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-medium">Solución Propuesta</h4>
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ml-2 text-xs"
-                                    data-v0-t="badge">11/05/2025, 9:00 AM</div>
-                            </div>
-                            <p class="text-sm text-muted-foreground mt-1">Se identificó la necesidad de reemplazar el
-                                hardware</p>
-                            <div class="flex items-center mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-user h-3 w-3 mr-1 text-muted-foreground">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">María Sánchez</p>
-                            </div>
-                            <div class="mt-2 flex items-center">
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs bg-slate-50"
-                                    data-v0-t="badge"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-clock h-3 w-3 mr-1">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>21 horas y 30 minutos después de derivación</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex mb-8 last:mb-0 relative">
-                        <div class="
-                    w-8 h-8 rounded-full flex items-center justify-center z-10
-                    bg-emerald-100 text-emerald-800
-                  "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-circle-check-big h-4 w-4">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                <path d="m9 11 3 3L22 4"></path>
-                            </svg></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-medium">Ticket Resuelto</h4>
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ml-2 text-xs"
-                                    data-v0-t="badge">12/05/2025, 10:00 AM</div>
-                            </div>
-                            <p class="text-sm text-muted-foreground mt-1">Se reemplazó la unidad defectuosa y se
-                                verificó su funcionamiento</p>
-                            <div class="flex items-center mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-user h-3 w-3 mr-1 text-muted-foreground">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">María Sánchez</p>
-                            </div>
-                            <div class="mt-2 flex items-center">
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs bg-slate-50"
-                                    data-v0-t="badge"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-clock h-3 w-3 mr-1">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>25 horas después de la solución propuesta</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex mb-8 last:mb-0 relative">
-                        <div class="
-                    w-8 h-8 rounded-full flex items-center justify-center z-10
-                    bg-red-100 text-red-800
-                  "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-circle-alert h-4 w-4">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" x2="12" y1="8" y2="12"></line>
-                                <line x1="12" x2="12.01" y1="16" y2="16"></line>
-                            </svg></div>
-                        <div class="ml-4">
-                            <div class="flex items-center">
-                                <h4 class="font-medium">Ticket Cerrado</h4>
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ml-2 text-xs"
-                                    data-v0-t="badge">12/05/2025, 2:30 PM</div>
-                            </div>
-                            <p class="text-sm text-muted-foreground mt-1">El usuario confirmó que el problema fue
-                                resuelto satisfactoriamente</p>
-                            <div class="flex items-center mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-user h-3 w-3 mr-1 text-muted-foreground">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <p class="text-xs text-muted-foreground">Rafael Luigi</p>
-                            </div>
-                            <div class="mt-2 flex items-center">
-                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs bg-slate-50"
-                                    data-v0-t="badge"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-clock h-3 w-3 mr-1">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>4 horas y 30 minutos después de resolución</div>
-                            </div>
-                        </div>
+                        @empty
+                        <p class="text-sm text-muted-foreground">No hay historial disponible para este ticket.</p>
+                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@script
+<script>
+    $wire.on("notifyActu", () =>{
+    Swal.fire({
+    icon: 'success',
+    title: 'Ticket',
+    text: 'Ticket Actualizad exitosamente',
+    });
+   })
+</script>
+@endscript

@@ -51,9 +51,13 @@ class Table extends Component
         try {
             $response = Http::get("http://54.197.148.155/numbers.php?search=" . urlencode($this->codigoInput));
             $data = $response->json();
+            if(empty($data)) {
+                $this->addError('ticketError', 'No se encontraron datos para el ticket ingresado.');
+                return;
+            }   
             $this->ticketData = count($data) ? $data[0] : null;
         } catch (\Exception $e) {
-            $this->addError('ticketError', 'Error al obtener datos del ticket');
+            $this->addError('ErrorConsulta', 'Error al obtener datos del ticket');
         }
     }
     public function derivar()
@@ -82,7 +86,7 @@ class Table extends Component
                 'usuario_id'   => Auth::id(),
                 'from_area_id' => 1,
                 'asignado_a'   => Auth::id(),
-                'estado_id'    => 1,
+                'estado_id'    => $ticket->estado_id,
                 'accion'       => 'El usuario se asignó el ticket',
                 'is_current'   => true,
                 'comentario'   => null
@@ -103,6 +107,11 @@ class Table extends Component
     }
     public function registrarTicket()
     {
+         $this->validate([
+            'observacion' => 'required|string',
+            'comentario' => 'required|string'
+        ]);
+
         DB::beginTransaction();
         try {
             if (!$this->ticketData) {
@@ -149,7 +158,7 @@ class Table extends Component
                 }
                 $areaId = $this->selectedArea;
             } else {
-                $areaId = null;
+                $areaId = Auth::user()->area_id;
                 $assignedTo = Auth::id();
             }
             $ticket = Ticket::create([
@@ -160,7 +169,7 @@ class Table extends Component
                 'agencia_id' => $agencia->id,
                 'cliente_id' => $cliente->id,
                 'empresa_id' => $empresa->id,
-                'tecnico_dni' => $this->ticketData['dni'],
+                'tecnico_dni' => $this->ticketData['dni'] ?? null,
                 'tecnico_nombres' => $this->ticketData['nombres'],
                 'tecnico_apellidos' => $this->ticketData['apellidos'],
                 'comentario' => $this->comentario,
@@ -171,13 +180,35 @@ class Table extends Component
                 'assigned_to' => $assignedTo,
                 'created_by' => Auth::id(),
             ]);
+            $comentarioHistorial = 'Ticket creado';
+            $accionHistorial = 'Creado';
+            if ($ticket->estado_id == 5) { // Cerrado
+                $comentarioHistorial = 'Ticket creado y cerrado en el mismo momento.';
+                $accionHistorial = 'Creado y Cerrado';
+            } elseif ($ticket->estado_id == 2) { // Derivado
+                $comentarioHistorial = 'Ticket creado y derivado al área correspondiente.';
+                $accionHistorial = 'Creado y Derivado';
+            }
+            TicketHistorial::create([
+                'ticket_id' => $ticket->id,
+                'usuario_id' => Auth::id(),
+                'from_area_id' => null,
+                'to_area_id' => $ticket->area_id,
+                'asignado_a' => $assignedTo,
+                'estado_id' => $ticket->estado_id,
+                'accion' => $accionHistorial,
+                'comentario' => $comentarioHistorial,
+                'is_current' => true,
+            ]);
             DB::commit();
-            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal']);
+            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal','ticketData']);
             $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al registrar el ticket: ' . $e->getMessage());
-            $this->addError('ticketError', 'Error al registrar el ticket: ' . $e->getMessage());
+            $this->dispatch('notifyError', type: 'success', message: 'Ticket registrado exitosamente');
+
+            //$this->addError('ticketError', 'Error al registrar el ticket: ' . $e->getMessage());
         }
     }
 
@@ -189,9 +220,13 @@ class Table extends Component
     public function render()
     {
         if ($this->tipo === 'mis') {
-            $tickets = Ticket::where('created_by', Auth::id())->paginate(10);
+            $tickets = Ticket::where('assigned_to', Auth::id())->paginate(10);
+        } else if ($this->tipo === 'pendientes') {
+             $tickets = Ticket::where('area_id', Auth::user()->area_id)
+                         ->whereNull('assigned_to')
+                         ->paginate(10);
         } else {
-            $tickets = Ticket::paginate(10);
+            $tickets = Ticket::where('area_id', Auth::user()->area_id)->paginate(10);
         }
         return view('livewire.tickets.table', compact('tickets'));
     }

@@ -120,4 +120,229 @@
             </table>
         </div>
     </div>
+
+    <div class="p-6">
+        <a href="#" class="text-blue-600 hover:underline">&larr; Volver</a>
+        <h1 class="text-2xl font-bold inline-block ml-2">Ticket #45697</h1>
+        <span class="bg-blue-100 text-blue-800 text-sm font-medium ml-2 px-2.5 py-0.5 rounded">Derivado</span>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <!-- Detalles del Ticket -->
+            <div class="md:col-span-2 bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Detalles del Ticket</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="font-semibold">Falla Reportada</p>
+                        <p>REQUIERE CAMBIO DE REPUESTOS</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold">Tipo</p>
+                        <span
+                            class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">consulta</span>
+                    </div>
+                    <div>
+                        <p class="font-semibold mt-2">Técnico</p>
+                        <p class="flex items-center gap-1">
+                            <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M5.121 17.804A10 10 0 1 1 12 22v-2a8 8 0 1 0-6.879-3.196z" />
+                            </svg>
+                            Arcangel Miguel
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold mt-2">Agencia</p>
+                        <p class="flex items-center gap-1">
+                            <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M3 10h18M4 21h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z" />
+                            </svg>
+                            BCP-TARMA
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold mt-2">Área</p>
+                        <p>2</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold mt-2">Asignado a</p>
+                        <p class="flex items-center gap-1">
+                            <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M5.121 17.804A10 10 0 1 1 12 22v-2a8 8 0 1 0-6.879-3.196z" />
+                            </svg>
+                            Juan Ronaldo
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold mt-2">Comentario</p>
+                        <p>Test222</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold mt-2">Observación</p>
+                        <p>Testasda</p>
+                    </div>
+                </div>
+
+                <!-- Formulario de actualización -->
+                <form action="#" method="POST" class="mt-6">
+                    @csrf
+                    <div class="mb-4">
+                        <label for="estado" class="block text-sm font-medium">Estado</label>
+                        <select id="estado" name="estado" class="mt-1 block w-full border border-gray-300 rounded p-2">
+                            <option>Pendiente</option>
+                            <option>En proceso</option>
+                            <option>Finalizado</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="comentario" class="block text-sm font-medium">Comentario</label>
+                        <textarea id="comentario" name="comentario" rows="3"
+                            class="w-full border border-gray-300 rounded p-2"
+                            placeholder="Detalles adicionales..."></textarea>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit"
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Actualizar
+                            Ticket</button>
+                        <a href="#" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Historial del Ticket -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Historial del Ticket</h2>
+                <ol class="relative border-l-2 border-gray-200 ml-6 space-y-6">
+                    <!-- Item -->
+                    <li class="relative">
+                        <!-- Punto azul centrado -->
+                        <div
+                            class="absolute -left-[1.0625rem] top-2 w-4 h-4 bg-blue-500 rounded-full shadow-md border-2 border-white z-10">
+                        </div>
+
+                        <div class="pl-6">
+                            <h3 class="text-sm font-semibold">El usuario se asignó el ticket</h3>
+                            <p class="text-xs text-gray-500">Estado: Derivado 14/05/2025 19:39</p>
+                            <p class="text-xs text-gray-700">Por: Juan Ronaldo</p>
+                            <p class="text-xs text-gray-700">De área: Tecnología</p>
+                        </div>
+                    </li>
+
+
+
+                    <!-- Otro Item -->
+                    <li class="relative">
+                        <div
+                            class="absolute -left-[1.0625rem] top-2 w-4 h-4 bg-blue-500 rounded-full shadow-md border-2 border-white z-10">
+                        </div>
+
+                        <div class="pl-6">
+                            <h3 class="text-sm font-semibold">Creado y Derivado</h3>
+                            <p class="text-xs text-gray-500">Estado: Derivado 14/05/2025 19:25</p>
+                            <p class="text-xs text-gray-700">Por: Joel Ronald</p>
+                            <p class="text-xs text-gray-700">Hacía área: Tecnología</p>
+                            <p class="italic text-xs text-gray-600">"Ticket creado y derivado al área correspondiente."
+                            </p>
+                        </div>
+                    </li>
+                </ol>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="rounded-lg border bg-card text-card-foreground shadow-sm" data-v0-t="card">
+            <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-clock h-5 w-5 text-muted-foreground">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <h2 class="text-xl font-semibold">Historial del Ticket</h2>
+                </div>
+            </div>
+            <div class="p-6 pt-0">
+                <div class="space-y-4">
+                    <div class="relative pb-4">
+                        <div class="absolute left-3.5 top-5 -bottom-4 w-px bg-border"></div>
+                        <div class="absolute left-0 flex items-center justify-center mt-1">
+                            <div
+                                class="h-7 w-7 rounded-full border-2 border-border bg-blue-100 flex items-center justify-center">
+                                <div class="h-2.5 w-2.5 rounded-full bg-blue-600"></div>
+                            </div>
+                        </div>
+                        <div class="ml-12">
+                            <div class="flex items-start">
+                                <div class="flex flex-col space-y-1"><span class="font-medium">El usuario se asignó el
+                                        ticket</span>
+                                    <div class="flex justify-between items-center"><span
+                                            class="text-sm text-muted-foreground">Estado: Derivado</span><span
+                                            class="text-xs text-muted-foreground">14/05/2025 19:39</span></div>
+                                </div>
+                            </div>
+                            <div class="ml-6 mt-2 space-y-1">
+                                <div class="text-sm"><span class="font-medium">Por:</span> Juan Ronaldo</div>
+                                <div class="text-sm"><span class="font-medium">De área:</span> Tecnología</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative pb-4">
+                        <div class="absolute left-3.5 top-5 -bottom-4 w-px bg-border"></div>
+                        <div class="absolute left-0 flex items-center justify-center mt-1">
+                            <div
+                                class="h-7 w-7 rounded-full border-2 border-border bg-blue-100 flex items-center justify-center">
+                                <div class="h-2.5 w-2.5 rounded-full bg-blue-600"></div>
+                            </div>
+                        </div>
+                        <div class="ml-12">
+                            <div class="flex items-start">
+                                <div class="flex flex-col space-y-1"><span class="font-medium">El usuario se asignó el
+                                        ticket</span>
+                                    <div class="flex justify-between items-center"><span
+                                            class="text-sm text-muted-foreground">Estado: Derivado</span><span
+                                            class="text-xs text-muted-foreground">14/05/2025 19:33</span></div>
+                                </div>
+                            </div>
+                            <div class="ml-6 mt-2 space-y-1">
+                                <div class="text-sm"><span class="font-medium">Por:</span> Juan Ronaldo</div>
+                                <div class="text-sm"><span class="font-medium">De área:</span> Recursos Humanos</div>
+                                <div class="text-sm"><span class="font-medium">Asignado a:</span> Juan Ronaldo</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative pb-4">
+                        <div class="absolute left-3.5 top-5 -bottom-4 w-px bg-border"></div>
+                        <div class="absolute left-0 flex items-center justify-center mt-1">
+                            <div
+                                class="h-7 w-7 rounded-full border-2 border-border bg-blue-100 flex items-center justify-center">
+                                <div class="h-2.5 w-2.5 rounded-full bg-blue-600"></div>
+                            </div>
+                        </div>
+                        <div class="ml-12">
+                            <div class="flex items-start">
+                                <div class="flex flex-col space-y-1"><span class="font-medium">Creado y Derivado</span>
+                                    <div class="flex justify-between items-center"><span
+                                            class="text-sm text-muted-foreground">Estado: Derivado</span><span
+                                            class="text-xs text-muted-foreground">14/05/2025 19:25</span></div>
+                                </div>
+                            </div>
+                            <div class="ml-6 mt-2 space-y-1">
+                                <div class="text-sm"><span class="font-medium">Por:</span> Joel Ronald</div>
+                                <div class="text-sm"><span class="font-medium">Hacia área:</span> Tecnología</div>
+                                <div class="text-sm italic text-muted-foreground">"Ticket creado y derivado al área
+                                    correspondiente."</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </x-layouts.app>

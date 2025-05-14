@@ -27,6 +27,7 @@ class UsersSeeder extends Seeder
                 'dni' => isset($user['dni']) ? intval($user['dni']) : null, // Handle null values for dni
                 'direccion' => $user['direccion'],
                 'phone' => $user['phone'],
+                'area_id' => rand(1, 3), // Random area_id between 1 and 5
                 'remember_token' => null,
                 'created_at' => now(),
                 'updated_at' => now(),

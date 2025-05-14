@@ -78,17 +78,6 @@ select:focus[data-flux-control] {
 } */
 
 
-.swal2-popup {
-  border-radius: 8px;
-  padding: 1.5rem;
-  font-family: 'Inter', sans-serif;
-}
-
-.swal2-title {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.swal2-content {
-  font-size: 0.875rem;
+.bg-border {
+    background-color: hsl(0, 10%, 83%);
 }

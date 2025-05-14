@@ -46,7 +46,7 @@
                         </td>
                         <td class="py-3 px-4 ">{{ $ticket->equipo->serie }} - {{ $ticket->equipo->modelo}}</td>
                         <td class="py-3 px-4 ">{{ $ticket->agencia->nombre }}</td>
-                        <td class="py-3 px-4 ">{{ $ticket->area->nombres ?? 'Sin Area' }}</td>
+                        <td class="py-3 px-4 ">{{ $ticket->area->nombre ?? 'Sin Area' }}</td>
                         <td class="py-3 px-4">
                             @if ($ticket->assignedUser)
                             {{ $ticket->assignedUser->name }}
@@ -79,7 +79,16 @@
                     </tr>
                     @endforeach
                     </tbody>
+                    <div class="mt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center ml-2">
+
+                    </div>
             </table>
+        </div>
+        <div class="text-sm opacity-50 mt-4">
+            Mostrando {{ $tickets->firstItem() }} a {{ $tickets->lastItem() }} de {{ $tickets->total() }} usuarios
+        </div>
+        <div class="inline-flex rounded-md px-4 py-2">
+            {{ $tickets->links('vendor.livewire.custom-tailwind') }}
         </div>
     </div>
     <!-- Modal -->
@@ -89,18 +98,33 @@
                 <h2 class="text-xl font-bold">Crear Nuevo Ticket</h2>
                 <p class="mt-2 text-gray-600">Ingrese el código para el nuevo ticket</p>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <input wire:model="codigoInput"
-                    class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ingresa el código">
-                <button wire:click="buscarTicket" wire:loading.attr="disabled"
-                    class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center justify-center gap-2">
-                    <span>Buscar</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </button>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+                <!-- Input de código -->
+                <div class="col-span-2">
+                    <input wire:model="codigoInput"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Ingresa el código">
+                    @error('codigoInput')
+                    <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                    @error('ticketError')
+                    <div class="text-red-600 text-sm mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+                <!-- Botón de búsqueda -->
+                <div>
+                    <button wire:click="buscarTicket" wire:loading.attr="disabled"
+                        class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center justify-center gap-2">
+                        <span>Buscar</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+
+                    </button>
+
+                </div>
+
             </div>
             <!-- Resultado del ticket -->
             @if($ticketData)
@@ -134,6 +158,9 @@
                 <textarea wire:model="observacion"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Escribe una observación..."></textarea>
+                @error('observacion')
+                <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                @enderror
             </div>
             @if($estado_id == 2)
             <label class="block text-sm font-medium text-gray-700 mb-1">Areas</label>
@@ -157,6 +184,9 @@
                 <textarea wire:model="comentario"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Detalles adicionales..."></textarea>
+                @error('comentario')
+                <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                @enderror
             </div>
             <div class="flex justify-end gap-2 mt-4">
                 <button wire:click="$set('showModal', false)"
@@ -199,5 +229,12 @@
     text: 'Ticket registrado exitosamente',
     });
    })
+//     $wire.on("notifyError", () =>{
+//     Swal.fire({
+//     icon: 'error',
+//     title: 'Ticket',
+//     text: 'Error al registrar el ticket',
+//     });
+//    })   
 </script>
 @endscript
