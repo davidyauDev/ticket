@@ -24,6 +24,11 @@ class DatabaseSeeder extends Seeder
             EstadoSeeder::class,
             AreaSeeder::class,
             UsersSeeder::class,
+            EmpresaSeeder::class,
+            ClientSeeder::class,
+            AgenciaSeeder::class,
+            EquiposSeeder::class,
+            TicketSeeder::class,
 
         ]);
     }

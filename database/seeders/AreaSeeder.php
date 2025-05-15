@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AreaSeeder extends Seeder
 {
@@ -13,10 +13,29 @@ class AreaSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('areas')->insert([
-            ['nombre' => 'Recursos Humanos', 'created_at' => now(), 'updated_at' => now()],
-            ['nombre' => 'Tecnología', 'created_at' => now(), 'updated_at' => now()],
-            ['nombre' => 'Finanzas', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        $areas = [
+            'Operaciones',
+            'Programación Lima',
+            'Presupuestos',
+            'Supervisor',
+            'Técnicos LIMA',
+            'Técnicos PROV',
+            'Sistemas y TI',
+            'Programación Provincia',
+            'Taller',
+            'Ingeniería',
+            'Almacén',
+            'Call Center',
+            'RRHH',
+        ];
+
+        foreach ($areas as $nombre) {
+            DB::table('areas')->insert([
+                'nombre' => $nombre,
+                'slug' => Str::slug($nombre),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 }

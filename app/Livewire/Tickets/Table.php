@@ -93,6 +93,7 @@ class Table extends Component
             ]);
             DB::commit();
             $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
+            Log::info('Test222');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al asignar ticket: ' . $e->getMessage());
@@ -207,7 +208,6 @@ class Table extends Component
             DB::rollBack();
             Log::error('Error al registrar el ticket: ' . $e->getMessage());
             $this->dispatch('notifyError', type: 'success', message: 'Ticket registrado exitosamente');
-
             //$this->addError('ticketError', 'Error al registrar el ticket: ' . $e->getMessage());
         }
     }

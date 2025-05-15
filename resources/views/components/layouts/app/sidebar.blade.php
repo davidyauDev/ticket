@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
-
 <head>
     @include('partials.head')
 </head>
@@ -20,14 +19,55 @@
                     wire:navigate>{{ __('Users') }}</flux:navlist.item>
             </flux:navlist.group>
             <flux:navlist.group :heading="__('Tickets')" class="grid">
-                <flux:navlist.item icon="ticket" :href="route('tickets.index')" :current="request()->routeIs('tickets.*')" wire:navigate>
+                <flux:navlist.item icon="ticket" :href="route('tickets.index')"
+                    :current="request()->routeIs('tickets.*')" wire:navigate>
                     {{ __('Tickets') }}
                 </flux:navlist.item>
             </flux:navlist.group>
-
-             <flux:navlist.group :heading="__('Tickets')" class="grid">
-                <flux:navlist.item icon="ticket" :href="route('ticket2')" :current="request()->routeIs('ticket2')" wire:navigate>
-                    {{ __('Tickets2') }}
+            <flux:navlist.group expandable heading="Areas" class="grid">
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'operaciones']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'operaciones']))">
+                    Operaciones
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'presupuestos']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'presupuestos']))">
+                    Presupuestos
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'supervisor']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'supervisor']))">
+                    Supervisor
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'tecnicos-lima']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'tecnicos-lima']))">
+                    Técnicos LIMA
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'tecnicos-prov']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'tecnicos-prov']))">
+                    Técnicos PROV
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'sistemas-y-ti']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'sistemas-y-ti']))">
+                    Sistemas y TI
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'programacion-provincia']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'programacion-provincia']))">
+                    Programación Provincia
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'taller']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'taller']))">
+                    Taller
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'ingenieria']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'ingenieria']))">
+                    Ingeniería
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'almacen']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'almacen']))">
+                    Almacén
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'call-center']) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'call-center']))">
+                    Call Center
                 </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
@@ -55,7 +95,6 @@
                                     {{ auth()->user()->initials() }}
                                 </span>
                             </span>
-
                             <div class="grid flex-1 text-start text-sm leading-tight">
                                 <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
                                 <span class="truncate text-xs">{{ auth()->user()->email }}</span>
@@ -102,6 +141,23 @@
                         </div>
                     </div>
                 </flux:menu.radio.group>
+                <flux:menu.radio.group>
+                    <div class="p-0 text-sm font-normal">
+                        <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+                            <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
+                                <span
+                                    class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                    {{ auth()->user()->initials() }}
+                                </span>
+                            </span>
+
+                            <div class="grid flex-1 text-start text-sm leading-tight">
+                                <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                                <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </flux:menu.radio.group>
                 <flux:menu.separator />
                 <flux:menu.radio.group>
                     <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}
@@ -120,4 +176,5 @@
     {{ $slot }}
     @fluxScripts
 </body>
+
 </html>
