@@ -1,10 +1,26 @@
 <div>
-    <div class="bg-white shadow-md rounded-xl border p-6 ">
-       
-      
-    <div class="overflow-auto rounded-lg">
-        <table class="w-full text-sm text-left border border-gray-200">
 
+
+    <div class="bg-white shadow-md rounded-xl border p-6 ">
+
+        <div class="flex space-x-2 border-b border-gray-200">
+            <button @click="tab = 'abiertos'" class="px-4 py-2 text-sm font-semibold border-b-2"
+                :class="tab === 'abiertos' ? 'border-blue-500 text-blue-600' : 'text-gray-600 hover:text-blue-600'">
+                Pendientes
+            </button>
+            <button @click="tab = 'cerrados'" class="px-4 py-2 text-sm font-semibold border-b-2"
+                :class="tab === 'cerrados' ? 'border-blue-500 text-blue-600' : 'text-gray-600 hover:text-blue-600'">
+                Cerrados
+            </button>
+            <button @click="tab = 'anulados'" class="px-4 py-2 text-sm font-semibold border-b-2"
+                :class="tab === 'anulados' ? 'border-blue-500 text-blue-600' : 'text-gray-600 hover:text-blue-600'">
+                Anulados
+            </button>
+        </div>
+
+
+        <div class="overflow-auto rounded-lg">
+            <table class="w-full text-sm text-left border border-gray-200">
                 <thead class="bg-gray-50 text-gray-700">
                     <tr>
                         <th class="px-3 py-2"">Código</th>
@@ -56,7 +72,27 @@
                         </td>
                         <td class="py-3 px-4">{{ $ticket->tecnico_nombres }} {{ $ticket->tecnico_apellidos }}
                         </td>
-                        <td class="py-3 px-4 ">{{ $ticket->equipo->serie }} - {{ $ticket->equipo->modelo}}</td>
+                        <td class="py-3 px-4">
+                            <div x-data="{ open: false }">
+                                <template x-if="!open">
+                                    <span>
+                                        {{ \Illuminate\Support\Str::limit($ticket->equipo->serie . ' - ' .
+                                        $ticket->equipo->modelo, 10) }}
+                                        @if(strlen($ticket->equipo->serie . ' - ' . $ticket->equipo->modelo) > 10)
+                                        <a href="#" class="text-blue-600 ml-1 hover:underline"
+                                            @click.prevent="open = true">Ver más</a>
+                                        @endif
+                                    </span>
+                                </template>
+                                <template x-if="open">
+                                    <span>
+                                        {{ $ticket->equipo->serie }} - {{ $ticket->equipo->modelo }}
+                                        <a href="#" class="text-blue-600 ml-1 hover:underline"
+                                            @click.prevent="open = false">Ver menos</a>
+                                    </span>
+                                </template>
+                            </div>
+                        </td>
                         <td class="py-3 px-4 ">{{ $ticket->agencia->nombre }}</td>
                         <td class="py-3 px-4 ">{{ $ticket->area->nombre ?? 'Sin Area' }}</td>
                         <td class="py-3 px-4">
@@ -85,7 +121,7 @@
                                         <flux:menu.item icon="user">Modificar</flux:menu.item>
                                     </flux:modal.trigger>
                                     <flux:modal.trigger name="delete-profile">
-                                    <flux:menu.item icon="trash">Anular Ticket</flux:menu.item>
+                                        <flux:menu.item icon="trash">Anular Ticket</flux:menu.item>
                                     </flux:modal.trigger>
 
                                 </flux:menu>
@@ -106,6 +142,6 @@
                 {{ $tickets->links('vendor.livewire.custom-tailwind') }}
             </div>
         </div>
-        
+
     </div>
 </div>

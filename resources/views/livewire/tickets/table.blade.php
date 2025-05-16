@@ -5,8 +5,9 @@
                 class="w-full sm:w-auto" />
             <flux:modal.trigger name="edit-profile">
                 <flux:modal.trigger name="edit-profile">
-                    <flux:button wire:click="crearUsuario" icon="plus" class="w-full sm:w-auto bg-black"
-                        wire:click="$toggle('showModal')">Crear Nuevo Ticket</flux:button>
+                    <flux:button icon="plus" class="w-full sm:w-auto bg-black" variant="primary"
+                        wire:click="$toggle('showModal')">Crear
+                        Nuevo Ticket</flux:button>
                 </flux:modal.trigger>
             </flux:modal.trigger>
         </div>
@@ -51,17 +52,27 @@
                             @if ($ticket->assignedUser)
                             {{ $ticket->assignedUser->name }}
                             @else
-                            <flux:modal.trigger name="asignar-ticket-{{ $ticket->id }}">
-                                <span class="text-blue-600 hover:underline cursor-pointer">Asignarme</span>
-                            </flux:modal.trigger>
+                            <span class="text-blue-600 hover:underline cursor-pointer"
+                                wire:click="confirmarAsignac({{ $ticket->id }})">Asignarme</span>
                             @endif
                         </td>
                         </td>
                         <td class="py-3 px-4 ">{{ $ticket->createdBy->name }}</td>
-                        <td class="py-3 px-4 ">
+                        <td class="py-3 px-4">
+                            @php
+                            $estado = strtolower($ticket->estado->nombre);
+                            $estilos = match ($estado) {
+                            'abierto' => 'bg-green-600/10 text-green-800 ring-1 ring-inset ring-green-600',
+                            'cerrado' => 'bg-red-600/10 text-red-800 ring-1 ring-inset ring-red-600',
+                            'pendiente' => 'bg-yellow-400/10 text-yellow-700 ring-1 ring-inset ring-yellow-400',
+                            'anulado' => 'bg-gray-500/10 text-gray-800 ring-1 ring-inset ring-gray-500',
+                            'derivado' => 'bg-blue-500/10 text-blue-800 ring-1 ring-inset ring-blue-500',
+                            default => 'bg-neutral-200 text-neutral-800 ring-1 ring-inset ring-neutral-400',
+                            };
+                            @endphp
                             <span
-                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold {{ $ticket->estado->nombre === 'Abierto' ? 'bg-green-100 text-green-800' : ($ticket->estado->nombre === 'Cerrado' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                {{ ucfirst($ticket->estado->nombre) }}
+                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium capitalize {{ $estilos }}">
+                                {{ $ticket->estado->nombre }}
                             </span>
                         </td>
                         <td class="py-3 px-4">
@@ -69,14 +80,8 @@
                                 <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
                                 </flux:button>
                                 <flux:menu>
-                                    <flux:modal.trigger name="edit-profile">
-                                        <flux:menu.item icon="user">Modificar</flux:menu.item>
-                                    </flux:modal.trigger>
-                                    <flux:modal.trigger name="delete-profile">
-                                    <flux:menu.item icon="trash">Anular Ticket</flux:menu.item>
-                                    </flux:modal.trigger>
-
-                                    
+                                    <flux:menu.item icon="trash" wire:click="confirmarAnulacion({{ $ticket->id }})">
+                                        Anular Ticket</flux:menu.item>
                                 </flux:menu>
                             </flux:dropdown>
                         </td>
@@ -87,33 +92,15 @@
                     </div>
             </table>
         </div>
-        <div class="text-sm opacity-50 mt-4">
-            Mostrando {{ $tickets->firstItem() }} a {{ $tickets->lastItem() }} de {{ $tickets->total() }} usuarios
-        </div>
-        <div class="inline-flex rounded-md px-4 py-2">
-            {{ $tickets->links('vendor.livewire.custom-tailwind') }}
-        </div>
-    </div>
-    <!-- Modal -->
-    <flux:modal name="delete-profile" class="min-w-[22rem]">
-    <div class="space-y-6">
-        <div>
-            <flux:heading size="lg">Delete project?</flux:heading>
-            <flux:text class="mt-2">
-                <p>You're about to delete this project.</p>
-                <p>This action cannot be reversed.</p>
-            </flux:text>
-        </div>
-        <div class="flex gap-2">
-            <flux:spacer />
-            <flux:modal.close>
-                <flux:button variant="ghost">Cancel</flux:button>
-            </flux:modal.close>
-            <flux:button type="submit" variant="danger">Delete project</flux:button>
+        <div class="flex justify-between items-center mt-4">
+            <div class="text-sm opacity-50">
+                Mostrando {{ $tickets->firstItem() }} a {{ $tickets->lastItem() }} de {{ $tickets->total() }} usuarios
+            </div>
+            <div class="inline-flex rounded-md px-4 py-2">
+                {{ $tickets->links('vendor.livewire.custom-tailwind') }}
+            </div>
         </div>
     </div>
-</flux:modal>
-
     <x-modal wire:model="showModal">
         <div class="space-y-6">
             <div>
@@ -121,7 +108,6 @@
                 <p class="mt-2 text-gray-600">Ingrese el código para el nuevo ticket</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
-                <!-- Input de código -->
                 <div class="col-span-2">
                     <input wire:model="codigoInput"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -219,25 +205,65 @@
             </div>
         </div>
     </x-modal>
-    @foreach ($tickets as $ticket)
-    {{-- ... tu fila de tabla ... --}}
-    @if (!$ticket->assignedUser)
-    <flux:modal name="asignar-ticket-{{ $ticket->id }}" class="md:w-96">
-        <div class="space-y-6">
+
+    <x-modal wire:model="showAsigna">
+        <div class="p-2 space-y-6">
             <div>
-                <flux:heading size="lg">¿Quieres asignarte este ticket?</flux:heading>
-                <flux:text class="mt-2">Este ticket aún no ha sido asignado.</flux:text>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-2">Asignacion de Ticket</h2>
+                <p class="text-sm text-gray-600">
+                    ¿Estás seguro que deseas anular el ticket con ID
+                    <span class="font-semibold text-red-600">{{ $registroId }}</span>?<br>
+                    Esta acción no se puede deshacer.
+                </p>
             </div>
-            <div class="flex justify-end space-x-2">
-                <flux:button variant="ghost" @click="$closeModal()">Cancelar</flux:button>
-                <flux:button variant="primary" wire:click="asignar({{ $ticket->id }})" wire:loading.attr="disabled">
-                    Confirmar
+            <!-- Botones -->
+            <div class="flex justify-end gap-2 pt-4 border-t border-gray-200">
+                <flux:button wire:click="$set('showAnularModal', false)" variant="ghost"
+                    class="text-gray-600 hover:text-gray-900">
+                    Cancelar
+                </flux:button>
+
+                <flux:button variant="primary" wire:click="asignar" color="destructive">
+                    Asginarme Ticket
                 </flux:button>
             </div>
         </div>
-    </flux:modal>
-    @endif
-    @endforeach
+    </x-modal>
+    
+    <x-modal wire:model="showAnularModal" maxWidth="md">
+        <div class="px-6 py-5 space-y-6">
+            <!-- Header -->
+            <div class="space-y-1">
+                <h2 class="text-2xl font-bold text-gray-900">¿Anular Ticket?</h2>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    Estás a punto de anular el ticket con ID
+                    <span class="font-semibold text-red-600">#{{ $registroId }}</span>.
+                    <br>Esta acción no se puede deshacer.
+                </p>
+            </div>
+            <!-- Campo: Motivo -->
+            <div class="space-y-1">
+                <label for="motivo" class="block text-sm font-medium text-gray-700">
+                    Motivo de la anulación <span class="text-red-500">*</span>
+                </label>
+                <textarea wire:model.defer="motivoAnulacion" id="motivo" rows="4"
+                    placeholder="Ej. El cliente canceló la solicitud, error en datos, etc."
+                    class="w-full rounded-md border border-gray-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 shadow-sm text-sm resize-none"></textarea>
+                @error('motivoAnulacion')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <!-- Botones -->
+            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                <flux:button wire:click="$set('showAnularModal', false)" variant="ghost" class="text-sm px-4 py-2">
+                    Cancelar
+                </flux:button>
+                <flux:button wire:click="anularRegistro" variant="danger" class="text-sm px-4 py-2">
+                    Sí, Anular Ticket
+                </flux:button>
+            </div>
+        </div>
+    </x-modal>
 </div>
 @script
 <script>
@@ -254,6 +280,14 @@
      title: 'Ticket',
      text: 'Error al registrar el ticket',
      });
-    })   
+    }) 
+    
+    $wire.on("anular", () =>{
+     Swal.fire({
+     icon: 'success',
+     title: 'Ticket',
+     text: 'Anulado exitosamente',
+     });
+    })
 </script>
 @endscript

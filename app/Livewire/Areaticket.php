@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Ticket;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -11,13 +10,17 @@ use Livewire\WithPagination;
 class Areaticket extends Component
 {
     use WithPagination;
-
+    public $estado = 'Abierto'; 
     public $slug;
 
     public function mount($slug)
     {
-        Log::info($slug);
         $this->slug = $slug;
+    }
+
+    public function updatingEstado()
+    {
+        $this->resetPage(); 
     }
 
     public function render()
