@@ -16,10 +16,8 @@ class EstadoSeeder extends Seeder
     DB::table('estados')->insert([
         ['id' => 1, 'nombre' => 'Pendiente'],
         ['id' => 2, 'nombre' => 'Derivado'],
-        // ['id' => 3, 'nombre' => 'En proceso'],
-        // ['id' => 4, 'nombre' => 'Resuelto'],
         ['id' => 5, 'nombre' => 'Cerrado'],
+        ['id' => 4, 'nombre' => 'Anulado'],
     ]);
-}
-
+    }
 }

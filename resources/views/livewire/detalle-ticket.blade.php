@@ -45,19 +45,19 @@
                             <p>{{ $ticket->agencia->nombre ?? 'Sin agencia' }}</p>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-muted-foreground">Área</p>
-                            <p>{{ $ticket->area_id ?? 'Sin Área' }}</p>
+                            <p class="text-sm font-medium text-muted-foreground">Área Inicial</p>
+                            <p>{{ $ticket->area->nombre ?? 'Sin Área' }}</p>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-muted-foreground">Asignado a</p>
                             <p>{{ $ticket->assignedUser->name ?? 'No asignado' }}</p>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-muted-foreground">Comentario</p>
+                            <p class="text-sm font-medium text-muted-foreground">Comentario Inicial</p>
                             <p class="mt-1">{{ $ticket->comentario ?? 'No hay comentarios' }}</p>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-muted-foreground">Observación</p>
+                            <p class="text-sm font-medium text-muted-foreground">Observación Inicial</p>
                             <p class="mt-1">{{ $ticket->observacion ?? 'No hay observaciones' }}</p>
                         </div>
                     </div>

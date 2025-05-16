@@ -81,3 +81,7 @@ select:focus[data-flux-control] {
 .bg-border {
     background-color: hsl(0, 10%, 83%);
 }
+
+.swal-front {
+  z-index: 9999 !important;
+}

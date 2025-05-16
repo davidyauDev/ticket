@@ -6,10 +6,14 @@ use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Areaticket extends Component
 {
+    use WithPagination;
+
     public $slug;
+
     public function mount($slug)
     {
         Log::info($slug);

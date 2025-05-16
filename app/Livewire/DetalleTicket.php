@@ -21,7 +21,6 @@ class DetalleTicket extends Component
     public $comentario = '';
     public $selectedArea = null;
 
-
     public function mount($ticket)
     {
         $this->ticket = Ticket::findOrFail($ticket);
@@ -33,7 +32,6 @@ class DetalleTicket extends Component
     {
         DB::beginTransaction();
         try {
-
             $assignedTo = null;
             if ($this->estado_id == 2) {
                 if (!$this->selectedArea) {

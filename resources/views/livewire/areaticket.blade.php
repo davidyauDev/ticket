@@ -1,10 +1,10 @@
 <div>
-    <div>
-    <div class="rounded-lg border bg-card text-card-foreground shadow-sm mt-4 p-5">
+    <div class="bg-white shadow-md rounded-xl border p-6 ">
        
-        </div>
-        <div class="overflow-auto">
-            <table class="w-full text-sm text-left border border-gray-200 rounded-lg">
+      
+    <div class="overflow-auto rounded-lg">
+        <table class="w-full text-sm text-left border border-gray-200">
+
                 <thead class="bg-gray-50 text-gray-700">
                     <tr>
                         <th class="px-3 py-2"">Código</th>
@@ -28,7 +28,26 @@
                                 {{ $ticket->codigo }}
                             </a>
                         </td>
-                        <td class="py-3 px-4 ">{{ $ticket->falla_reportada }}</td>
+                        <td class="py-3 px-4">
+                            <div x-data="{ open: false }">
+                                <template x-if="!open">
+                                    <span>
+                                        {{ \Illuminate\Support\Str::limit($ticket->falla_reportada, 15) }}
+                                        @if(strlen($ticket->falla_reportada) > 15)
+                                        <a href="#" class="text-blue-600 ml-1 hover:underline"
+                                            @click.prevent="open = true">Ver más</a>
+                                        @endif
+                                    </span>
+                                </template>
+                                <template x-if="open">
+                                    <span>
+                                        {{ $ticket->falla_reportada }}
+                                        <a href="#" class="text-blue-600 ml-1 hover:underline"
+                                            @click.prevent="open = false">Ver menos</a>
+                                    </span>
+                                </template>
+                            </div>
+                        </td>
                         <td class="py-3 px-4 ">
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold {{ $ticket->tipo === 'ticket' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
@@ -65,7 +84,10 @@
                                     <flux:modal.trigger name="edit-profile">
                                         <flux:menu.item icon="user">Modificar</flux:menu.item>
                                     </flux:modal.trigger>
+                                    <flux:modal.trigger name="delete-profile">
                                     <flux:menu.item icon="trash">Anular Ticket</flux:menu.item>
+                                    </flux:modal.trigger>
+
                                 </flux:menu>
                             </flux:dropdown>
                         </td>
@@ -73,16 +95,17 @@
                     @endforeach
                     </tbody>
                     <div class="mt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center ml-2">
-
                     </div>
             </table>
         </div>
-        <div class="text-sm opacity-50 mt-4">
-            Mostrando {{ $tickets->firstItem() }} a {{ $tickets->lastItem() }} de {{ $tickets->total() }} usuarios
+        <div class="flex justify-between items-center mt-4">
+            <div class="text-sm opacity-50">
+                Mostrando {{ $tickets->firstItem() }} a {{ $tickets->lastItem() }} de {{ $tickets->total() }} tickets
+            </div>
+            <div>
+                {{ $tickets->links('vendor.livewire.custom-tailwind') }}
+            </div>
         </div>
-        <div class="inline-flex rounded-md px-4 py-2">
-            {{ $tickets->links('vendor.livewire.custom-tailwind') }}
-        </div>
+        
     </div>
-</div>
 </div>

@@ -72,7 +72,11 @@
                                     <flux:modal.trigger name="edit-profile">
                                         <flux:menu.item icon="user">Modificar</flux:menu.item>
                                     </flux:modal.trigger>
+                                    <flux:modal.trigger name="delete-profile">
                                     <flux:menu.item icon="trash">Anular Ticket</flux:menu.item>
+                                    </flux:modal.trigger>
+
+                                    
                                 </flux:menu>
                             </flux:dropdown>
                         </td>
@@ -91,6 +95,25 @@
         </div>
     </div>
     <!-- Modal -->
+    <flux:modal name="delete-profile" class="min-w-[22rem]">
+    <div class="space-y-6">
+        <div>
+            <flux:heading size="lg">Delete project?</flux:heading>
+            <flux:text class="mt-2">
+                <p>You're about to delete this project.</p>
+                <p>This action cannot be reversed.</p>
+            </flux:text>
+        </div>
+        <div class="flex gap-2">
+            <flux:spacer />
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button type="submit" variant="danger">Delete project</flux:button>
+        </div>
+    </div>
+</flux:modal>
+
     <x-modal wire:model="showModal">
         <div class="space-y-6">
             <div>
@@ -225,12 +248,12 @@
     text: 'Ticket registrado exitosamente',
     });
    })
-//     $wire.on("notifyError", () =>{
-//     Swal.fire({
-//     icon: 'error',
-//     title: 'Ticket',
-//     text: 'Error al registrar el ticket',
-//     });
-//    })   
+     $wire.on("notifyError", () =>{
+     Swal.fire({
+     icon: 'error',
+     title: 'Ticket',
+     text: 'Error al registrar el ticket',
+     });
+    })   
 </script>
 @endscript

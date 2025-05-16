@@ -1,4 +1,4 @@
-<div>
+<div class="bg-white shadow-md rounded-xl border p-4">
     <div class="p-6">
         <div class="flex justify-between items-center mb-6">
             <div>

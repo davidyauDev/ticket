@@ -92,8 +92,10 @@ class Table extends Component
                 'comentario'   => null
             ]);
             DB::commit();
-            $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
-            Log::info('Test222');
+           /// $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
+            $this->dispatch('closeModal');
+            $this->modal('asignar-ticket-' . $ticketId)->close();
+           $this->reset(['ticketId']);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al asignar ticket: ' . $e->getMessage());
@@ -112,7 +114,6 @@ class Table extends Component
             'observacion' => 'required|string',
             'comentario' => 'required|string'
         ]);
-
         DB::beginTransaction();
         try {
             if (!$this->ticketData) {
@@ -181,13 +182,13 @@ class Table extends Component
                 'assigned_to' => $assignedTo,
                 'created_by' => Auth::id(),
             ]);
-            $comentarioHistorial = 'Ticket creado';
+            $comentarioHistorial = $this->comentario;
             $accionHistorial = 'Creado';
             if ($ticket->estado_id == 5) { // Cerrado
-                $comentarioHistorial = 'Ticket creado y cerrado en el mismo momento.';
+                $comentarioHistorial = $this->comentario;
                 $accionHistorial = 'Creado y Cerrado';
             } elseif ($ticket->estado_id == 2) { // Derivado
-                $comentarioHistorial = 'Ticket creado y derivado al área correspondiente.';
+                $comentarioHistorial = $this->comentario;
                 $accionHistorial = 'Creado y Derivado';
             }
             TicketHistorial::create([
@@ -202,21 +203,19 @@ class Table extends Component
                 'is_current' => true,
             ]);
             DB::commit();
-            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal','ticketData']);
-            $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
+            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal','ticketData' , 'comentario', 'observacion']);
+            $this->dispatch('notify', type: 'success', message: 'Ticket registr exitosamente');
         } catch (\Exception $e) {
             DB::rollBack();
+            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal' , 'ticketData' , 'comentario', 'observacion']);
             Log::error('Error al registrar el ticket: ' . $e->getMessage());
-            $this->dispatch('notifyError', type: 'success', message: 'Ticket registrado exitosamente');
-            //$this->addError('ticketError', 'Error al registrar el ticket: ' . $e->getMessage());
+            $this->dispatch('notifyError', type: 'success', message: 'Error');
         }
     }
-
     public function mostrarArea()
     {
         return $this->mostrarArea;
     }
-
     public function render()
     {
         if ($this->tipo === 'mis') {

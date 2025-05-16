@@ -27,7 +27,6 @@ Route::prefix('users')->name('users.')->group(function () {
 Route::prefix('tickets')->name('tickets.')->group(function () {
     Route::get('/', IndexTic::class)->name('index');
     Route::get('/{ticket}', App\Livewire\DetalleTicket::class)->name('show');
-    
 });
 
 Route::get('/areas/{slug}', Areaticket::class)->name('areas.show');
