@@ -1,23 +1,45 @@
 <div>
-
-
     <div class="bg-white shadow-md rounded-xl border p-6 ">
-
-        <div class="flex space-x-2 border-b border-gray-200">
-            <button @click="tab = 'abiertos'" class="px-4 py-2 text-sm font-semibold border-b-2"
-                :class="tab === 'abiertos' ? 'border-blue-500 text-blue-600' : 'text-gray-600 hover:text-blue-600'">
-                Pendientes
-            </button>
-            <button @click="tab = 'cerrados'" class="px-4 py-2 text-sm font-semibold border-b-2"
-                :class="tab === 'cerrados' ? 'border-blue-500 text-blue-600' : 'text-gray-600 hover:text-blue-600'">
-                Cerrados
-            </button>
-            <button @click="tab = 'anulados'" class="px-4 py-2 text-sm font-semibold border-b-2"
-                :class="tab === 'anulados' ? 'border-blue-500 text-blue-600' : 'text-gray-600 hover:text-blue-600'">
-                Anulados
-            </button>
+        <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-2">
+            Tickets del Área
+            <span class="ml-1 text-gray-500 font-normal italic">{{ ucwords(str_replace('-', ' ', $slug)) }}</span>
+        </h2>
+        <p class="text-sm text-gray-500 mb-6">
+            Filtra y visualiza los tickets de soporte según su estado y fechas de creación.
+        </p>
+        </h2>
+        <div
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0 sm:space-x-4">
+            <!-- Tabs -->
+            <!-- Tabs -->
+            <div class="flex space-x-2 border-b">
+                <button wire:click="setEstado(1)"
+                    class="px-4 py-2 font-semibold border-b-2 {{ $estado_id === 1 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600' }}">
+                    Abiertos ({{ $total_abiertos }})
+                </button>
+                <button wire:click="setEstado(2)"
+                    class="px-4 py-2 font-semibold border-b-2 {{ $estado_id === 2 ? 'border-yellow-500 text-yellow-600' : 'border-transparent text-gray-600' }}">
+                    En Proceso ({{ $total_en_proceso }})
+                </button>
+                <button wire:click="setEstado(4)"
+                    class="px-4 py-2 font-semibold border-b-2 {{ $estado_id === 4 ? 'border-red-500 text-red-600' : 'border-transparent text-gray-600' }}">
+                    Cerrados ({{ $total_cerrados }})
+                </button>
+            </div>
+            <!-- Filtros de fecha -->
+            <div class="flex space-x-2">
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">Desde</label>
+                    <input type="date" wire:model.live="fecha_inicio"
+                        class="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">Hasta</label>
+                    <input type="date" wire:model.live="fecha_fin"
+                        class="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+            </div>
         </div>
-
 
         <div class="overflow-auto rounded-lg">
             <table class="w-full text-sm text-left border border-gray-200">

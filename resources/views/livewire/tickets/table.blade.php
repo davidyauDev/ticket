@@ -135,7 +135,6 @@
             @if($ticketData)
             <div class="mt-6 bg-gray-50 p-4 rounded shadow text-sm text-gray-700">
                 <h3 class="text-base font-bold mb-2">🎫 Ticket {{ $ticketData['number'] }}</h3>
-                {{-- <p><strong>ID:</strong> {{ $ticketData['ticket_id'] }}</p> --}}
                 <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
                 <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
                 <p><strong>Equipo:</strong> {{ $ticketData['id_equipo'] }} - {{ $ticketData['serie'] }} - {{
