@@ -8,6 +8,7 @@ use App\Livewire\Users;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Areaticket;
 use App\Livewire\CallLogs\Index;
+use App\Livewire\DetalleTicket;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,25 +22,24 @@ Route::view('ticket2', 'ticket2')
     ->middleware(['auth', 'verified'])
     ->name('ticket2');
 
-Route::prefix('users')->name('users.')->group(function () {
+Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
     Route::get('/', Users::class)->name('index');
 });
 
-Route::prefix('tickets')->name('tickets.')->group(function () {
+Route::prefix('tickets')->name('tickets.')->middleware('auth')->group(function () {
     Route::get('/', IndexTic::class)->name('index');
-    Route::get('/{ticket}', App\Livewire\DetalleTicket::class)->name('show');
+    Route::get('/{ticket}', DetalleTicket::class)->name('show');
 });
 
 Route::get('/registro-llamadas', Index::class)->middleware(['auth'])->name('call-logs.index');
 
 Route::get('/areas/{slug}', Areaticket::class)->name('areas.show');
 
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
-
-    Route::get('settings/profile', Profile::class)->name('settings.profile');
-    Route::get('settings/password', Password::class)->name('settings.password');
-    Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+Route::prefix('settings')->name('settings.')->middleware('auth')->group(function () {
+    Route::redirect('/', '/settings/profile');
+    Route::get('/profile', Profile::class)->name('profile');
+    Route::get('/password', Password::class)->name('password');
+    Route::get('/appearance', Appearance::class)->name('appearance');
 });
 
 require __DIR__.'/auth.php';

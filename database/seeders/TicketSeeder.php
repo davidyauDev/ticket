@@ -1,11 +1,8 @@
 <?php
 
 namespace Database\Seeders;
-
-use App\Models\Ticket;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class TicketSeeder extends Seeder
 {
@@ -17,7 +14,7 @@ class TicketSeeder extends Seeder
         $equipoIds = DB::table('equipos')->pluck('id')->toArray();
         $agenciaIds = DB::table('agencias')->pluck('id')->toArray();
 
-        for ($i = 1; $i <= 10000; $i++) {
+        for ($i = 1; $i <= 2; $i++) {
             $codigo = 'TCK-' . str_pad($i, 6, '0', STR_PAD_LEFT);
             $createdBy = fake()->randomElement($userIds);
             $areaId = fake()->randomElement($areaIds);

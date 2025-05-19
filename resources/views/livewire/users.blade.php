@@ -1,11 +1,24 @@
 <div>
-    <h1 class="text-3xl font-bold mb-6 text-center md:text-left">Panel de Usuarios</h1>
+    <div class="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" />
+        </svg>
+
+        <a href="{{ route('dashboard') }}" class="hover:underline text-sm text-gray-600">Dashboard</a>
+        <span class="text-gray-400">›</span>
+        <span class="text-sm text-black font-medium">Gestión de Usuarios</span>
+    </div>
     <flux:separator variant="subtle" class="my-4" />
     <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-lg border bg-card text-card-foreground shadow-sm border-l-4 border-l-green-500">
-            <div class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between pb-2 space-y-2 md:space-y-0">
+            <div
+                class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between pb-2 space-y-2 md:space-y-0">
                 <h3 class="tracking-tight text-sm font-medium text-muted-foreground">Cantidad de Usuarios</h3>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-6 h-6 text-green-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-users w-6 h-6 text-green-500">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
                     <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -15,15 +28,19 @@
             <div class="p-6 pt-0">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                     <div class="text-2xl font-bold">550</div>
-                    <span class="text-xs font-medium text-green-500 bg-green-100 px-2 py-0.5 rounded-full">+12% este mes</span>
+                    <span class="text-xs font-medium text-green-500 bg-green-100 px-2 py-0.5 rounded-full">+12% este
+                        mes</span>
                 </div>
                 <p class="text-xs text-muted-foreground mt-2">171 usuarios registrados en total</p>
             </div>
         </div>
         <div class="rounded-lg border bg-card text-card-foreground shadow-sm border-l-4 border-l-purple-500">
-            <div class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between pb-2 space-y-2 md:space-y-0">
+            <div
+                class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between pb-2 space-y-2 md:space-y-0">
                 <h3 class="tracking-tight text-sm font-medium text-muted-foreground">Usuarios Online</h3>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-check w-6 h-6 text-purple-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-user-check w-6 h-6 text-purple-500">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
                     <polyline points="16 11 18 13 22 9"></polyline>
@@ -32,7 +49,8 @@
             <div class="p-6 pt-0">
                 <div class="flex items-center space-x-2">
                     <div class="text-2xl font-bold">428</div>
-                    <span class="text-xs font-medium text-purple-500 bg-purple-100 px-2 py-0.5 rounded-full">78% activos</span>
+                    <span class="text-xs font-medium text-purple-500 bg-purple-100 px-2 py-0.5 rounded-full">78%
+                        activos</span>
                 </div>
                 <div class="w-full h-1.5 bg-gray-100 rounded-full mt-3">
                     <div class="h-1.5 bg-purple-500 rounded-full" style="width: 78%;"></div>
@@ -40,9 +58,12 @@
             </div>
         </div>
         <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-            <div class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between pb-2 space-y-2 md:space-y-0">
+            <div
+                class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between pb-2 space-y-2 md:space-y-0">
                 <h3 class="tracking-tight text-sm font-medium text-muted-foreground">Nuevos Usuarios</h3>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up w-6 h-6 text-blue-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-trending-up w-6 h-6 text-blue-500">
                     <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                     <polyline points="16 7 22 7 22 13"></polyline>
                 </svg>
@@ -53,10 +74,15 @@
             </div>
         </div>
         <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-            <div class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between pb-2 space-y-2 md:space-y-0">
+            <div
+                class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between pb-2 space-y-2 md:space-y-0">
                 <h3 class="tracking-tight text-sm font-medium text-muted-foreground">Actividad</h3>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity w-6 h-6 text-orange-500">
-                    <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-activity w-6 h-6 text-orange-500">
+                    <path
+                        d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2">
+                    </path>
                 </svg>
             </div>
             <div class="p-6 pt-0">
@@ -65,11 +91,13 @@
             </div>
         </div>
     </div>
-    <div class="rounded-lg border bg-card text-card-foreground shadow-sm mt-4 p-5">
+    <div class="rounded-lg  bg-card text-card-foreground  mt-4 p-5">
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <flux:input wire:model.live="search" as="text" placeholder="Buscar Usuario..." icon="magnifying-glass" class="w-full sm:w-auto" />
+            <flux:input wire:model.live="search" as="text" placeholder="Buscar Usuario..." icon="magnifying-glass"
+                class="w-full sm:w-auto" />
             <flux:modal.trigger name="edit-profile">
-                <flux:button wire:click="crearUsuario" icon="plus" class="w-full sm:w-auto">Agregar Nuevo Usuario</flux:button>
+                <flux:button wire:click="crearUsuario" icon="plus" class="w-full sm:w-auto">Agregar Nuevo Usuario
+                </flux:button>
             </flux:modal.trigger>
         </div>
         <div class="mt-4 border rounded-md overflow-x-auto">
@@ -98,7 +126,8 @@
                                 </flux:button>
                                 <flux:menu>
                                     <flux:modal.trigger name="edit-profile">
-                                        <flux:menu.item wire:click="editarUsuario({{$user->id}})" icon="user">Editar Usuario</flux:menu.item>
+                                        <flux:menu.item wire:click="editarUsuario({{$user->id}})" icon="user">Editar
+                                            Usuario</flux:menu.item>
                                     </flux:modal.trigger>
                                     <flux:menu.item icon="trash">Eliminar Usuario</flux:menu.item>
                                 </flux:menu>
@@ -108,13 +137,14 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="mt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center ml-2">
-                <div class="text-sm opacity-50 mb-2 sm:mb-0">
-                    Mostrando {{ $users->firstItem() }} a {{ $users->lastItem() }} de {{ $users->total() }} usuarios
-                </div>
-                <div class="inline-flex rounded-md px-4 py-2">
-                    {{ $users->links('vendor.livewire.custom-tailwind') }}
-                </div>
+
+        </div>
+        <div class="mt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center ml-2">
+            <div class="text-sm opacity-50 mb-2 sm:mb-0">
+                Mostrando {{ $users->firstItem() }} a {{ $users->lastItem() }} de {{ $users->total() }} usuarios
+            </div>
+            <div class="inline-flex rounded-md px-4 py-2">
+                {{ $users->links('vendor.livewire.custom-tailwind') }}
             </div>
         </div>
     </div>

@@ -44,7 +44,7 @@ class Table extends Component
     public $observacion = '';
     public $comentario = '';
     public $motivoAnulacion = '';
-    public $estado_id;
+    public $estado_id = 1;
     public $tipo = 'todos';
     public ?int $registroId = null;
 
@@ -84,7 +84,7 @@ class Table extends Component
             TicketHistorial::create([
                 'ticket_id'    => $this->registroId,
                 'usuario_id'   => Auth::id(),
-                'from_area_id' => 1,
+                'from_area_id' => Auth::user()->area_id,
                 'asignado_a'   => Auth::id(),
                 'estado_id'    => $ticket->estado_id,
                 'accion'       => 'El usuario se asignó el ticket',
@@ -108,6 +108,7 @@ class Table extends Component
     }
     public function registrarTicket()
     {
+        
         $this->validate([
             'observacion' => 'required|string',
             'comentario' => 'required|string'
