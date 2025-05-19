@@ -9,7 +9,6 @@ use App\Models\Empresa;
 use App\Models\Equipo;
 use App\Models\Estado;
 use App\Models\TicketHistorial;
-use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;

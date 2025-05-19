@@ -69,10 +69,17 @@
                     :current="request()->fullUrlIs(route('areas.show', ['slug' => 'call-center']))">
                     Call Center
                 </flux:navlist.item>
+                
+            </flux:navlist.group>
+             <flux:navlist.group :heading="__('Tickets')" class="grid">
+                <flux:navlist.item icon="ticket" :href="route('call-logs.index')"
+                    :current="request()->routeIs('tickets.*')" wire:navigate>
+                    {{ __('Llamadas') }}
+                </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
         <flux:spacer />
-        <flux:navlist variant="outline">
+        {{-- <flux:navlist variant="outline">
             <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit"
                 target="_blank">
                 {{ __('Repository') }}
@@ -80,7 +87,7 @@
             <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits" target="_blank">
                 {{ __('Documentation') }}
             </flux:navlist.item>
-        </flux:navlist>
+        </flux:navlist> --}}
         <!-- Desktop User Menu -->
         <flux:dropdown position="bottom" align="start">
             <flux:profile :name="auth()->user()->name" :initials="auth()->user()->initials()"
@@ -116,6 +123,8 @@
                 </form>
             </flux:menu>
         </flux:dropdown>
+
+        
     </flux:sidebar>
     <!-- Mobile User Menu -->
     <flux:header class="lg:hidden">

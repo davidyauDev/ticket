@@ -16,7 +16,7 @@ class ClientSeeder extends Seeder
         DB::table('clientes')->insert([
             [ 
                 'nombre' => 'BCP',
-                'empresa_id' => 1, // Asumiendo que Cecheriza SAC tiene ID 1
+                'empresa_id' => 1, 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -28,7 +28,7 @@ class ClientSeeder extends Seeder
             ],
             [
                 'nombre' => 'BBVA ',
-                'empresa_id' => 2, // Asumiendo que Transporte Gómez SRL tiene ID 2
+                'empresa_id' => 2, 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

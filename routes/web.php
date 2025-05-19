@@ -7,6 +7,7 @@ use App\Livewire\Settings\Profile;
 use App\Livewire\Users;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Areaticket;
+use App\Livewire\CallLogs\Index;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,6 +29,8 @@ Route::prefix('tickets')->name('tickets.')->group(function () {
     Route::get('/', IndexTic::class)->name('index');
     Route::get('/{ticket}', App\Livewire\DetalleTicket::class)->name('show');
 });
+
+Route::get('/registro-llamadas', Index::class)->middleware(['auth'])->name('call-logs.index');
 
 Route::get('/areas/{slug}', Areaticket::class)->name('areas.show');
 
