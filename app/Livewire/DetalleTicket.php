@@ -11,10 +11,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Carbon\Carbon;
+use Livewire\WithFileUploads;
 
 
 class DetalleTicket extends Component
 {
+    use WithFileUploads;
+    public $archivo;
     public $ticket;
     public $areas = [];
     public $estados = [];
@@ -31,36 +34,34 @@ class DetalleTicket extends Component
     }
 
     public function getFechaInicioProperty()
-{
-    return $this->ticket->created_at;
-}
-
-public function getFechaCierreProperty()
-{
-    $historialCierre = TicketHistorial::where('ticket_id', $this->ticket->id)
-        ->whereHas('estado', fn($q) => $q->where('nombre', 'cerrado'))
-        ->orderBy('created_at', 'desc')
-        ->first();
-
-    return $historialCierre?->created_at;
-}
-
-public function getTiempoTotalProperty()
-{
-    $inicio = $this->fechaInicio;
-    $fin = $this->fechaCierre;
-
-    if (!$inicio || !$fin) {
-        return null;
+    {
+        return $this->ticket->created_at;
     }
 
-    return $inicio->diffForHumans($fin, [
-        'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
-        'parts' => 3,
-    ]);
-}
+    public function getFechaCierreProperty()
+    {
+        $historialCierre = TicketHistorial::where('ticket_id', $this->ticket->id)
+            ->whereHas('estado', fn($q) => $q->where('nombre', 'cerrado'))
+            ->orderBy('created_at', 'desc')
+            ->first();
 
+        return $historialCierre?->created_at;
+    }
 
+    public function getTiempoTotalProperty()
+    {
+        $inicio = $this->fechaInicio;
+        $fin = $this->fechaCierre;
+
+        if (!$inicio || !$fin) {
+            return null;
+        }
+
+        return $inicio->diffForHumans($fin, [
+            'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
+            'parts' => 3,
+        ]);
+    }
 
     public function ActualizarTicket()
     {
@@ -85,7 +86,6 @@ public function getTiempoTotalProperty()
             } elseif ($this->estado_id == 5) { // Estado "Cerrado"
                 $comentarioHistorial = 'Ticket Cerrado.';
                 $accionHistorial = 'Cerrado';
-
             } else {
                 $this->ticket->assigned_to = Auth::id();
                 $this->ticket->area_id = Auth::user()->area_id;
@@ -98,7 +98,7 @@ public function getTiempoTotalProperty()
                 ->where('is_current', true)
                 ->update(['is_current' => false]);
 
-            TicketHistorial::create([
+           $historial = TicketHistorial::create([
                 'ticket_id'    => $this->ticket->id,
                 'usuario_id'   => Auth::id(),
                 'from_area_id' => Auth::user()->area_id,
@@ -109,6 +109,15 @@ public function getTiempoTotalProperty()
                 'comentario'   => $this->comentario,
                 'is_current'   => true,
             ]);
+            if ($this->archivo) {
+                $ruta = $this->archivo->store('tickets', 'public');
+
+                $historial->archivos()->create([
+                    'nombre_original' => $this->archivo->getClientOriginalName(),
+                    'ruta' => $ruta,
+                ]);
+            }
+
 
             DB::commit();
             $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
@@ -128,8 +137,8 @@ public function getTiempoTotalProperty()
     public function render()
     {
 
-        $historiales = \App\Models\TicketHistorial::with(['usuario', 'estado', 'fromArea', 'toArea', 'asignadoA'])
-            ->where('ticket_id', $this->ticket->id,)
+        $historiales = TicketHistorial::with(['usuario', 'estado', 'fromArea', 'toArea', 'asignadoA', 'archivos'])
+            ->where('ticket_id', $this->ticket->id)
             ->orderBy('created_at', 'asc')
             ->get();
         return view('livewire.detalle-ticket', [

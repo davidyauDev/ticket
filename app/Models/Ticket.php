@@ -59,4 +59,9 @@ class Ticket extends Model
     {
         return $this->belongsTo(Estado::class);
     }
+
+    public function archivos()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
 }

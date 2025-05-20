@@ -14,13 +14,11 @@ class IndexTic extends Component
 
     public function delete(string $value)
     {
-        Log::info($value);
         $this->tab = $value;
     }
 
     public function render()
     {   
-        Log::info('Render method called');
         return view('livewire.index-tic');
     }
 }

@@ -18,7 +18,6 @@
                 {{ $ticket->estado->nombre ?? 'Sin estado' }}
             </div>
         </div>
-
         <div class="mt-4 md:mt-0 flex items-center gap-4 text-sm text-gray-600">
             <div>
                 <p><span class="font-medium">Inicio:</span> {{ $this->fechaInicio?->format('d/m/Y H:i') ?? 'N/A' }}</p>
@@ -32,9 +31,6 @@
             @endif
         </div>
     </div>
-
-
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-6">
 
@@ -107,6 +103,14 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Detalles adicionales..."></textarea>
                 </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>
+                    <input type="file" wire:model="archivo"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    @error('archivo') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    <div wire:loading wire:target="archivo" class="text-xs text-gray-500 mt-1">Subiendo archivo...</div>
+                </div>
+
                 <div class="flex justify-end mt-4">
                     <button wire:click="ActualizarTicket" wire:loading.attr="disabled"
                         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition">
@@ -120,72 +124,99 @@
             @endif
         </div>
         <div>
-           <div class="rounded-xl border bg-white shadow-sm">
-    <div class="p-6 border-b flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-arrow-down-icon lucide-clock-arrow-down"><path d="M12.338 21.994A10 10 0 1 1 21.925 13.227"/><path d="M12 6v6l2 1"/><path d="m14 18 4 4 4-4"/><path d="M18 14v8"/></svg>
-        <h2 class="text-xl font-semibold text-gray-800">Historial del Ticket</h2>
-    </div>
-
-    <div class="p-6 pt-4 max-h-[700px] overflow-y-auto space-y-6">
-        @forelse($historiales as $item)
-        <div class="flex items-start gap-4 border-b pb-4 last:border-0">
-            <!-- Icono a la izquierda -->
-           <div class="mt-1">
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-chevron-right-icon lucide-circle-chevron-right"><circle cx="12" cy="12" r="10"/><path d="m10 8 4 4-4 4"/></svg>
-            </div> 
-            <!-- Contenido -->
-            <div class="flex-1">
-                <div class="flex justify-between items-center">
-                    <div class="font-semibold text-gray-800">{{ $item->accion ?? 'Actualización' }}</div>
-                    <div class="text-xs text-gray-400">{{ $item->created_at->format('d/m/Y H:i') }}</div>
+            <div class="rounded-xl border bg-white shadow-sm">
+                <div class="p-6 border-b flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="#000000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-clock-arrow-down-icon lucide-clock-arrow-down">
+                        <path d="M12.338 21.994A10 10 0 1 1 21.925 13.227" />
+                        <path d="M12 6v6l2 1" />
+                        <path d="m14 18 4 4 4-4" />
+                        <path d="M18 14v8" />
+                    </svg>
+                    <h2 class="text-xl font-semibold text-gray-800">Historial del Ticket</h2>
                 </div>
-                <!-- Estado con badge -->
-                <div class="mt-1">
-                    @php
-                        $estado = strtolower($item->estado->nombre ?? '');
-                        $estilos = match($estado) {
-                            'pendiente' => 'bg-yellow-100 text-yellow-800',
-                            'cerrado' => 'bg-red-100 text-red-800',
-                            'abierto' => 'bg-green-100 text-green-800',
-                            'derivado' => 'bg-blue-100 text-blue-800',
-                            default => 'bg-gray-200 text-gray-800',
-                        };
-                    @endphp
-                    <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full {{ $estilos }}">
-                        {{ $item->estado->nombre ?? 'Sin estado' }}
-                    </span>
-                </div>
-                <!-- Detalles -->
-                <div class="mt-2 text-sm text-gray-700 space-y-1">
-                    <p><strong>Por:</strong> {{ $item->usuario->name ?? 'N/A' }}</p>
 
-                    @if($item->from_area_id)
-                    <p><strong>De área:</strong> {{ $item->fromArea->nombre }}</p>
-                    @endif
+                <div class="p-6 pt-4 max-h-[700px] overflow-y-auto space-y-6">
+                    @forelse($historiales as $item)
+                    <div class="flex items-start gap-4 border-b pb-4 last:border-0">
+                        <!-- Icono a la izquierda -->
+                        <div class="mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="#000000" stroke-width="1.75" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-circle-chevron-right-icon lucide-circle-chevron-right">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m10 8 4 4-4 4" />
+                            </svg>
+                        </div>
+                        <!-- Contenido -->
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                                <div class="font-semibold text-gray-800">{{ $item->accion ?? 'Actualización' }}</div>
+                                <div class="text-xs text-gray-400">{{ $item->created_at->format('d/m/Y H:i') }}</div>
+                            </div>
+                            <!-- Estado con badge -->
+                            <div class="mt-1">
+                                @php
+                                $estado = strtolower($item->estado->nombre ?? '');
+                                $estilos = match($estado) {
+                                'pendiente' => 'bg-yellow-100 text-yellow-800',
+                                'cerrado' => 'bg-red-100 text-red-800',
+                                'abierto' => 'bg-green-100 text-green-800',
+                                'derivado' => 'bg-blue-100 text-blue-800',
+                                default => 'bg-gray-200 text-gray-800',
+                                };
+                                @endphp
+                                <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full {{ $estilos }}">
+                                    {{ $item->estado->nombre ?? 'Sin estado' }}
+                                </span>
+                            </div>
+                            <!-- Detalles -->
+                            <div class="mt-2 text-sm text-gray-700 space-y-1">
+                                <p><strong>Por:</strong> {{ $item->usuario->name ?? 'N/A' }}</p>
 
-                    @if($item->to_area_id)
-                    <p><strong>Hacia área:</strong> {{ $item->toArea->nombre }}</p>
-                    @endif
+                                @if($item->from_area_id)
+                                <p><strong>De área:</strong> {{ $item->fromArea->nombre }}</p>
+                                @endif
 
-                    @if($item->asignado_a)
-                    <p><strong>Asignado a:</strong> {{ $item->asignadoA->name }}</p>
-                    @endif
+                                @if($item->to_area_id)
+                                <p><strong>Hacia área:</strong> {{ $item->toArea->nombre }}</p>
+                                @endif
 
-                    @if($item->comentario)
-                    <p class="italic text-gray-500">"{{ $item->comentario }}"</p>
+                                @if($item->asignado_a)
+                                <p><strong>Asignado a:</strong> {{ $item->asignadoA->name }}</p>
+                                @endif
+
+                                @if($item->comentario)
+                                <p class="italic text-gray-500">"{{ $item->comentario }}"</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @if($item->archivos->isNotEmpty())
+                    <div class="mt-2">
+                        <p class="text-sm font-semibold text-gray-600 mb-1">📎 Archivos adjuntos:</p>
+                        <ul class="list-disc pl-5 text-sm text-blue-600 space-y-1">
+                            @foreach($item->archivos as $archivo)
+                            <li>
+                                <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank"
+                                    class="hover:underline">
+                                    {{ $archivo->nombre_original }}
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @endif
+                    @empty
+                    <p class="text-sm text-gray-500">No hay historial disponible para este ticket.</p>
+                    @endforelse
                 </div>
             </div>
         </div>
-        @empty
-        <p class="text-sm text-gray-500">No hay historial disponible para este ticket.</p>
-        @endforelse
     </div>
 </div>
-        </div>
-    </div>
-</div>
-
 @script
 <script>
     $wire.on("notifyActu", () =>{

@@ -38,8 +38,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C8.67 6.165 8 7.388 8 8.75V14.158c0 .538-.214 1.055-.595 1.437L6 17h9z" />
                         </svg>
-                        <span
-                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">3</span>
+                       
                     </button>
                 </div>
             </div>
@@ -55,7 +54,7 @@
                 ])>
                 <flux:icon.user variant="micro" class="mr-1.5" />
                 Mis Tickets
-                <span class="ml-2 text-xs bg-white text-black px-1.5 py-0.5 rounded-full font-semibold">4</span>
+                <span class="ml-2 text-xs bg-white text-black px-1.5 py-0.5 rounded-full font-semibold"></span>
             </button>
 
             <!-- Tab: Tickets No Asignados -->
@@ -67,7 +66,7 @@
                 ])>
                 <flux:icon.users variant="micro" class="mr-1.5" />
                 No Asignados
-                <span class="ml-2 text-xs bg-white text-black px-1.5 py-0.5 rounded-full font-semibold">2</span>
+                <span class="ml-2 text-xs bg-white text-black px-1.5 py-0.5 rounded-full font-semibold"></span>
             </button>
 
             <!-- Tab: Todos los Tickets del Área -->

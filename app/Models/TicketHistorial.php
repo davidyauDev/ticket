@@ -9,10 +9,8 @@ class TicketHistorial extends Model
 {
     use HasFactory;
 
-    // Definir la tabla explícitamente si no es la convención plural
     protected $table = 'ticket_historial';
 
-    // Definir los campos que se pueden asignar masivamente
     protected $fillable = [
         'ticket_id',
         'usuario_id',
@@ -57,5 +55,10 @@ class TicketHistorial extends Model
     public function scopeCurrent($query)
     {
         return $query->where('is_current', true);
+    }
+
+    public function archivos()
+    {
+        return $this->morphMany(File::class, 'fileable');   
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Livewire\Tickets;
+
 use App\Models\Agencia;
 use App\Models\Ticket;
 use App\Models\Area; // Importar el modelo de áreas
@@ -16,10 +17,12 @@ use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use Livewire\Component;
 use Livewire\Attributes\Url;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
 
 class Table extends Component
 {
     use WithPagination;
+    use  WithFileUploads;
     #[Url]
     public $search = '';
     #[Url]
@@ -29,7 +32,6 @@ class Table extends Component
     public $showModal = false;
     public bool $showAnularModal = false;
     public bool $showAsigna = false;
-
     public ?int $ticketId = null;
     public $codigoInput = '';
     public $ticketData = null;
@@ -40,13 +42,15 @@ class Table extends Component
     public $selectedArea = null;
     public $estados = '';
     public $areas = [];
-    public $tipoTicket = 'ticket';
+    public $tipoTicket = 'consulta';
     public $observacion = '';
     public $comentario = '';
     public $motivoAnulacion = '';
     public $estado_id = 1;
     public $tipo = 'todos';
     public ?int $registroId = null;
+    public $archivo;
+
 
     public function buscarTicket()
     {
@@ -106,52 +110,64 @@ class Table extends Component
         $this->areas = Area::all();
         $this->estados = Estado::all();
     }
+
     public function registrarTicket()
     {
-        
         $this->validate([
             'observacion' => 'required|string',
             'comentario' => 'required|string'
         ]);
+
+        if ($this->tipoTicket !== 'consulta' && $this->ticketData == null) {
+            $this->addError('ticketError', 'Busque primero el ticket');
+            return;
+        }
         DB::beginTransaction();
         try {
-            if (!$this->ticketData) {
-                throw new \Exception('No hay datos del ticket para registrar.');
+            $empresa = null;
+            $cliente = null;
+            $equipo = null;
+            $agencia = null;
+            if ($this->tipoTicket !== 'consulta') {
+                $empresa = Empresa::firstOrNew([
+                    'id' => $this->ticketData['id_empresa'],
+                ], [
+                    'nombre' => $this->ticketData['empresa'] ?? 'Empresa Desconocida',
+                ]);
+                if (!$empresa->exists) {
+                    $empresa->save();
+                }
+
+                $cliente = Cliente::firstOrNew([
+                    'id' => $this->ticketData['id_cliente'],
+                ], [
+                    'nombre' => $this->ticketData['cliente'] ?? 'Cliente Desconocido',
+                    'empresa_id' => $empresa->id,
+                ]);
+                if (!$cliente->exists) {
+                    $cliente->save();
+                }
+
+                $equipo = Equipo::firstOrNew([
+                    'serie' => $this->ticketData['serie'],
+                ], [
+                    'modelo' => $this->ticketData['modelo'] ?? 'Modelo Desconocido',
+                ]);
+                if (!$equipo->exists) {
+                    $equipo->save();
+                }
+
+                $agencia = Agencia::firstOrNew([
+                    'id' => $this->ticketData['id_agencia'],
+                ], [
+                    'nombre' => $this->ticketData['agencia'] ?? 'Agencia Desconocida',
+                    'cliente_id' => $this->ticketData['id_cliente'],
+                ]);
+                if (!$agencia->exists) {
+                    $agencia->save();
+                }
             }
-            $empresa = Empresa::firstOrNew([
-                'id' => $this->ticketData['id_empresa'],
-            ], [
-                'nombre' => $this->ticketData['empresa'] ?? 'Empresa Desconocida',
-            ]);
-            if (!$empresa->exists) {
-                $empresa->save();
-            }
-            $cliente = Cliente::firstOrNew([
-                'id' => $this->ticketData['id_cliente'],
-            ], [
-                'nombre' => $this->ticketData['cliente'] ?? 'Cliente Desconocido',
-                'empresa_id' => $empresa->id,
-            ]);
-            if (!$cliente->exists) {
-                $cliente->save();
-            }
-            $equipo = Equipo::firstOrNew([
-                'serie' => $this->ticketData['serie'],
-            ], [
-                'modelo' => $this->ticketData['modelo'] ?? 'Modelo Desconocido',
-            ]);
-            if (!$equipo->exists) {
-                $equipo->save();
-            }
-            $agencia = Agencia::firstOrNew([
-                'id' => $this->ticketData['id_agencia'],
-            ], [
-                'nombre' => $this->ticketData['agencia'] ?? 'Agencia Desconocida',
-                'cliente_id' => $this->ticketData['id_cliente'],
-            ]);
-            if (!$agencia->exists) {
-                $agencia->save();
-            }
+
             $assignedTo = null;
             if ($this->estado_id == 2) {
                 if (!$this->selectedArea) {
@@ -162,17 +178,14 @@ class Table extends Component
                 $areaId = Auth::user()->area_id;
                 $assignedTo = Auth::id();
             }
-            $ticket = Ticket::create([
-                'codigo' => $this->ticketData['ticket_id'],
-                'asunto' => $this->ticketData['subject'],
+
+            $ticketData = [
+                'codigo' => $this->ticketData['ticket_id'] ?? null,
+                'asunto' => $this->ticketData['subject'] ?? null,
                 'falla_reportada' => $this->ticketData['falla_reportada'] ?? $this->notes,
-                'equipo_id' => $equipo->id,
-                'agencia_id' => $agencia->id,
-                'cliente_id' => $cliente->id,
-                'empresa_id' => $empresa->id,
                 'tecnico_dni' => $this->ticketData['dni'] ?? null,
-                'tecnico_nombres' => $this->ticketData['nombres'],
-                'tecnico_apellidos' => $this->ticketData['apellidos'],
+                'tecnico_nombres' => $this->ticketData['nombres'] ?? null,
+                'tecnico_apellidos' => $this->ticketData['apellidos'] ?? null,
                 'comentario' => $this->comentario,
                 'tipo' => $this->tipoTicket,
                 'estado_id' => $this->estado_id,
@@ -180,16 +193,24 @@ class Table extends Component
                 'area_id' => $areaId,
                 'assigned_to' => $assignedTo,
                 'created_by' => Auth::id(),
-            ]);
-            $comentarioHistorial = $this->comentario;
-            $accionHistorial = 'Creado';
-            if ($ticket->estado_id == 5) { // Cerrado
-                $comentarioHistorial = $this->comentario;
-                $accionHistorial = 'Creado y Cerrado';
-            } elseif ($ticket->estado_id == 2) { // Derivado
-                $comentarioHistorial = $this->comentario;
-                $accionHistorial = 'Creado y Derivado';
+            ];
+
+            if ($this->tipoTicket !== 'consulta') {
+                $ticketData['equipo_id'] = $equipo->id ?? null;
+                $ticketData['agencia_id'] = $agencia->id ?? null;
+                $ticketData['cliente_id'] = $cliente->id ?? null;
+                $ticketData['empresa_id'] = $empresa->id ?? null;
             }
+
+            $ticket = Ticket::create($ticketData);
+
+            $comentarioHistorial = $this->comentario;
+            $accionHistorial = match ($ticket->estado_id) {
+                5 => 'Creado y Cerrado',
+                2 => 'Creado y Derivado',
+                default => 'Creado',
+            };
+
             TicketHistorial::create([
                 'ticket_id' => $ticket->id,
                 'usuario_id' => Auth::id(),
@@ -201,16 +222,34 @@ class Table extends Component
                 'comentario' => $comentarioHistorial,
                 'is_current' => true,
             ]);
+            if ($this->archivo) {
+                $ruta = $this->archivo->store('tickets', 'public');
+
+                $ticket->archivos()->create([
+                    'nombre_original' => $this->archivo->getClientOriginalName(),
+                    'ruta' => $ruta,
+                ]);
+
+                $historial = $ticket->historiales()->latest()->first(); // Asumiendo relación `historial()`
+                $historial->archivos()->create([
+                    'nombre_original' => $this->archivo->getClientOriginalName(),
+                    'ruta' => $ruta,
+                ]);
+            }
+
+
             DB::commit();
-            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal', 'ticketData', 'comentario', 'observacion']);
-            $this->dispatch('notify', type: 'success', message: 'Ticket registr exitosamente');
+
+            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal', 'comentario', 'observacion']);
+            $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal', 'ticketData', 'comentario', 'observacion']);
+            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal', 'comentario', 'observacion']);
             Log::error('Error al registrar el ticket: ' . $e->getMessage());
-            $this->dispatch('notifyError', type: 'success', message: 'Error');
+            $this->dispatch('notifyError', type: 'error', message: 'Error al registrar el ticket');
         }
     }
+
 
     public function confirmarAnulacion($id)
     {
@@ -218,7 +257,7 @@ class Table extends Component
         $this->showAnularModal = true;
     }
 
-      public function confirmarAsignac($id)
+    public function confirmarAsignac($id)
     {
         $this->registroId = $id;
         $this->showAsigna = true;
@@ -226,25 +265,25 @@ class Table extends Component
 
     public function anularRegistro()
     {
-         $this->validate([
+        $this->validate([
             'motivoAnulacion' => 'required|string'
         ]);
 
         $ticket = Ticket::find($this->registroId);
         if ($ticket) {
-            $ticket->estado_id = 4; 
+            $ticket->estado_id = 4;
             $ticket->save();
         }
         TicketHistorial::create([
-                'ticket_id'    => $this->registroId,
-                'usuario_id'   => Auth::id(),
-                'from_area_id' => 1,
-                'asignado_a'   => Auth::id(),
-                'estado_id'    => $ticket->estado_id,
-                'accion'       => 'Se anuló el ticket',
-                'is_current'   => true,
-                'comentario'   => $this->motivoAnulacion
-            ]);
+            'ticket_id'    => $this->registroId,
+            'usuario_id'   => Auth::id(),
+            'from_area_id' => 1,
+            'asignado_a'   => Auth::id(),
+            'estado_id'    => $ticket->estado_id,
+            'accion'       => 'Se anuló el ticket',
+            'is_current'   => true,
+            'comentario'   => $this->motivoAnulacion
+        ]);
 
         $this->showAnularModal = false;
         $this->registroId = null;
