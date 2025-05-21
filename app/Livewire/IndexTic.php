@@ -2,23 +2,23 @@
 
 namespace App\Livewire;
 
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class IndexTic extends Component
 {
     public string $tab = 'mis';
-    public int $assigned = 12;
-    public int $resolved = 5;
-    public int $unassigned = 3;
+    public string $usuario;
+    public string $area;
 
-    public function delete(string $value)
+    public function mount()
     {
-        $this->tab = $value;
+        $this->usuario = Auth::user()->name ?? 'Usuario';
+        $this->area = Auth::user()->area->nombre ?? 'Sin Área'; 
     }
 
     public function render()
-    {   
+    {
         return view('livewire.index-tic');
     }
 }

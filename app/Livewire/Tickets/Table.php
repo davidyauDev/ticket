@@ -23,11 +23,13 @@ class Table extends Component
 {
     use WithPagination;
     use  WithFileUploads;
+
     #[Url]
     public $search = '';
     #[Url]
     public $estado = 'Todos';
     #[Url]
+    public string $archivoNombre = '';
     public $usuario = '';
     public $showModal = false;
     public bool $showAnularModal = false;
@@ -51,7 +53,6 @@ class Table extends Component
     public ?int $registroId = null;
     public $archivo;
 
-
     public function buscarTicket()
     {
         $this->validate([
@@ -73,7 +74,6 @@ class Table extends Component
     {
         $this->mostrarArea = true;
     }
-
 
     public function asignar()
     {
@@ -134,6 +134,7 @@ class Table extends Component
                 ], [
                     'nombre' => $this->ticketData['empresa'] ?? 'Empresa Desconocida',
                 ]);
+
                 if (!$empresa->exists) {
                     $empresa->save();
                 }
@@ -229,18 +230,14 @@ class Table extends Component
                     'nombre_original' => $this->archivo->getClientOriginalName(),
                     'ruta' => $ruta,
                 ]);
-
                 $historial = $ticket->historiales()->latest()->first(); // Asumiendo relación `historial()`
                 $historial->archivos()->create([
                     'nombre_original' => $this->archivo->getClientOriginalName(),
                     'ruta' => $ruta,
                 ]);
             }
-
-
             DB::commit();
-
-            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal', 'comentario', 'observacion']);
+            $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal', 'comentario', 'observacion', 'archivo', 'archivoNombre']);
             $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -250,6 +247,10 @@ class Table extends Component
         }
     }
 
+    public function updatedArchivo($value)
+    {
+        $this->archivoNombre = $value->getClientOriginalName();
+    }
 
     public function confirmarAnulacion($id)
     {
@@ -296,15 +297,26 @@ class Table extends Component
     }
     public function render()
     {
+        $query = Ticket::query();
+
         if ($this->tipo === 'mis') {
-            $tickets = Ticket::where('assigned_to', Auth::id())->paginate(10);
+            $query->where('assigned_to', Auth::id());
         } else if ($this->tipo === 'pendientes') {
-            $tickets = Ticket::where('area_id', Auth::user()->area_id)
-                ->whereNull('assigned_to')
-                ->paginate(10);
+            $query->where('area_id', Auth::user()->area_id)
+                ->whereNull('assigned_to');
         } else {
-            $tickets = Ticket::where('area_id', Auth::user()->area_id)->paginate(10);
+            $query->where('area_id', Auth::user()->area_id);
         }
+
+        if (!empty($this->search)) {
+            $query->where(function ($q) {
+                $q->where('codigo', 'like', '%' . $this->search . '%')
+                    ->orWhere('id', $this->search);
+            });
+        }
+
+        $tickets = $query->paginate(10);
+
         return view('livewire.tickets.table', compact('tickets'));
     }
 }

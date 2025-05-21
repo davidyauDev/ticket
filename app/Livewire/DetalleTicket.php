@@ -13,7 +13,6 @@ use Livewire\Component;
 use Carbon\Carbon;
 use Livewire\WithFileUploads;
 
-
 class DetalleTicket extends Component
 {
     use WithFileUploads;
@@ -25,6 +24,7 @@ class DetalleTicket extends Component
     public $observacion = '';
     public $comentario = '';
     public $selectedArea = null;
+    public string $archivoNombre = '';
 
     public function mount($ticket)
     {
@@ -63,10 +63,14 @@ class DetalleTicket extends Component
         ]);
     }
 
+    public function updatedArchivo($value)
+    {
+        $this->archivoNombre = $value->getClientOriginalName();
+    }
+
     public function ActualizarTicket()
     {
         DB::beginTransaction();
-
         try {
             if ($this->ticket->assigned_to !== Auth::id()) {
                 abort(403, 'No tienes permiso para actualizar este ticket.');
@@ -89,6 +93,7 @@ class DetalleTicket extends Component
             } else {
                 $this->ticket->assigned_to = Auth::id();
                 $this->ticket->area_id = Auth::user()->area_id;
+                $this->estado_id = 1;
             }
 
             $this->ticket->estado_id = $this->estado_id;
@@ -98,7 +103,7 @@ class DetalleTicket extends Component
                 ->where('is_current', true)
                 ->update(['is_current' => false]);
 
-           $historial = TicketHistorial::create([
+            $historial = TicketHistorial::create([
                 'ticket_id'    => $this->ticket->id,
                 'usuario_id'   => Auth::id(),
                 'from_area_id' => Auth::user()->area_id,
@@ -111,14 +116,11 @@ class DetalleTicket extends Component
             ]);
             if ($this->archivo) {
                 $ruta = $this->archivo->store('tickets', 'public');
-
                 $historial->archivos()->create([
                     'nombre_original' => $this->archivo->getClientOriginalName(),
                     'ruta' => $ruta,
                 ]);
             }
-
-
             DB::commit();
             $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
             $this->reset(['observacion', 'comentario']);
@@ -139,7 +141,7 @@ class DetalleTicket extends Component
 
         $historiales = TicketHistorial::with(['usuario', 'estado', 'fromArea', 'toArea', 'asignadoA', 'archivos'])
             ->where('ticket_id', $this->ticket->id)
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->get();
         return view('livewire.detalle-ticket', [
             'ticket' => $this->ticket,

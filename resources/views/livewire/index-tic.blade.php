@@ -11,10 +11,7 @@
         <span class="text-gray-400">›</span>
         <span class="text-sm text-black font-medium">Gestión de Tickets</span>
     </div>
-
     <div class="bg-white  rounded-xl border p-4">
-
-
         <div class="p-4">
             <div class="flex justify-between items-center mb-6">
                 <div>
@@ -29,21 +26,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        <span class="font-semibold">David Yauri</span>
-                        <span class="text-xs bg-black text-white px-2 py-0.5 rounded">Area Sistemas y TI</span>
+                        <span class="font-semibold">{{ $usuario }}</span>
+                        <span class="text-xs bg-black text-white px-2 py-0.5 rounded">{{ $area }}</span>
                     </div>
-                    <button class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C8.67 6.165 8 7.388 8 8.75V14.158c0 .538-.214 1.055-.595 1.437L6 17h9z" />
-                        </svg>
-                       
-                    </button>
+
                 </div>
             </div>
         </div>
-
         <div class="flex items-center space-x-2 mb-4 bg-gray-100 p-2 rounded-lg w-fit">
             <!-- Tab: Mis Tickets -->
             <button wire:click="$set('tab', 'mis')"
@@ -52,11 +41,8 @@
                 $tab === 'mis',
                 'text-gray-700 hover:bg-gray-200' => $tab !== 'mis',
                 ])>
-                <flux:icon.user variant="micro" class="mr-1.5" />
                 Mis Tickets
-                <span class="ml-2 text-xs bg-white text-black px-1.5 py-0.5 rounded-full font-semibold"></span>
             </button>
-
             <!-- Tab: Tickets No Asignados -->
             <button wire:click="$set('tab', 'pendientes')"
                 @class([ 'flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition'
@@ -64,11 +50,8 @@
                 $tab === 'pendientes',
                 'text-gray-700 hover:bg-gray-200' => $tab !== 'pendientes',
                 ])>
-                <flux:icon.users variant="micro" class="mr-1.5" />
                 No Asignados
-                <span class="ml-2 text-xs bg-white text-black px-1.5 py-0.5 rounded-full font-semibold"></span>
             </button>
-
             <!-- Tab: Todos los Tickets del Área -->
             <button wire:click="$set('tab', 'todos')"
                 @class([ 'flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition'
@@ -76,7 +59,7 @@
                 $tab === 'todos',
                 'text-gray-700 hover:bg-gray-200' => $tab !== 'todos',
                 ])>
-                <flux:icon.users variant="micro" class="mr-1.5" />
+
                 Todos del Área
             </button>
         </div>
