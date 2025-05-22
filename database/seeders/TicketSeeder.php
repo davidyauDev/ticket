@@ -31,7 +31,7 @@ class TicketSeeder extends Seeder
                 'tecnico_nombres' => fake()->firstName(),
                 'tecnico_apellidos' => fake()->lastName(),
                 'comentario' => null,
-                'observacion' => null,
+                'observacion_consulta' => null,
                 'equipo_id' => $equipoId,
                 'agencia_id' => $agenciaId,
                 'area_id' => $areaId,

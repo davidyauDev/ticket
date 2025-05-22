@@ -150,7 +150,6 @@
                             </div>
                             @endif
                         </td>
-
                         <td class="py-3 px-4">
                             @php
                             $estado = strtolower($ticket->estado->nombre ?? '');
@@ -203,7 +202,6 @@
                             $clases = 'bg-neutral-100 text-neutral-700';
                             }
                             @endphp
-
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $clases }}">
                                 {!! $icono !!}
@@ -237,9 +235,9 @@
             </div>
         </div>
     </div>
-    <x-modal wire:model="showModal" class="max-w-5xl">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Crear Nuevo Ticket</h2>
-
+    <x-modal wire:model="showModal" class="w-600px h-800px" >
+         <div class="">
+             <h2 class="text-xl font-bold text-gray-800 mb-4">Crear Nuevo Ticket</h2>
         @if ($errors->any())
         <div class="p-3 mb-4 bg-red-100 border border-red-400 text-red-700 rounded">
             <ul class="list-disc list-inside text-sm">
@@ -249,7 +247,6 @@
             </ul>
         </div>
         @endif
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Columna 1 --}}
             <div class="space-y-4">
@@ -264,7 +261,6 @@
                     <span class="text-red-600 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
-
                 @if ($tipoTicket == 'ticket')
                 {{-- Código --}}
                 <div>
@@ -287,7 +283,6 @@
                     @error('ticketError') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
                 @endif
-
                 {{-- Datos del ticket --}}
                 @if($ticketData)
                 <div class="bg-gray-100 p-4 rounded-lg shadow text-sm text-gray-800">
@@ -304,7 +299,6 @@
                 </div>
                 @endif
             </div>
-
             {{-- Columna 2 --}}
             <div class="space-y-4">
                 {{-- Estado --}}
@@ -317,7 +311,6 @@
                     </flux:select>
                     @error('estado_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
-
                 {{-- Área si estado es derivado --}}
                 @if($estado_id == 2)
                 <div>
@@ -330,7 +323,6 @@
                     @error('selectedArea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
                 @endif
-
                 {{-- Observación --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
@@ -339,7 +331,6 @@
                         placeholder="Escribe una observación..."></textarea>
                     @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
-
                 {{-- Comentario --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
@@ -348,7 +339,6 @@
                         placeholder="Detalles adicionales..."></textarea>
                     @error('comentario') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
-
                 {{-- Archivo --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>
@@ -370,7 +360,6 @@
                 </div>
             </div>
         </div>
-
         {{-- Botones --}}
         <div class="flex justify-end gap-2 mt-6">
             <button wire:click="$set('showModal', false)"
@@ -382,6 +371,8 @@
                 <span>Registrar Ticket</span>
             </button>
         </div>
+        </div>
+       
     </x-modal>
     <x-modal wire:model="showAsigna">
         <div class="p-2 space-y-6">

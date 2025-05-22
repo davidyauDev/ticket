@@ -4,11 +4,12 @@ namespace App\Livewire\Tickets;
 
 use App\Models\Agencia;
 use App\Models\Ticket;
-use App\Models\Area; // Importar el modelo de áreas
+use App\Models\Area; 
 use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Equipo;
 use App\Models\Estado;
+use App\Models\Observacion;
 use App\Models\TicketHistorial;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,13 +24,16 @@ class Table extends Component
 {
     use WithPagination;
     use  WithFileUploads;
-
     #[Url]
     public $search = '';
     #[Url]
     public $estado = 'Todos';
     #[Url]
     public string $archivoNombre = '';
+
+    public $observaciones = []; // Lista desde la BD
+    public $observacionPersonalizada = '';
+
     public $usuario = '';
     public $showModal = false;
     public bool $showAnularModal = false;
@@ -64,6 +68,10 @@ class Table extends Component
             if (empty($data)) {
                 $this->addError('ticketError', 'No se encontraron datos para el ticket ingresado.');
                 return;
+            }
+            if (empty($data[0]['dni'])){
+                  $this->addError('ticketError', 'Ticket no asignado a un usuario');
+                return;  
             }
             $this->ticketData = count($data) ? $data[0] : null;
         } catch (\Exception $e) {
@@ -109,7 +117,7 @@ class Table extends Component
     {
         $this->areas = Area::all();
         $this->estados = Estado::all();
-    }
+        $this->observaciones = Observacion::all();    }
 
     public function registrarTicket()
     {
@@ -297,26 +305,26 @@ class Table extends Component
     }
     public function render()
     {
-        $query = Ticket::query();
-
-        if ($this->tipo === 'mis') {
-            $query->where('assigned_to', Auth::id());
-        } else if ($this->tipo === 'pendientes') {
-            $query->where('area_id', Auth::user()->area_id)
-                ->whereNull('assigned_to');
-        } else {
-            $query->where('area_id', Auth::user()->area_id);
-        }
-
-        if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $q->where('codigo', 'like', '%' . $this->search . '%')
-                    ->orWhere('id', $this->search);
-            });
-        }
-
+        $user = Auth::user();
+        $query = Ticket::query()
+            ->when($this->tipo === 'mis', function ($q) {
+                $q->where('assigned_to', Auth::id());
+            })
+            ->when($this->tipo === 'pendientes', function ($q) use ($user) {
+                $q->where('area_id', $user->area_id)
+                    ->whereNull('assigned_to');
+            })
+            ->when($this->tipo !== 'mis' && $this->tipo !== 'pendientes', function ($q) use ($user) {
+                $q->where('area_id', $user->area_id);
+            })
+            ->when(!empty($this->search), function ($q) {
+                $q->where(function ($subQuery) {
+                    $subQuery->where('codigo', 'like', '%' . $this->search . '%')
+                        ->orWhere('id', $this->search);
+                });
+            })
+            ->orderByDesc('created_at');
         $tickets = $query->paginate(10);
-
         return view('livewire.tickets.table', compact('tickets'));
     }
 }

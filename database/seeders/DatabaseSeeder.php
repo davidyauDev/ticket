@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             ClientSeeder::class,
             AgenciaSeeder::class,
             EquiposSeeder::class,
+            ObservacionSeeder::class,
             TicketSeeder::class,
 
         ]);
