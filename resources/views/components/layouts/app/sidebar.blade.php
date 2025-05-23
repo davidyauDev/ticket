@@ -10,7 +10,17 @@
         <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
             <x-app-logo />
         </a>
+        
         <flux:navlist variant="outline">
+            <flux:navlist.group :heading="__('Estadísticas')" class="grid">
+    <flux:navlist.item icon="chart-bar"
+        :href="route('tickets.estadisticas')"
+        :current="request()->routeIs('tickets.estadisticas')" 
+        wire:navigate>
+        Estadísticas de Tickets
+    </flux:navlist.item>
+</flux:navlist.group>
+
             <flux:navlist.group :heading="__('Platform')" class="grid">
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
@@ -114,9 +124,11 @@
                 </form>
             </flux:menu>
         </flux:dropdown>
+
     </flux:sidebar>
     {{ $slot }}
     @fluxScripts
+
 </body>
 
 </html>

@@ -235,167 +235,191 @@
             </div>
         </div>
     </div>
-    <x-modal wire:model="showModal" class="w-600px h-800px" >
-         <div class="">
-             <h2 class="text-xl font-bold text-gray-800 mb-4">Crear Nuevo Ticket</h2>
-        @if ($errors->any())
-        <div class="p-3 mb-4 bg-red-100 border border-red-400 text-red-700 rounded">
-            <ul class="list-disc list-inside text-sm">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {{-- Columna 1 --}}
-            <div class="space-y-4">
-                {{-- Tipo --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-                    <flux:select wire:model.live="tipoTicket" placeholder="Seleccionar tipo">
-                        <flux:select.option value="ticket">Ticket</flux:select.option>
-                        <flux:select.option value="consulta">Consulta</flux:select.option>
-                    </flux:select>
-                    @error('tipoTicket')
-                    <span class="text-red-600 text-sm">{{ $message }}</span>
-                    @enderror
-                </div>
-                @if ($tipoTicket == 'ticket')
-                {{-- Código --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Ingrese el código para el nuevo
-                        ticket</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <input wire:model="codigoInput"
-                            class="col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
-                            placeholder="Código del ticket">
-                        <button wire:click="buscarTicket" wire:loading.attr="disabled"
-                            class="col-span-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 flex justify-center items-center gap-1">
-                            <span>Buscar</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </button>
+
+    <x-modal wire:model="showModal" class="w-full max-w-4xl">
+        <div class="p-6">
+            <!-- Encabezado -->
+            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2 mb-1">
+                <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Crear Nuevo Ticket
+            </h2>
+            <p class="text-sm text-gray-500 mb-4">Completa los datos para registrar el ticket.</p>
+            <hr class="mb-6">
+            @if ($errors->any())
+            <div class="p-3 mb-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                <ul class="list-disc list-inside text-sm">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            <!-- Formulario -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Columna 1 -->
+                <div class="bg-white border rounded-lg shadow p-4 space-y-4">
+                    <p class="text-sm font-semibold text-gray-600">Información general</p>
+                    <!-- Tipo -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                        <flux:select wire:model.live="tipoTicket" placeholder="Seleccionar tipo">
+                            <flux:select.option value="ticket">Ticket</flux:select.option>
+                            <flux:select.option value="consulta">Consulta</flux:select.option>
+                        </flux:select>
+                        @error('tipoTicket') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
-                    @error('codigoInput') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                    @error('ticketError') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+
+                    @if ($tipoTicket == 'ticket')
+                    <!-- Código -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Código del ticket</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input wire:model="codigoInput"
+                                class="col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
+                                placeholder="Código">
+                            <button wire:click="buscarTicket" wire:loading.attr="disabled"
+                                class="col-span-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 flex justify-center items-center gap-1">
+                                <span>Buscar</span>
+                            </button>
+                        </div>
+                        @error('codigoInput') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        @error('ticketError') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    @endif
+                    <!-- Datos del ticket -->
+                    @if($ticketData)
+                    <div class="bg-gray-100 p-3 rounded-lg shadow text-sm text-gray-800">
+                        <h3 class="text-base font-semibold mb-2">🎫 Ticket {{ $ticketData['number'] }}</h3>
+                        <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
+                        <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
+                        <p><strong>Equipo:</strong> {{ $ticketData['serie'] }} - {{ $ticketData['modelo'] }}</p>
+                        <p><strong>Usuario:</strong> {{ $ticketData['nombres'] }} {{ $ticketData['apellidos'] }}</p>
+                        <p><strong>Agencia:</strong> {{ $ticketData['agencia'] }}</p>
+                        <p><strong>Cliente:</strong> {{ $ticketData['cliente'] }}</p>
+                        <p><strong>Empresa:</strong> {{ $ticketData['empresa'] }}</p>
+                    </div>
+                    @endif
                 </div>
-                @endif
-                {{-- Datos del ticket --}}
-                @if($ticketData)
-                <div class="bg-gray-100 p-4 rounded-lg shadow text-sm text-gray-800">
-                    <h3 class="text-base font-bold mb-2">🎫 Ticket {{ $ticketData['number'] }}</h3>
-                    <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
-                    <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
-                    <p><strong>Equipo:</strong> {{ $ticketData['id_equipo'] }} - {{ $ticketData['serie'] }} - {{
-                        $ticketData['modelo'] }}</p>
-                    <p><strong>Usuario:</strong> {{ $ticketData['dni'] }} - {{ $ticketData['nombres'] }} {{
-                        $ticketData['apellidos'] }}</p>
-                    <p><strong>Agencia:</strong> {{ $ticketData['agencia'] }}</p>
-                    <p><strong>Cliente:</strong> {{ $ticketData['cliente'] }}</p>
-                    <p><strong>Empresa:</strong> {{ $ticketData['empresa'] }}</p>
+                <!-- Columna 2 -->
+                <div class="bg-white border rounded-lg shadow p-4 space-y-4">
+                    <p class="text-sm font-semibold text-gray-600">Detalles del Ticket</p>
+                    <!-- Estado -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                        <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
+                            @foreach($estados as $estado)
+                            <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        @error('estado_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    <!-- Área -->
+                    @if($estado_id == 2)
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
+                        <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
+                            @foreach($areas as $area)
+                            <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        @error('selectedArea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    @endif
+                    <!-- Observación -->
+                    @if ($tipoTicket == 'ticket')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
+                        <select wire:model="observacion"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                            <option value="">-- Seleccione una observación --</option>
+                            @foreach($observaciones as $obs)
+                            <option value="{{ $obs->id }}">{{ $obs->descripcion }}</option>
+                            @endforeach
+                        </select>
+                        @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    @else
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
+                        <textarea wire:model="observacion"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
+                            placeholder="Escribe una observación..."></textarea>
+                        @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    @endif
+                    <!-- Comentario -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
+                        <textarea wire:model="comentario"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
+                            placeholder="Detalles adicionales..."></textarea>
+                        @error('comentario') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    <!-- Archivo adjunto -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>
+                        <label for="archivo"
+                            class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 border-gray-300 hover:bg-gray-100 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-400 mb-1" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656l-8.486 8.486a6 6 0 108.486 8.486l7.07-7.07" />
+                            </svg>
+                            <span class="text-sm text-gray-600 font-medium">Arrastra o haz clic para subir
+                                archivo</span>
+                            <span class="text-xs text-gray-400">{{ $archivoNombre ?: 'Ningún archivo seleccionado'
+                                }}</span>
+                            <input id="archivo" type="file" wire:model="archivo" class="hidden" />
+                        </label>
+                        @error('archivo') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <div wire:loading wire:target="archivo" class="text-sm text-gray-500 mt-1">Subiendo archivo...
+                        </div>
+                    </div>
                 </div>
-                @endif
             </div>
-            {{-- Columna 2 --}}
-            <div class="space-y-4">
-                {{-- Estado --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                    <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
-                        @foreach($estados as $estado)
-                        <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
-                        @endforeach
-                    </flux:select>
-                    @error('estado_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                </div>
-                {{-- Área si estado es derivado --}}
-                @if($estado_id == 2)
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Áreas</label>
-                    <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
-                        @foreach($areas as $area)
-                        <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
-                        @endforeach
-                    </flux:select>
-                    @error('selectedArea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                </div>
-                @endif
-                {{-- Observación --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                    <textarea wire:model="observacion"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
-                        placeholder="Escribe una observación..."></textarea>
-                    @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                </div>
-                {{-- Comentario --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
-                    <textarea wire:model="comentario"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
-                        placeholder="Detalles adicionales..."></textarea>
-                    @error('comentario') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                </div>
-                {{-- Archivo --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>
-                    <label for="archivo"
-                        class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 border-gray-300 hover:bg-gray-100 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-400 mb-1" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656l-8.486 8.486a6 6 0 108.486 8.486l7.07-7.07" />
-                        </svg>
-                        <span class="text-sm text-gray-500 font-medium">Seleccionar archivo</span>
-                        <span class="text-xs text-gray-400">
-                            {{ $archivoNombre ?: 'Ningún archivo seleccionado' }}
-                        </span>
-                        <input id="archivo" type="file" wire:model="archivo" class="hidden" />
-                    </label>
-                    @error('archivo') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                    <div wire:loading wire:target="archivo" class="text-sm text-gray-500 mt-1">Subiendo archivo...</div>
-                </div>
-            </div>
-        </div>
-        {{-- Botones --}}
-        <div class="flex justify-end gap-2 mt-6">
-            <button wire:click="$set('showModal', false)"
-                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
-                Cancelar
-            </button>
-            <button wire:click="registrarTicket" wire:loading.attr="disabled"
-                class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition">
-                <span>Registrar Ticket</span>
-            </button>
-        </div>
-        </div>
-       
-    </x-modal>
-    <x-modal wire:model="showAsigna">
-        <div class="p-2 space-y-6">
-            <div>
-                <h2 class="text-2xl font-semibold text-gray-900 mb-2">Asignacion de Ticket</h2>
-                <p class="text-sm text-gray-600">
-                    ¿Estás seguro que deseas anular el ticket con ID
-                    <span class="font-semibold text-red-600">{{ $registroId }}</span>?<br>
-                    Esta acción no se puede deshacer.
-                </p>
-            </div>
+
             <!-- Botones -->
-            <div class="flex justify-end gap-2 pt-4 border-t border-gray-200">
-                <flux:button wire:click="$set('showAnularModal', false)" variant="ghost"
-                    class="text-gray-600 hover:text-gray-900">
+            <div class="flex justify-end gap-2 mt-6">
+                <button wire:click="$set('showModal', false)"
+                    class="px-5 py-2.5 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200">
                     Cancelar
-                </flux:button>
-                <flux:button variant="primary" wire:click="asignar" color="destructive">
-                    Asginarme Ticket
-                </flux:button>
+                </button>
+                <button wire:click="registrarTicket" wire:loading.attr="disabled"
+                    class="px-5 py-2.5 bg-black text-white rounded-md hover:bg-gray-900">
+                    Registrar Ticket
+                </button>
             </div>
         </div>
     </x-modal>
+
+    <x-modal wire:model="showAsigna" class="w-full max-w-md">
+        <div class="px-6 py-5">
+            <!-- Título -->
+            <h2 class="text-xl font-bold text-gray-800 mb-1">Asignación de Ticket</h2>
+            <p class="text-sm text-gray-500 mb-4">Confirma si deseas asignarte el ticket pendiente.</p>
+            <hr class="mb-4">
+            <!-- Detalle del ticket -->
+            <div class="bg-gray-50 border rounded-lg p-3 text-sm text-gray-700">
+                <p class="mb-1">Estás a punto de asignarte el ticket con:</p>
+                <ul class="list-disc list-inside text-sm ml-2">
+                    <li><strong>ID:</strong> <span class="text-red-600 font-semibold">#{{ $registroId }}</span></li>
+                </ul>
+            </div>
+            <!-- Acciones -->
+            <div class="flex justify-end gap-2 mt-6">
+                <button wire:click="$set('showAsigna', false)"
+                    class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100">
+                    Cancelar
+                </button>
+                <button wire:click="asignar" class="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-900">
+                    Asignarme Ticket
+                </button>
+            </div>
+        </div>
+    </x-modal>
+
     <x-modal wire:model="showAnularModal" maxWidth="md">
         <div class="px-6 py-5 space-y-6">
             <!-- Header -->
@@ -434,13 +458,20 @@
 @script
 <script>
     $wire.on("notify", () =>{
-    Swal.fire({
-    icon: 'success',
-    title: 'Ticket',
-    text: 'Ticket registrado exitosamente',
-    });
+        Swal.fire({
+        icon: 'success',
+        title: 'Ticket',
+        text: 'Ticket registrado exitosamente',
+        });
    })
-     $wire.on("notifyError", () =>{
+   $wire.on("notify1", () =>{
+        Swal.fire({
+        icon: 'success',
+        title: 'Ticket',
+        text: 'Ticket asignado exitosamente',
+        });
+   })
+   $wire.on("notifyError", () =>{
      Swal.fire({
      icon: 'error',
      title: 'Ticket',

@@ -4,7 +4,7 @@ namespace App\Livewire\Tickets;
 
 use App\Models\Agencia;
 use App\Models\Ticket;
-use App\Models\Area; 
+use App\Models\Area;
 use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Equipo;
@@ -57,6 +57,7 @@ class Table extends Component
     public ?int $registroId = null;
     public $archivo;
 
+
     public function buscarTicket()
     {
         $this->validate([
@@ -69,9 +70,9 @@ class Table extends Component
                 $this->addError('ticketError', 'No se encontraron datos para el ticket ingresado.');
                 return;
             }
-            if (empty($data[0]['dni'])){
-                  $this->addError('ticketError', 'Ticket no asignado a un usuario');
-                return;  
+            if (empty($data[0]['dni'])) {
+                $this->addError('ticketError', 'Ticket no asignado a un usuario');
+                return;
             }
             $this->ticketData = count($data) ? $data[0] : null;
         } catch (\Exception $e) {
@@ -104,6 +105,8 @@ class Table extends Component
                 'comentario'   => null
             ]);
             DB::commit();
+            return redirect()->route('tickets.show', $ticket->id);
+            $this->dispatch('notify1', type: 'success', message: 'Ticket Asginado con exito');
             $this->showAsigna = false;
             $this->registroId = null;
         } catch (\Exception $e) {
@@ -117,7 +120,8 @@ class Table extends Component
     {
         $this->areas = Area::all();
         $this->estados = Estado::all();
-        $this->observaciones = Observacion::all();    }
+        $this->observaciones = Observacion::all();
+    }
 
     public function registrarTicket()
     {
@@ -188,6 +192,8 @@ class Table extends Component
                 $assignedTo = Auth::id();
             }
 
+
+            Log::info($this->observacion);
             $ticketData = [
                 'codigo' => $this->ticketData['ticket_id'] ?? null,
                 'asunto' => $this->ticketData['subject'] ?? null,
@@ -198,7 +204,8 @@ class Table extends Component
                 'comentario' => $this->comentario,
                 'tipo' => $this->tipoTicket,
                 'estado_id' => $this->estado_id,
-                'observacion' => $this->observacion,
+                'observacion_id' => $this->tipoTicket === 'ticket' ? $this->observacion : null,
+                'observacion_consulta' => $this->tipoTicket === 'consulta' ? $this->observacion : null,
                 'area_id' => $areaId,
                 'assigned_to' => $assignedTo,
                 'created_by' => Auth::id(),

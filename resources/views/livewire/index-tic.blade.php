@@ -59,7 +59,6 @@
                 $tab === 'todos',
                 'text-gray-700 hover:bg-gray-200' => $tab !== 'todos',
                 ])>
-
                 Todos del Área
             </button>
         </div>

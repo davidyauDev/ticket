@@ -8,6 +8,7 @@ use App\Livewire\Users;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Areaticket;
 use App\Livewire\CallLogs\Index;
+use App\Livewire\DashboardTickets;
 use App\Livewire\DetalleTicket;
 
 Route::get('/', function () {
@@ -18,18 +19,18 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('ticket2', 'ticket2')
-    ->middleware(['auth', 'verified'])
-    ->name('ticket2');
-
 Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
     Route::get('/', Users::class)->name('index');
 });
 
+
 Route::prefix('tickets')->name('tickets.')->middleware('auth')->group(function () {
     Route::get('/', IndexTic::class)->name('index');
+    Route::get('/estadisticas', DashboardTickets::class)->name('estadisticas');
     Route::get('/{ticket}', DetalleTicket::class)->name('show');
+
 });
+//Route::get('/tickets/estadisticas', \App\Livewire\DashboardTickets::class)->name('tickets.estadisticas');
 
 Route::get('/registro-llamadas', Index::class)->middleware(['auth'])->name('call-logs.index');
 
