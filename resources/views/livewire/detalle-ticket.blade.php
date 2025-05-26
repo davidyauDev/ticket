@@ -12,13 +12,13 @@
             <h1 class="text-2xl font-bold text-gray-800">Ticket {{ $ticket->codigo ?? $ticket->id }}</h1>
             @php
             $estadoNombre = strtolower($ticket->estado->nombre ?? 'sin estado');
-            $estilos = match($estadoNombre) {
+            $estilos = match ($estadoNombre) {
             'pendiente' => 'bg-yellow-100 text-yellow-800 border border-yellow-300',
             'cerrado' => 'bg-green-100 text-green-700 border border-green-300',
             'proceso' => 'bg-indigo-100 text-indigo-700 border border-indigo-300',
             'derivado' => 'bg-blue-100 text-blue-800 border border-blue-300',
-            'anulado' => 'bg-red-100 text-red-700 border border-red-300',
-            default => 'bg-gray-100 text-gray-800 border border-gray-300'
+            'anulado' => 'bg-red-100 text-red-700   border border-red-300',
+            default => 'bg-gray-100 text-gray-800 border border-gray-300',
             };
             @endphp
             <div class="inline-flex items-center rounded-full text-xs font-semibold px-3 py-1 {{ $estilos }}">
@@ -31,18 +31,17 @@
         </div>
         <!-- Leyenda de estados -->
         <div class="flex flex-wrap items-center gap-2 text-xs text-gray-600 mt-2">
-            <span
-                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-300">
-                <span class="w-2 h-2 rounded-full bg-green-600"></span> Cerrado
+             <span
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-300">
+                <span class="w-2 h-2 rounded-full bg-blue-600"></span> Pendiente
             </span>
-
             <span
                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-300">
                 <span class="w-2 h-2 rounded-full bg-indigo-500"></span> En Proceso
             </span>
-            <span
-                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-300">
-                <span class="w-2 h-2 rounded-full bg-blue-600"></span> Derivado
+             <span
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-300">
+                <span class="w-2 h-2 rounded-full bg-green-600"></span> Cerrado
             </span>
             <span
                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-300">
@@ -62,10 +61,9 @@
                 </p>
             </div>
             <!-- Badge de duración -->
-            @if($this->tiempoTotal)
+            @if ($this->tiempoTotal)
             <div
                 class="flex items-center gap-2 text-xs px-4 py-1.5 rounded-full bg-purple-100 text-purple-800 border border-purple-300 shadow-sm">
-                <!-- Ícono de cronómetro SVG -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -79,8 +77,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-6">
             <div class="rounded-xl border bg-white shadow-sm">
-                <div class="p-6 border-b {{$estilos}}">
-                    <h3 class="text-xl font-semibold {{$estilos}}-800">Detalles del Ticket</h3>
+                <div class="p-6 border-b {{ $estilos }}">
+                    <h3 class="text-xl font-semibold">Detalles del Ticket</h3>
                 </div>
                 <div class="p-6 pt-4 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
                     <div>
@@ -120,24 +118,41 @@
                     </div>
                 </div>
             </div>
-            @if($this->puedeActualizar && $ticket->estado_id != 5 && $ticket->estado_id != 4)
+            @if ($this->puedeActualizar && $ticket->estado_id != 5 && $ticket->estado_id != 4)
             <div>
+                {{-- SOLO si NO está pausado mostramos Estado y Comentario --}}
+                @if(!$this->estaPausado)
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                     <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
-                        @foreach($estados as $estado)
-                        <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
+                        @foreach ($estados as $estado)
+                        <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}
+                        </flux:select.option>
                         @endforeach
                     </flux:select>
                 </div>
                 @if($estado_id == 2)
-                <label class="block text-sm font-medium text-gray-700 mt-3">Areas</label>
-                <div class="mt-2">
-                    <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
-                        @foreach($areas as $area)
-                        <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
-                        @endforeach
-                    </flux:select>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <!-- Área principal -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
+                        <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
+                            @foreach($areas as $area)
+                            <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        @error('selectedArea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    <!-- Subárea -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Subárea</label>
+                        <flux:select wire:model.live="selectedSubarea" placeholder="Seleccione una subárea...">
+                            @foreach($subareas as $sub)
+                            <flux:select.option value="{{ $sub['id'] }}">{{ $sub['nombre'] }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        @error('selectedSubarea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
                 </div>
                 @endif
                 <div class="mt-4">
@@ -169,16 +184,27 @@
                         Subiendo archivo...
                     </div>
                 </div>
-
+                @else
+                {{-- Puedes dejar aquí un mensaje informativo si quieres --}}
+                <p class="mt-4 text-sm text-gray-500">🛑 Este ticket está pausado. Puedes reanudarlo para continuar.</p>
+                @endif
+                {{-- Botón final según el estado --}}
                 <div class="flex justify-end mt-4">
+                    @if ($this->estaPausado)
+                    <button wire:click="reanudarTicket"
+                        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition">
+                        ▶️ Reanudar Ticket
+                    </button>
+                    @else
                     <button wire:click="ActualizarTicket" wire:loading.attr="disabled"
                         class="bg-black hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition">
                         Actualizar Ticket
                     </button>
+                    @endif
                 </div>
             </div>
             @endif
-            @if(!$this->puedeActualizar)
+            @if (!$this->puedeActualizar)
             <p class="text-sm text-red-500 mt-2">No puedes actualizar este ticket porque no está asignado a ti.</p>
             @endif
         </div>
@@ -214,19 +240,21 @@
                                 <path d="M9 18l6-6-6-6" />
                             </svg>
                             <div>
-                                <div class="font-semibold text-gray-800">{{ $item->accion ?? 'Actualización' }}</div>
-                                <div class="text-xs text-gray-400">{{ $item->created_at->format('d/m/Y H:i') }}</div>
+                                <div class="font-semibold text-gray-800">{{ $item->accion ?? 'Actualización' }}
+                                </div>
+                                <div class="text-xs text-gray-400">{{ $item->created_at->format('d/m/Y H:i') }}
+                                </div>
                             </div>
                         </div>
                         @php
                         $estado = strtolower($item->estado->nombre ?? '');
-                        $estilos = match($estado) {
+                        $estilos = match ($estado) {
                         'pendiente' => 'bg-yellow-100 text-yellow-800',
                         'cerrado' => 'bg-green-100 text-green-700',
                         'proceso' => 'bg-indigo-100 text-indigo-700',
                         'derivado' => 'bg-blue-100 text-blue-800',
                         'anulado' => 'bg-red-100 text-red-800',
-                        default => 'bg-gray-200 text-gray-800'
+                        default => 'bg-gray-200 text-gray-800',
                         };
                         @endphp
                         <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full {{ $estilos }}">
@@ -237,29 +265,31 @@
                     <div x-show="open" x-collapse.transition.duration.300ms
                         class="mt-3 text-sm text-gray-700 space-y-2">
                         <p><strong>Por:</strong> {{ $item->usuario->name ?? 'N/A' }}</p>
-                        @if($item->from_area_id)
+                        @if ($item->from_area_id)
                         <p><strong>De área:</strong> {{ $item->fromArea->nombre }}</p>
                         @endif
-                        @if($item->to_area_id)
+                        @if ($item->to_area_id)
                         <p><strong>Hacia área:</strong> {{ $item->toArea->nombre }}</p>
                         @endif
-                        @if($item->asignado_a)
+                        @if ($item->asignado_a)
                         <p><strong>Asignado a:</strong> {{ $item->asignadoA->name }}</p>
                         @endif
-                        @if($item->comentario)
+                        @if ($item->comentario)
                         <div>
                             <p x-show="!verMas" class="italic text-gray-500">
                                 "{{ \Illuminate\Support\Str::limit($item->comentario, 100) }}"
-                                <button @click="verMas = true" class="text-blue-500 text-xs ml-1">Ver más</button>
+                                <button @click="verMas = true" class="text-blue-500 text-xs ml-1">Ver
+                                    más</button>
                             </p>
                             <p x-show="verMas" class="italic text-gray-500">
                                 "{{ $item->comentario }}"
-                                <button @click="verMas = false" class="text-blue-500 text-xs ml-1">Ver menos</button>
+                                <button @click="verMas = false" class="text-blue-500 text-xs ml-1">Ver
+                                    menos</button>
                             </p>
                         </div>
                         @endif
 
-                        @if($item->archivos->isNotEmpty())
+                        @if ($item->archivos->isNotEmpty())
                         <div class="mt-2">
                             <div class="flex items-center gap-2 mb-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -271,7 +301,7 @@
                                 <p class="text-sm font-semibold text-gray-600">Archivos adjuntos:</p>
                             </div>
                             <ul class="list-disc pl-5 text-sm text-blue-600 space-y-1">
-                                @foreach($item->archivos as $archivo)
+                                @foreach ($item->archivos as $archivo)
                                 <li>
                                     <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank"
                                         class="hover:underline">
@@ -293,12 +323,12 @@
 </div>
 @script
 <script>
-    $wire.on("notifyActu", () =>{
-    Swal.fire({
-    icon: 'success',
-    title: 'Ticket',
-    text: 'Ticket Actualizad exitosamente',
-    });
-   })
+    $wire.on("notifyActu", () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Ticket',
+                text: 'Ticket Actualizad exitosamente',
+            });
+        })
 </script>
 @endscript

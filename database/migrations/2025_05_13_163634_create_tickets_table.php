@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('codigo')->nullable();; 
-            $table->string('asunto')->nullable();;
+            $table->string('codigo')->nullable(); 
+            $table->string('asunto')->nullable();
             $table->text('falla_reportada')->nullable();
             $table->enum('tipo', ['ticket', 'consulta'])->default('ticket');
             $table->string('tecnico_dni')->nullable();
@@ -29,6 +29,8 @@ return new class extends Migration
             $table->foreignId('assigned_to')->nullable()->constrained('users');
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('estado_id')->constrained('estados');
+            $table->unsignedInteger('tiempo_total_segundos')->nullable();
+
 
             $table->timestamps();
         });

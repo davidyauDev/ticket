@@ -10,14 +10,15 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('areas', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre', 100);
-            $table->string('slug')->unique();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('areas', function (Blueprint $table) {
+        $table->id();
+        $table->string('nombre', 100);
+        $table->string('slug')->unique();
+        $table->foreignId('parent_id')->nullable()->constrained('areas')->nullOnDelete();
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

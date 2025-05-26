@@ -155,22 +155,13 @@
                             $estado = strtolower($ticket->estado->nombre ?? '');
                             $icono = '';
                             $clases = '';
-
                             switch ($estado) {
                             case 'pendiente':
-                            $icono = '<svg class="w-4 h-4 mr-1 text-yellow-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>';
+                            $icono = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
                             $clases = 'bg-yellow-100 text-yellow-700';
                             break;
                             case 'cerrado':
-                            $icono = '<svg class="w-4 h-4 mr-1 text-green-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4" />
-                            </svg>';
+                            $icono = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>';
                             $clases = 'bg-green-100 text-green-700';
                             break;
                             case 'proceso':
@@ -270,7 +261,6 @@
                         </flux:select>
                         @error('tipoTicket') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
-
                     @if ($tipoTicket == 'ticket')
                     <!-- Código -->
                     <div>
@@ -315,29 +305,60 @@
                         </flux:select>
                         @error('estado_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
-                    <!-- Área -->
                     @if($estado_id == 2)
+                    <!-- Área principal -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
                         <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
                             @foreach($areas as $area)
                             <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
-                            @endforeach
+                            @endforeach 
                         </flux:select>
                         @error('selectedArea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
+                    <!-- Subárea (solo si hay área seleccionada) -->
+                    @if (!empty($subareas))
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Subárea</label>
+                        <flux:select wire:model.live="selectedSubarea" placeholder="Seleccione una subárea...">
+                            @foreach($subareas as $sub)
+                            <flux:select.option value="{{ $sub['id'] }}">{{ $sub['nombre'] }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        @error('selectedSubarea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    @endif
                     @endif
                     <!-- Observación -->
                     @if ($tipoTicket == 'ticket')
-                    <div>
+                    <div x-data="{
+                        open: false,
+                        search: '',
+                        filtered() {
+                            return @js($observaciones).filter(obs =>
+                                obs.descripcion.toLowerCase().includes(this.search.toLowerCase())
+                            );
+                        },
+                        select(obs) {
+                            this.search = obs.descripcion;
+                            this.open = false;
+                            $wire.set('observacion', obs.id);
+                        }
+                    }" class="relative">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                        <select wire:model="observacion"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
-                            <option value="">-- Seleccione una observación --</option>
-                            @foreach($observaciones as $obs)
-                            <option value="{{ $obs->id }}">{{ $obs->descripcion }}</option>
-                            @endforeach
-                        </select>
+
+                        <input type="text" x-model="search" @focus="open = true" @click.away="open = false"
+                            placeholder="Buscar observación..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black" />
+                        <!-- Lista de sugerencias -->
+                        <div x-show="open && filtered().length > 0"
+                            class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                            <template x-for="obs in filtered()" :key="obs.id">
+                                <div @click="select(obs)" class="cursor-pointer px-4 py-2 hover:bg-gray-100">
+                                    <span x-text="obs.descripcion"></span>
+                                </div>
+                            </template>
+                        </div>
                         @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
                     @else
@@ -356,6 +377,13 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
                             placeholder="Detalles adicionales..."></textarea>
                         @error('comentario') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="flex items-center mt-4 space-x-2">
+                        <input type="checkbox" id="resuelto" wire:model="resueltoAlCrear"
+                            class="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500" />
+                        <label for="resuelto" class="text-sm text-gray-700">
+                            Registrar este ticket como resuelto
+                        </label>
                     </div>
                     <!-- Archivo adjunto -->
                     <div>
@@ -379,7 +407,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Botones -->
             <div class="flex justify-end gap-2 mt-6">
                 <button wire:click="$set('showModal', false)"

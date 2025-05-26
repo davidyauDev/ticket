@@ -20,7 +20,9 @@ class TicketHistorial extends Model
         'estado_id',
         'accion',
         'is_current',
-        'comentario'
+        'comentario',
+        'started_at',
+        'ended_at',
     ];
 
     public function ticket()

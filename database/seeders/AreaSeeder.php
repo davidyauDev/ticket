@@ -30,12 +30,26 @@ class AreaSeeder extends Seeder
         ];
 
         foreach ($areas as $nombre) {
-            DB::table('areas')->insert([
+            // Insertar área principal
+            $parentId = DB::table('areas')->insertGetId([
                 'nombre' => $nombre,
                 'slug' => Str::slug($nombre),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            // Insertar 3 subáreas para cada área
+            for ($i = 1; $i <= 3; $i++) {
+                $subNombre = "SubArea {$i} de {$nombre}";
+
+                DB::table('areas')->insert([
+                    'nombre' => $subNombre,
+                    'slug' => Str::slug($subNombre),
+                    'parent_id' => $parentId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
     }
 }

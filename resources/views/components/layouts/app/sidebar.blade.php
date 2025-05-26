@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+
 <head>
     @include('partials.head')
 </head>
+
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    
+
     <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
         <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
             <x-app-logo />
         </a>
-        
+
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Estadísticas')" class="grid">
-    <flux:navlist.item icon="chart-bar"
-        :href="route('tickets.estadisticas')"
-        :current="request()->routeIs('tickets.estadisticas')" 
-        wire:navigate>
-        Estadísticas de Tickets
-    </flux:navlist.item>
-</flux:navlist.group>
-
-            <flux:navlist.group :heading="__('Platform')" class="grid">
+                <flux:navlist.item icon="chart-bar" :href="route('tickets.estadisticas')"
+                    :current="request()->routeIs('tickets.estadisticas') || request()->is('tickets/estadisticas')" wire:navigate>
+                    Estadísticas de Tickets
+                </flux:navlist.item>
+            </flux:navlist.group>
+            {{-- <flux:navlist.group :heading="__('Platform')" class="grid">
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-            </flux:navlist.group>
+            </flux:navlist.group> --}}
             <flux:navlist.group :heading="__('Users')" class="grid">
                 <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')"
                     wire:navigate>{{ __('Users') }}</flux:navlist.item>
             </flux:navlist.group>
             <flux:navlist.group :heading="__('Tickets')" class="grid">
                 <flux:navlist.item icon="ticket" :href="route('tickets.index')"
-                    :current="request()->routeIs('tickets.*')" wire:navigate>
+                    :current="request()->routeIs('tickets.*') && !request()->routeIs('tickets.estadisticas')" wire:navigate>
                     {{ __('Tickets') }}
                 </flux:navlist.item>
             </flux:navlist.group>
@@ -80,11 +79,11 @@
                     :current="request()->fullUrlIs(route('areas.show', ['slug' => 'call-center']))">
                     Call Center
                 </flux:navlist.item>
-                
+
             </flux:navlist.group>
-             <flux:navlist.group :heading="__('Tickets')" class="bg-dark">
+            <flux:navlist.group :heading="__('Tickets')" class="bg-dark">
                 <flux:navlist.item icon="ticket" :href="route('call-logs.index')"
-                    :current="request()->routeIs('tickets.*')" wire:navigate>
+                    :current="request()->routeIs('call-logs.index') || request()->is('call-logs')" wire:navigate>
                     {{ __('Llamadas') }}
                 </flux:navlist.item>
             </flux:navlist.group>

@@ -12,12 +12,13 @@ class EstadoSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-{
-    DB::table('estados')->insert([
-        ['id' => 1, 'nombre' => 'Pendiente'],
-        ['id' => 2, 'nombre' => 'Derivado'],
-        ['id' => 5, 'nombre' => 'Cerrado'],
-        ['id' => 4, 'nombre' => 'Anulado'],
-    ]);
+    {
+        DB::table('estados')->insert([
+            ['id' => 1, 'nombre' => 'Pendiente'],
+            ['id' => 2, 'nombre' => 'Derivado'],
+            ['id' => 5, 'nombre' => 'Cerrado'],
+            ['id' => 4, 'nombre' => 'Anulado'],
+            ['id' => 6, 'nombre' => 'Pausado'],
+        ]);
     }
 }

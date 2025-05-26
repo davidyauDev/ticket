@@ -49,14 +49,16 @@ class Table extends Component
     public $estados = '';
     public $areas = [];
     public $tipoTicket = 'consulta';
-    public $observacion = '';
     public $comentario = '';
     public $motivoAnulacion = '';
     public $estado_id = 1;
     public $tipo = 'todos';
     public ?int $registroId = null;
     public $archivo;
-
+    public $subareas = [];
+    public $selectedSubarea = null;
+    public $observacion;
+    public bool $resueltoAlCrear = false;
 
     public function buscarTicket()
     {
@@ -79,6 +81,13 @@ class Table extends Component
             $this->addError('ErrorConsulta', 'Error al obtener datos del ticket');
         }
     }
+
+    public function updatedSelectedArea($value)
+    {
+        $this->subareas = Area::where('parent_id', $value)->get()->toArray();
+        $this->selectedSubarea = null; 
+    }
+
     public function derivar()
     {
         $this->mostrarArea = true;
@@ -118,15 +127,15 @@ class Table extends Component
 
     public function mount()
     {
-        $this->areas = Area::all();
-        $this->estados = Estado::all();
-        $this->observaciones = Observacion::all();
+        $this->areas = Area::whereNull('parent_id')->get()->toArray();
+        $this->estados = Estado::where('nombre', 'Pendiente')->get();
+        $this->observaciones = Observacion::select('id', 'descripcion')->get()->toArray();
     }
 
     public function registrarTicket()
     {
         $this->validate([
-            'observacion' => 'required|string',
+            'observacion' => 'required',
             'comentario' => 'required|string'
         ]);
 
@@ -191,9 +200,6 @@ class Table extends Component
                 $areaId = Auth::user()->area_id;
                 $assignedTo = Auth::id();
             }
-
-
-            Log::info($this->observacion);
             $ticketData = [
                 'codigo' => $this->ticketData['ticket_id'] ?? null,
                 'asunto' => $this->ticketData['subject'] ?? null,
@@ -219,14 +225,12 @@ class Table extends Component
             }
 
             $ticket = Ticket::create($ticketData);
-
             $comentarioHistorial = $this->comentario;
             $accionHistorial = match ($ticket->estado_id) {
                 5 => 'Creado y Cerrado',
                 2 => 'Creado y Derivado',
                 default => 'Creado',
             };
-
             TicketHistorial::create([
                 'ticket_id' => $ticket->id,
                 'usuario_id' => Auth::id(),
@@ -234,13 +238,13 @@ class Table extends Component
                 'to_area_id' => $ticket->area_id,
                 'asignado_a' => $assignedTo,
                 'estado_id' => $ticket->estado_id,
+                'started_at' => now(),
                 'accion' => $accionHistorial,
                 'comentario' => $comentarioHistorial,
                 'is_current' => true,
             ]);
             if ($this->archivo) {
                 $ruta = $this->archivo->store('tickets', 'public');
-
                 $ticket->archivos()->create([
                     'nombre_original' => $this->archivo->getClientOriginalName(),
                     'ruta' => $ruta,
@@ -251,6 +255,24 @@ class Table extends Component
                     'ruta' => $ruta,
                 ]);
             }
+            if ($this->resueltoAlCrear) {
+            $estadoCerrado = Estado::where('nombre', 'Cerrado')->first();
+
+            $ticket->update([
+                'estado_id' => $estadoCerrado->id,
+            ]);
+
+             TicketHistorial::create([
+                 'ticket_id' => $ticket->id,
+                 'usuario_id' => Auth::id(), 
+                 'estado_id' => $estadoCerrado->id,
+                 'started_at' => now(),
+                 'ended_at' => now(),
+                 'is_current' => true,
+                 'accion' => 'Ticket cerrado al momento de su creación',
+                 'comentario' => 'Ticket cerrado al momento de su creación',
+             ]);
+        }
             DB::commit();
             $this->reset(['codigoInput', 'ticketData', 'notes', 'showModal', 'comentario', 'observacion', 'archivo', 'archivoNombre']);
             $this->dispatch('notify', type: 'success', message: 'Ticket registrado exitosamente');
@@ -261,7 +283,7 @@ class Table extends Component
             $this->dispatch('notifyError', type: 'error', message: 'Error al registrar el ticket');
         }
     }
-
+   
     public function updatedArchivo($value)
     {
         $this->archivoNombre = $value->getClientOriginalName();
