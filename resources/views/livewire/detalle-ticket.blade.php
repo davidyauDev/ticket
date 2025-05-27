@@ -17,7 +17,7 @@
             'cerrado' => 'bg-green-100 text-green-700 border border-green-300',
             'proceso' => 'bg-indigo-100 text-indigo-700 border border-indigo-300',
             'derivado' => 'bg-blue-100 text-blue-800 border border-blue-300',
-            'anulado' => 'bg-red-100 text-red-700   border border-red-300',
+            'anulado' => 'bg-red-100 text-red-700 border border-red-300',
             default => 'bg-gray-100 text-gray-800 border border-gray-300',
             };
             @endphp
@@ -31,7 +31,7 @@
         </div>
         <!-- Leyenda de estados -->
         <div class="flex flex-wrap items-center gap-2 text-xs text-gray-600 mt-2">
-             <span
+            <span
                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-300">
                 <span class="w-2 h-2 rounded-full bg-blue-600"></span> Pendiente
             </span>
@@ -39,7 +39,7 @@
                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-300">
                 <span class="w-2 h-2 rounded-full bg-indigo-500"></span> En Proceso
             </span>
-             <span
+            <span
                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-300">
                 <span class="w-2 h-2 rounded-full bg-green-600"></span> Cerrado
             </span>
@@ -120,7 +120,6 @@
             </div>
             @if ($this->puedeActualizar && $ticket->estado_id != 5 && $ticket->estado_id != 4)
             <div>
-                {{-- SOLO si NO está pausado mostramos Estado y Comentario --}}
                 @if(!$this->estaPausado)
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
@@ -264,16 +263,29 @@
                     <!-- Contenido desplegable -->
                     <div x-show="open" x-collapse.transition.duration.300ms
                         class="mt-3 text-sm text-gray-700 space-y-2">
-                        <p><strong>Por:</strong> {{ $item->usuario->name ?? 'N/A' }}</p>
-                        @if ($item->from_area_id)
-                        <p><strong>De área:</strong> {{ $item->fromArea->nombre }}</p>
+                        @if ($item->started_at && $item->ended_at)
+                        @php
+                        $duracion = \Carbon\Carbon::parse($item->started_at)->diffForHumans(
+                        \Carbon\Carbon::parse($item->ended_at),
+                        ['syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE, 'parts' => 2]
+                        );
+                        @endphp
+                        <p><strong>⏱ Duración:</strong> {{ $duracion }}</p>
                         @endif
-                        @if ($item->to_area_id)
-                        <p><strong>Hacia área:</strong> {{ $item->toArea->nombre }}</p>
-                        @endif
-                        @if ($item->asignado_a)
-                        <p><strong>Asignado a:</strong> {{ $item->asignadoA->name }}</p>
-                        @endif
+
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <p><strong>👤 Por:</strong> {{ $item->usuario->name ?? 'N/A' }}</p>
+                            @if ($item->from_area_id)
+                            <p><strong>🏢 De área:</strong> {{ $item->fromArea->nombre }}</p>
+                            @endif
+                            @if ($item->to_area_id)
+                            <p><strong>➡️ Hacia área:</strong> {{ $item->toArea->nombre }}</p>
+                            @endif
+                            @if ($item->asignado_a)
+                            <p><strong>👨‍🔧 Asignado a:</strong> {{ $item->asignadoA->name }}</p>
+                            @endif
+                        </div>
+
                         @if ($item->comentario)
                         <div>
                             <p x-show="!verMas" class="italic text-gray-500">

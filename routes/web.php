@@ -1,4 +1,5 @@
 <?php
+
 use App\Livewire\IndexTic;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -9,6 +10,7 @@ use App\Livewire\Areaticket;
 use App\Livewire\CallLogs\Index;
 use App\Livewire\DashboardTickets;
 use App\Livewire\DetalleTicket;
+
 Route::redirect('/', '/login')->name('home');
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -33,4 +35,4 @@ Route::prefix('settings')->name('settings.')->middleware('auth')->group(function
     Route::get('/appearance', Appearance::class)->name('appearance');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

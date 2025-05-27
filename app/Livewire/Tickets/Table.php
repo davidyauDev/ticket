@@ -100,7 +100,7 @@ class Table extends Component
             $ticket = Ticket::findOrFail($this->registroId);
             TicketHistorial::where('ticket_id', $ticket->id)
                 ->where('is_current', true)
-                ->update(['is_current' => false]);
+                ->update(['is_current' => false,'ended_at' => now()]);
             $ticket->assigned_to = Auth::id();
             $ticket->save();
             TicketHistorial::create([
@@ -111,6 +111,7 @@ class Table extends Component
                 'estado_id'    => $ticket->estado_id,
                 'accion'       => 'El usuario se asignó el ticket',
                 'is_current'   => true,
+                'started_at'   => now(),
                 'comentario'   => null
             ]);
             DB::commit();
