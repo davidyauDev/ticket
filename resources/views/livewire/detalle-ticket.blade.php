@@ -13,13 +13,13 @@
             @php
             $estadoNombre = strtolower($ticket->estado->nombre ?? 'sin estado');
             $estilos = match ($estadoNombre) {
-            'pendiente' => 'bg-yellow-100 text-yellow-800 border border-yellow-300',
-            'cerrado' => 'bg-green-100 text-green-700 border border-green-300',
-            'proceso' => 'bg-indigo-100 text-indigo-700 border border-indigo-300',
-            'derivado' => 'bg-blue-100 text-blue-800 border border-blue-300',
-            'anulado' => 'bg-red-100 text-red-700 border border-red-300',
-            default => 'bg-gray-100 text-gray-800 border border-gray-300',
-            };
+    'pendiente' => 'bg-blue-100 text-blue-800 border border-blue-300',
+    'cerrado' => 'bg-green-100 text-green-700 border border-green-300',
+    'proceso' => 'bg-indigo-100 text-indigo-700 border border-indigo-300',
+    'derivado' => 'bg-blue-100 text-blue-800 border border-blue-300',
+    'anulado' => 'bg-red-100 text-red-800 border border-red-300',
+    default => 'bg-gray-100 text-gray-800 border border-gray-300',
+};
             @endphp
             <div class="inline-flex items-center rounded-full text-xs font-semibold px-3 py-1 {{ $estilos }}">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@
                         <p class="font-medium text-gray-500">Tipo</p>
                         <span
                             class="inline-block rounded-full bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 mt-1">
-                            {{ $ticket->tipo ?? 'No especificado' }}
+                            {{ strtoupper($ticket->tipo ?? 'No especificado') }}
                         </span>
                     </div>
                     <div>
@@ -114,21 +114,30 @@
                     </div>
                     <div>
                         <p class="font-medium text-gray-500">Observación Inicial</p>
-                        <p class="mt-1 text-gray-600">{{ $ticket->observacion ?? 'No hay observaciones' }}</p>
+                        <p class="mt-1 text-gray-600">{{ $ticket->observacion->descripcion ?? $ticket->observacion_consulta ?? 'No hay observaciones' }}</p>
+                        </p>
                     </div>
                 </div>
             </div>
             @if ($this->puedeActualizar && $ticket->estado_id != 5 && $ticket->estado_id != 4)
             <div>
                 @if(!$this->estaPausado)
-                <div class="mt-4">
+                    <div class="mt-4 flex items-center gap-2">
+                    <input type="checkbox" id="reasignarAOrigen" wire:model.live="reasignarAOrigen"
+                        class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                    <label for="reasignarAOrigen" class="text-sm text-gray-700">
+                        Reasignar a <strong>{{ $ticket->asignadoPor->name ?? 'usuario anterior' }}</strong>
+                    </label>
+                </div>
+                    <div class="mt-4">
+                    @if (!$reasignarAOrigen)
                     <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                     <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
                         @foreach ($estados as $estado)
-                        <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}
-                        </flux:select.option>
+                        <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
                         @endforeach
                     </flux:select>
+                    @endif
                 </div>
                 @if($estado_id == 2)
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -190,7 +199,7 @@
                 {{-- Botón final según el estado --}}
                 <div class="flex justify-end mt-4">
                     @if ($this->estaPausado)
-                    <button wire:click="reanudarTicket"
+                    <button wire:click="reanudarTicket"2
                         class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition">
                         ▶️ Reanudar Ticket
                     </button>
@@ -248,7 +257,7 @@
                         @php
                         $estado = strtolower($item->estado->nombre ?? '');
                         $estilos = match ($estado) {
-                        'pendiente' => 'bg-yellow-100 text-yellow-800',
+                        'pendiente' => 'bg-yellow-100 bg-blue-600',
                         'cerrado' => 'bg-green-100 text-green-700',
                         'proceso' => 'bg-indigo-100 text-indigo-700',
                         'derivado' => 'bg-blue-100 text-blue-800',
@@ -256,7 +265,7 @@
                         default => 'bg-gray-200 text-gray-800',
                         };
                         @endphp
-                        <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full {{ $estilos }}">
+                        <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full">
                             {{ $item->estado->nombre ?? 'Sin estado' }}
                         </span>
                     </div>

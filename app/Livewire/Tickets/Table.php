@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Livewire\Tickets;
-
 use App\Models\Agencia;
 use App\Models\Ticket;
 use App\Models\Area;
@@ -30,7 +28,6 @@ class Table extends Component
     public $estado = 'Todos';
     #[Url]
     public string $archivoNombre = '';
-
     public $observaciones = []; // Lista desde la BD
     public $observacionPersonalizada = '';
 
@@ -94,7 +91,7 @@ class Table extends Component
     }
 
     public function asignar()
-    {
+     {
         DB::beginTransaction();
         try {
             $ticket = Ticket::findOrFail($this->registroId);
@@ -283,6 +280,22 @@ class Table extends Component
             Log::error('Error al registrar el ticket: ' . $e->getMessage());
             $this->dispatch('notifyError', type: 'error', message: 'Error al registrar el ticket');
         }
+    }
+
+    public function updatedShowModal($value){
+        if($value === false ){
+            $this->resetForm();
+        }
+    }
+
+    public function resetForm()
+    {
+        $this->reset([
+            'observacion', 'comentario', 'archivo', 'archivoNombre', 'tipoTicket',
+            'estado_id', 'selectedArea', 'selectedSubarea', 'ticketData', 'codigoInput',
+            'notes', 'showModal', 'resueltoAlCrear'
+        ]);
+        $this->resetErrorBag();
     }
    
     public function updatedArchivo($value)

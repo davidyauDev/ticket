@@ -27,6 +27,7 @@ class DetalleTicket extends Component
     public string $archivoNombre = '';
     public $subareas = [];
     public $selectedSubarea = null;
+    public bool $reasignarAOrigen = false;
 
     public function mount($ticket)
     {
@@ -47,7 +48,7 @@ class DetalleTicket extends Component
     public function updatedSelectedArea($value)
     {
         $this->subareas = Area::where('parent_id', $value)->get()->toArray();
-        $this->selectedSubarea = null;
+        $this->selectedSubarea = count($this->subareas) > 0 ? $this->subareas[0]['id'] : null;
     }
 
     public function getFechaCierreProperty()
@@ -119,7 +120,6 @@ class DetalleTicket extends Component
                     'is_current' => false,
                 ]);
             }
-
             $duracion = null;
             $this->ticket->update([
                 'estado_id' => 1, // Pendiente
@@ -127,7 +127,6 @@ class DetalleTicket extends Component
                 'area_id' => Auth::user()->area_id,
             ]);
 
-            // 4. Crea el nuevo historial de reanudación
             $this->ticket->historiales()->create([
                 'usuario_id' => Auth::id(),
                 'estado_id' => 1, // Pendiente
@@ -161,9 +160,23 @@ class DetalleTicket extends Component
             }
             $accionHistorial = 'Actualizado';
             $comentarioHistorial = $this->comentario; // por defecto
-            if ($this->estado_id == 2) { // Derivado
+            if ($this->reasignarAOrigen) {
+                $historialActual = TicketHistorial::where('ticket_id', $this->ticket->id)
+                    ->where('accion', 'Derivado')
+                    ->orderByDesc('created_at') // o 'id'
+                    ->first();
+                if ($historialActual && $historialActual->usuario_id) {
+
+                    $this->ticket->assigned_to = $historialActual->usuario_id;
+                    $this->estado_id = 1; // Pendiente
+                    $accionHistorial = 'Reasignado';
+                }
+            } else if ($this->estado_id == 2) { // Derivado
                 if (!$this->selectedArea) {
                     throw new \Exception('Debe seleccionar un área si el estado es "Derivado".');
+                }
+                if (!$this->selectedSubarea) {
+                    throw new \Exception('Debe seleccionar una subárea al derivar el ticket.');
                 }
                 $this->ticket->area_id = $this->selectedSubarea;
                 $this->ticket->assigned_to = null;
@@ -175,7 +188,7 @@ class DetalleTicket extends Component
             } elseif ($this->estado_id == 6) { // Pausado
                 $comentarioHistorial = 'Ticket Pausado.';
                 $accionHistorial = 'Pausado';
-                DB::commit(); 
+                DB::commit();
                 $this->pausarTicket();
                 return;
             } else {
@@ -197,7 +210,7 @@ class DetalleTicket extends Component
                 'ticket_id'    => $this->ticket->id,
                 'usuario_id'   => Auth::id(),
                 'from_area_id' => Auth::user()->area_id,
-                'to_area_id'   => $this->selectedArea,
+                'to_area_id'   => $this->selectedSubarea,
                 'asignado_a'   => $this->ticket->assigned_to,
                 'estado_id'    => $this->estado_id,
                 'accion'       => $accionHistorial,
@@ -215,7 +228,7 @@ class DetalleTicket extends Component
             }
             DB::commit();
             $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
-            $this->reset(['observacion', 'comentario']);
+            $this->reset(['observacion', 'comentario','archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al asignar ticket: ' . $e->getMessage());

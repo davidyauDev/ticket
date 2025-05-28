@@ -138,15 +138,19 @@
                         </td>
                         <td class="py-3 px-4">
                             @if ($ticket->createdBy)
-                            <div class="flex items-center gap-2 text-gray-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="#000000" stroke-width="0.5" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <circle cx="12" cy="10" r="3" />
-                                    <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
-                                </svg>
-                                {{ $ticket->createdBy->name }}
+                            <div class="flex flex-col gap-1 text-gray-800">
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="0.5" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <circle cx="12" cy="10" r="3" />
+                                        <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
+                                    </svg>
+                                    {{ $ticket->createdBy->name }}
+                                </div>
+                                <span class="text-sm text-gray-500">
+                                    {{ $ticket->created_at ? $ticket->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
+                                </span>
                             </div>
                             @endif
                         </td>

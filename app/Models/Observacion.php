@@ -8,4 +8,9 @@ class Observacion extends Model
 {
     protected $table = 'observaciones';  
     protected $fillable = ['descripcion'];
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }
