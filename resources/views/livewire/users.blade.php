@@ -150,7 +150,8 @@
     {{--
     <livewire:user-form /> --}}
 
-    <x-modal wire:model="showModal" class="w-full max-w-md">
+    <x-modal wire:model="showModal" class="w-full max-w-xl">
+
         <div class="p-6">
             <!-- Encabezado -->
             <h2 class="text-xl font-bold text-gray-800 mb-1">Crear Nuevo Usuario</h2>
