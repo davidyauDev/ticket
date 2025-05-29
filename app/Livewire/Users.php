@@ -16,6 +16,16 @@ class Users extends Component
     public $stats;
     public $search = '';
     protected $queryString = ['search'];
+    public $showModal = false;
+
+    public $nombres;
+    public $apellidos;
+    public $email;
+    public $password;
+    public $direccion;
+    public $celular;
+    public $dni;
+
 
     public function mount()
     {
@@ -23,9 +33,44 @@ class Users extends Component
     }
 
     public function crearUsuario()
-    {
-        $this->dispatch('user-created', nombre: 'David');
-    }
+{
+    $this->validate([
+        'nombres' => 'required|string|max:255',
+        'apellidos' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:6',
+        'direccion' => 'nullable|string|max:255',
+        'celular' => 'nullable|string|max:20',
+        'dni' => 'nullable|string|max:20',
+    ]);
+
+    User::create([
+        'name' => $this->nombres,
+        'lastname' => $this->apellidos,
+        'email' => $this->email,
+        'password' => bcrypt($this->password),
+        'direccion' => $this->direccion,
+        'phone' => $this->celular,
+        'dni' => $this->dni,
+    ]);
+
+    $this->reset(['nombres', 'apellidos', 'email', 'password', 'direccion', 'celular', 'dni', 'showModal']);
+
+    $this->dispatch('user-saved');
+}
+
+
+    // public function crearUsuario()
+    // {
+    //     $this->dispatch('user-created', nombre: 'David');
+    // }
+
+    public function openModal()
+{
+    $this->reset(['nombres', 'apellidos', 'email', 'password', 'direccion', 'celular', 'dni']);
+    $this->showModal = true;
+}
+
 
     public function editarUsuario($id)
     {

@@ -94,10 +94,9 @@
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <flux:input wire:model.live="search" as="text" placeholder="Buscar Usuario..." icon="magnifying-glass"
                 class="w-full sm:w-auto" />
-            <flux:modal.trigger name="edit-profile">
-                <flux:button wire:click="crearUsuario" icon="plus" class="w-full sm:w-auto">Agregar Nuevo Usuario
-                </flux:button>
-            </flux:modal.trigger>
+            <flux:button wire:click="openModal" icon="plus" class="bg-black text-white">
+                Crear Nuevo Usuario
+            </flux:button>
         </div>
         <div class="mt-4 border rounded-md overflow-x-auto">
             <table class="w-full min-w-[600px]">
@@ -147,5 +146,93 @@
             </div>
         </div>
     </div>
-    <livewire:user-form />
+
+    {{--
+    <livewire:user-form /> --}}
+
+    <x-modal wire:model="showModal" class="w-full max-w-md">
+        <div class="p-6">
+            <!-- Encabezado -->
+            <h2 class="text-xl font-bold text-gray-800 mb-1">Crear Nuevo Usuario</h2>
+            <p class="text-sm text-gray-500 mb-4">Completa la información para crear un nuevo usuario en el sistema</p>
+            <hr class="mb-6">
+
+            @if ($errors->any())
+            <div class="p-3 mb-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                <ul class="list-disc list-inside text-sm">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombres</label>
+                        <input wire:model="nombres" type="text" placeholder="Ingresa los nombres"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                        @error('nombres') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
+                        <input wire:model="apellidos" type="text" placeholder="Ingresa los apellidos"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                        @error('apellidos') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email <span
+                            class="text-red-500">*</span></label>
+                    <input wire:model="email" type="email" placeholder="usuario@ejemplo.com"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                    @error('email') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                    <input wire:model="password" type="password"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                    @error('password') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Dirección <span
+                            class="text-gray-400 text-xs">(Opcional)</span></label>
+                    <input wire:model="direccion" type="text" placeholder="Ingresa la dirección"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                    @error('direccion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Número celular</label>
+                        <input wire:model="celular" type="text" placeholder="+51 999 999 999"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                        @error('celular') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">DNI</label>
+                        <input wire:model="dni" type="text" placeholder="12345678"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                        @error('dni') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-6">
+                    <button wire:click="$set('showModal', false)"
+                        class="px-5 py-2.5 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200">
+                        Cancelar
+                    </button>
+                    <button wire:click="crearUsuario" wire:loading.attr="disabled"
+                        class="px-5 py-2.5 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Crear Usuario
+                    </button>
+                </div>
+            </div>
+        </div>
+    </x-modal>
+
 </div>
