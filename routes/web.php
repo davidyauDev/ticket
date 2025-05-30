@@ -9,6 +9,7 @@ use App\Livewire\Areaticket;
 use App\Livewire\CallLogs\Index;
 use App\Livewire\DashboardTickets;
 use App\Livewire\DetalleTicket;
+use App\Livewire\Ticket\TicketManager;
 use App\Livewire\Users\Index as UsersIndex;
 
 Route::redirect('/', '/login')->name('home');
@@ -17,12 +18,14 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::get('/users', UsersIndex::class)->middleware('auth')->name('users.index');
+Route::get('/tickets', TicketManager::class)->middleware('auth')->name('tickets.index');
 
-Route::prefix('tickets')->name('tickets.')->middleware('auth')->group(function () {
-    Route::get('/', IndexTic::class)->name('index');
-    Route::get('/estadisticas', DashboardTickets::class)->name('estadisticas');
-    Route::get('/{ticket}', DetalleTicket::class)->name('show');
-});
+
+ Route::prefix('tickets')->name('tickets.')->middleware('auth')->group(function () {
+     //Route::get('/', IndexTic::class)->name('index');
+     Route::get('/estadisticas', DashboardTickets::class)->name('estadisticas');
+     Route::get('/{ticket}', DetalleTicket::class)->name('show');
+ });
 
 Route::get('/registro-llamadas', Index::class)->middleware(['auth'])->name('call-logs.index');
 Route::get('/areas/{slug}', Areaticket::class)->name('areas.show');

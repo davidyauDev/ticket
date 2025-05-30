@@ -19,7 +19,6 @@
                         @error('apellidos') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email <span
                             class="text-red-500">*</span></label>

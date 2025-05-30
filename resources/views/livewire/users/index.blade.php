@@ -12,19 +12,17 @@
     </div>
 
     <flux:separator variant="subtle" class="my-4" />
-
     {{-- Main Card --}}
-    <div class="rounded-lg bg-white text-gray-800 mt-4 p-5 shadow-sm">
+    <div class="mt-8">
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <flux:input wire:model.live="search" as="text" placeholder="Buscar Usuario..." icon="magnifying-glass"
                 class="w-full sm:w-auto" />
-            <flux:button wire:click="$dispatch('abrirModalCreacionUsuario')" icon="plus" class="bg-black text-white">
+            <flux:button wire:click="$dispatch('abrirModalCreacionUsuario')" icon="plus" class="!bg-black !text-white">
                 Crear Nuevo Usuario
             </flux:button>
         </div>
-
         {{-- Table --}}
-        <div class="mt-4 border rounded-md overflow-x-auto">
+        <div class="mt-6 border rounded-md overflow-x-auto">
             <table class="w-full min-w-[600px] text-sm">
                 <thead class="bg-muted/50 text-muted-foreground font-medium text-left">
                     <tr class="[&>th]:py-3 [&>th]:px-4 border-b">
@@ -52,8 +50,6 @@
                                         icon="user">
                                         Editar Usuario
                                     </flux:menu.item>
-
-
                                     <flux:menu.item icon="trash">Eliminar Usuario</flux:menu.item>
                                 </flux:menu>
                             </flux:dropdown>
@@ -63,7 +59,6 @@
                 </tbody>
             </table>
         </div>
-
         {{-- Pagination --}}
         <div class="mt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center ml-2 text-sm opacity-70">
             <div class="mb-2 sm:mb-0">

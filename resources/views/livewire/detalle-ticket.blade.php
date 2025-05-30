@@ -123,13 +123,13 @@
             @if ($this->puedeActualizar && $ticket->estado_id != 5 && $ticket->estado_id != 4)
             <div>
                 @if(!$this->estaPausado)
-                <div class="mt-4 flex items-center gap-2">
+                {{-- <div class="mt-4 flex items-center gap-2">
                     <input type="checkbox" id="reasignarAOrigen" wire:model.live="reasignarAOrigen"
                         class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
                     <label for="reasignarAOrigen" class="text-sm text-gray-700">
                         Reasignar a <strong>{{ $ticket->asignadoPor->name ?? 'usuario anterior' }}</strong>
                     </label>
-                </div>
+                </div> --}}
                 <div class="mt-4">
                     @if (!$reasignarAOrigen)
                     <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
