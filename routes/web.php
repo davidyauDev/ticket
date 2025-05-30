@@ -4,21 +4,19 @@ use App\Livewire\IndexTic;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
-use App\Livewire\Users;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Areaticket;
 use App\Livewire\CallLogs\Index;
 use App\Livewire\DashboardTickets;
 use App\Livewire\DetalleTicket;
+use App\Livewire\Users\Index as UsersIndex;
 
 Route::redirect('/', '/login')->name('home');
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
-    Route::get('/', Users::class)->name('index');
-});
+Route::get('/users', UsersIndex::class)->middleware('auth')->name('users.index');
 
 Route::prefix('tickets')->name('tickets.')->middleware('auth')->group(function () {
     Route::get('/', IndexTic::class)->name('index');
