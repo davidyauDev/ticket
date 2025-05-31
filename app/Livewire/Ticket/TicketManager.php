@@ -28,7 +28,7 @@ class TicketManager extends Component
 
     public function switchTab(string $tab): void
     {
-        if (in_array($tab, ['mis', 'pendientes', 'todos'])) {
+        if (in_array($tab, ['mis', 'todos'])) {
             $this->tab = $tab;
         }
     }

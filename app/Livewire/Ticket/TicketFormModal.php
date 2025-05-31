@@ -18,9 +18,15 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithPagination;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
+
 
 class TicketFormModal extends Component
 {
+    use WithPagination;
+    use  WithFileUploads;
+
     public $areas = [];
     public $estados = [];
     public $observaciones = [];
@@ -132,6 +138,12 @@ class TicketFormModal extends Component
         ]);
         $this->resetErrorBag();
     }
+
+    public function updatedArchivo($value)
+    {
+        $this->archivoNombre = $value->getClientOriginalName();
+    }
+
 
 
     public function render()

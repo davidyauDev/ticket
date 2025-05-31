@@ -29,14 +29,7 @@
             Mis Tickets
         </button>
 
-        <button wire:click="switchTab('pendientes')"
-            @class([ 'flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition' , 'bg-black text-white'=>
-            $tab === 'pendientes',
-            'text-gray-700 hover:bg-gray-200' => $tab !== 'pendientes',
-            ])>
-            No Asignados
-        </button>
-
+        
         <button wire:click="switchTab('todos')"
             @class([ 'flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition' , 'bg-black text-white'=>
             $tab === 'todos',
@@ -45,7 +38,7 @@
             Todos del Área
         </button>
     </div>
-    <livewire:ticket.ticket-list :tipo="$tab" />
+    <livewire:ticket.ticket-list :tipo="$tab"  wire:key="tickets-table-{{ $tab }}"/>
     <livewire:ticket.ticket-form-modal  wire:key="ticket-form-modal" />
 </div>
 
