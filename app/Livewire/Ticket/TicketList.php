@@ -30,7 +30,7 @@ class TicketList extends Component
                     ->orWhere('id', $this->search);
             }))
             ->latest()
-            ->paginate(10);
+            ->paginate(8);
 
         return view('livewire.ticket.ticket-list', compact('tickets'));
     }

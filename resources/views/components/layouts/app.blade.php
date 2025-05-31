@@ -1,6 +1,6 @@
 <x-layouts.app.sidebar :title="$title ?? null" >
     @livewireStyles
-    <flux:main class=" rounded-4xl border  m-3">
+    <flux:main class=" ">
         {{ $slot }}
         @livewireScripts
 @stack('scripts')

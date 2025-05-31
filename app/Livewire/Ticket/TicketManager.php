@@ -12,6 +12,11 @@ class TicketManager extends Component
 
     public string $usuario;
     public string $area;
+    public $total = 0;
+    public $pendientes =0;
+    public $resueltos = 0;
+    public $enProceso = 0;
+    public $derivados = 0;
 
     public function mount(): void
     {

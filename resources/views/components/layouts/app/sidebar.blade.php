@@ -16,7 +16,8 @@
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Estadísticas')" class="grid">
                 <flux:navlist.item icon="chart-bar" :href="route('tickets.estadisticas')"
-                    :current="request()->routeIs('tickets.estadisticas') || request()->is('tickets/estadisticas')" wire:navigate>
+                    :current="request()->routeIs('tickets.estadisticas') || request()->is('tickets/estadisticas')"
+                    wire:navigate>
                     Estadísticas de Tickets
                 </flux:navlist.item>
             </flux:navlist.group>
@@ -30,11 +31,13 @@
             </flux:navlist.group>
             <flux:navlist.group :heading="__('Tickets')" class="grid">
                 <flux:navlist.item icon="ticket" :href="route('tickets.index')"
-                    :current="request()->routeIs('tickets.*') && !request()->routeIs('tickets.estadisticas')" wire:navigate>
+                    :current="request()->routeIs('tickets.*') && !request()->routeIs('tickets.estadisticas')"
+                    wire:navigate>
                     {{ __('Tickets') }}
                 </flux:navlist.item>
             </flux:navlist.group>
-            <flux:navlist.group expandable heading="Areas" class="grid">
+            <flux:navlist.group expandable heading="Areas" :expanded="false" class="grid">
+
                 <flux:navlist.item href="{{ route('areas.show', ['slug' => 'operaciones']) }}"
                     :current="request()->fullUrlIs(route('areas.show', ['slug' => 'operaciones']))">
                     Operaciones

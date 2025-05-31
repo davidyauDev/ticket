@@ -12,6 +12,11 @@
     </div>
 
     <flux:separator variant="subtle" class="my-4" />
+    <!-- Título y Acción -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
+       
+    </div>
     {{-- Main Card --}}
     <div class="mt-8">
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
