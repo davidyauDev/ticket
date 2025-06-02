@@ -84,6 +84,7 @@
     <!-- Tabla y Modal -->
     <livewire:ticket.ticket-list :tipo="$tab" wire:key="tickets-table-{{ $tab }}" />
     <livewire:ticket.ticket-form-modal wire:key="ticket-form-modal" />
+   
 </div>
 @script
 <script>

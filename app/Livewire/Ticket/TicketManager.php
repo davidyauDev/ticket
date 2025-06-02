@@ -30,6 +30,7 @@ class TicketManager extends Component
         $this->dispatch('abrirModalCreacionTicket');
     }
 
+  
 
     public function switchTab(string $tab): void
     {

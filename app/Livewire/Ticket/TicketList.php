@@ -4,6 +4,8 @@ namespace App\Livewire\Ticket;
 
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,6 +15,12 @@ class TicketList extends Component
     public string $search = '';
     public string $tipo = 'todos';
     protected $listeners = ['user-saved' => '$refresh'];
+
+
+    public function asignarUsuario($id) {
+       $this->dispatch('asignarUsuario', id: $id);
+    }
+    
     public function render()
     {
         $user = Auth::user();

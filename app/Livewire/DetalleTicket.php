@@ -248,25 +248,20 @@ class DetalleTicket extends Component
         if ($accionHistorial === 'Derivado') {
             foreach ($usuariosDestino as $usuario) {
                 try {
-                    Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
+                    ///Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
                 } catch (\Exception $e) {
                     Log::error("Error al enviar correo a {$usuario->email}: " . $e->getMessage());
                 }
             }
         }
-
         $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
         $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
-
     } catch (\Exception $e) {
         DB::rollBack();
         Log::error('Error al asignar ticket: ' . $e->getMessage());
         $this->addError('asignacion', 'Ocurrió un error al asignar el ticket.');
     }
 }
-
-
-
     public function getPuedeActualizarProperty(): bool
     {
         return $this->ticket->assigned_to === Auth::id();

@@ -70,4 +70,11 @@ class Ticket extends Model
     {
         return $this->belongsTo(Observacion::class);
     }
+
+    public function getCodigoFormateadoAttribute(): string
+{
+    return 'TCK-' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+}
+
+
 }
