@@ -72,8 +72,8 @@
 
             <!-- Buscador + Filtro -->
             <div class="flex gap-2 items-center w-full md:w-auto">
-                <flux:input wire:model.live="search" as="text" placeholder="Buscar por ID, técnico, equipo..."
-                    icon="magnifying-glass" class="w-full md:w-72" />
+                {{-- <flux:input wire:model.live="search" as="text" placeholder="Buscar por ID, técnico, equipo..."
+                    icon="magnifying-glass" class="w-full md:w-72" /> --}}
                 <flux:button variant="outline" icon="users">
                     Filtros
                 </flux:button>
