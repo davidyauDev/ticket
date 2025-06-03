@@ -141,6 +141,7 @@ class DetalleTicket extends Component
                 'is_current' => true,
             ]);
             DB::commit();
+             $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
             $this->dispatch('notifyActu', type: 'success', message: 'Ticket reanudado correctamente');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -266,16 +267,16 @@ class DetalleTicket extends Component
     public function render()
     {
         $historiales = TicketHistorial::with([
-    'usuario',
-    'estado',
-    'fromArea',
-    'toArea.parent', // 👈 Agrega esto
-    'asignadoA',
-    'archivos'
-])
-->where('ticket_id', $this->ticket->id)
-->orderBy('created_at', 'desc')
-->get();
+            'usuario',
+            'estado',
+            'fromArea',
+            'toArea.parent', // 👈 Agrega esto
+            'asignadoA',
+            'archivos'
+        ])
+            ->where('ticket_id', $this->ticket->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('livewire.detalle-ticket', [
             'ticket' => $this->ticket,
             'historiales' => $historiales,

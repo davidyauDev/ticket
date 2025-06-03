@@ -11,7 +11,7 @@
                 Volver
             </button>
 
-            <h1 class="text-xl font-bold text-gray-900">Ticket  {{ $ticket->codigo ?? $ticket->codigo_formateado }}</h1>
+            <h1 class="text-xl font-bold text-gray-900">Ticket {{ $ticket->codigo ?? $ticket->codigo_formateado }}</h1>
             @php
             $estadoNombre = strtolower($ticket->estado->nombre ?? 'sin estado');
             $estiloEstado = match ($estadoNombre) {
@@ -138,7 +138,7 @@
                 </div>
                 @endif
             </div>
-             <!--  Form ticket-->
+            <!--  Form ticket-->
             @if($ticket->estado_id != 5 && $this->puedeActualizar )
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
                 <!-- Título -->
@@ -149,94 +149,113 @@
                     </svg>
                     <h3 class="text-lg font-semibold text-gray-800">Actualizar Ticket</h3>
                 </div>
-               
-                    <div class="p-6 space-y-6">
+
+                <div class="p-6 space-y-6">
                     @if (!$this->estaPausado)
                     <!-- Estado y Subárea -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                                <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
-                                    @foreach ($estados as $estado)
-                                    <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
-                                    @endforeach
-                                </flux:select>
-                            </div>
-                            @if ($estado_id == 2)
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Subárea</label>
-                                <flux:select wire:model.live="selectedSubarea" placeholder="Seleccione una subárea...">
-                                    @foreach ($subareas as $sub)
-                                    <flux:select.option value="{{ $sub['id'] }}">{{ $sub['nombre'] }}</flux:select.option>
-                                    @endforeach
-                                </flux:select>
-                                @error('selectedSubarea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                            </div>
-                            @endif
-                        </div>
-
-                        @if ($estado_id == 2)
-                        <!-- Área -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
-                            <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
-                                @foreach ($areas as $area)
-                                <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                            <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
+                                @foreach ($estados as $estado)
+                                <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
                                 @endforeach
                             </flux:select>
-                            @error('selectedArea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                        @if ($estado_id == 2)
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Subárea</label>
+                            <flux:select wire:model.live="selectedSubarea" placeholder="Seleccione una subárea...">
+                                @foreach ($subareas as $sub)
+                                <flux:select.option value="{{ $sub['id'] }}">{{ $sub['nombre'] }}</flux:select.option>
+                                @endforeach
+                            </flux:select>
+                            @error('selectedSubarea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                         </div>
                         @endif
+                    </div>
+
+                    @if ($estado_id == 2)
+                    <!-- Área -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
+                        <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
+                            @foreach ($areas as $area)
+                            <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        @error('selectedArea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                    @endif
 
                     <!-- Comentario -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
-                            <textarea wire:model="comentario"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                rows="3" placeholder="Detalles adicionales..."></textarea>
-                        </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
+                        <textarea wire:model="comentario"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            rows="3" placeholder="Detalles adicionales..."></textarea>
+                    </div>
 
                     <!-- Archivo -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>
-                            <label for="archivo"
-                                class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-md bg-gray-50 hover:bg-gray-100 cursor-pointer transition text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-400 mb-1" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656l-8.486 8.486a6 6 0 108.486 8.486l7.07-7.07" />
-                                </svg>
-                                <span class="text-sm text-blue-600 font-medium">Seleccionar archivo</span>
-                                <span class="text-xs text-gray-400">
-                                    {{ $archivoNombre ?: 'Ningún archivo seleccionado' }}
-                                </span>
-                                <input id="archivo" type="file" wire:model="archivo" class="hidden" />
-                            </label>
-                            @error('archivo') <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span> @enderror
-                            <div wire:loading wire:target="archivo" class="text-sm text-gray-500 mt-1">Subiendo archivo...
-                            </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>
+                        <label for="archivo"
+                            class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-md bg-gray-50 hover:bg-gray-100 cursor-pointer transition text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-400 mb-1" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656l-8.486 8.486a6 6 0 108.486 8.486l7.07-7.07" />
+                            </svg>
+                            <span class="text-sm text-blue-600 font-medium">Seleccionar archivo</span>
+                            <span class="text-xs text-gray-400">
+                                {{ $archivoNombre ?: 'Ningún archivo seleccionado' }}
+                            </span>
+                            <input id="archivo" type="file" wire:model="archivo" class="hidden" />
+                        </label>
+                        @error('archivo') <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span> @enderror
+                        <div wire:loading wire:target="archivo" class="text-sm text-gray-500 mt-1">Subiendo archivo...
                         </div>
+                    </div>
 
                     <!-- Botón -->
-                        <div class="flex justify-end mt-4">
-                            <button wire:click="ActualizarTicket" wire:loading.attr="disabled"
-                                class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                Actualizar Ticket
-                            </button>
-                        </div>
-                        @else
-                        <p class="text-sm text-gray-500">🛑 Este ticket está pausado. Puedes reanudarlo para continuar.</p>
-                        @endif
+                    <div class="flex justify-end mt-4">
+                        <button wire:click="ActualizarTicket" wire:loading.attr="disabled"
+                            class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            Actualizar Ticket
+                        </button>
+                    </div>
+                    @else
+                    <p class="text-sm text-gray-500">🛑 Este ticket está pausado. Puedes reanudarlo para continuar.</p>
+                    @endif
                 </div>
-               
+
             </div>
+            
             @endif
+             @if ($ticket->estado_id == 6 && $this->puedeActualizar)
+    <div class="px-6 pb-6">
+        <div class="rounded-md bg-yellow-50 border border-yellow-200 p-4 mt-4 text-sm text-yellow-800 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 11-6.5 6.5A6.5 6.5 0 0112 5.5z" />
+                </svg>
+                <span>Este ticket está pausado.</span>
+            </div>
+            <button wire:click="reanudarTicket" class="text-sm px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
+                Reanudar Ticket
+            </button>
         </div>
+    </div>
+@endif
+            
+        </div>
+       
         <!-- Sección Historial del Ticket mejorado con acordeón y buscador -->
         <div class="md:col-span-4 rounded-xl border border-gray-200 bg-white shadow-sm">
             <!-- Encabezado -->
@@ -300,19 +319,20 @@
                             <strong class="text-gray-900">{{ $item->asignadoA->name }}</strong>
                         </p>
                         @endif
-                       @if ($item->toArea)
-    <div class="text-sm bg-gray-50 text-gray-800 px-4 py-1.5 rounded border border-gray-100 mt-1">
-        @php
-            $areaPadre = $item->toArea->parent_id ? \App\Models\Area::find($item->toArea->parent_id) : null;
-        @endphp
-        @if ($areaPadre)
-            Área: <strong>{{ $areaPadre->nombre }}</strong><br>
-            Subárea: <strong>{{ $item->toArea->nombre }}</strong>
-        @else
-            Área: <strong>{{ $item->toArea->nombre }}</strong>
-        @endif
-    </div>
-@endif
+                        @if ($item->toArea)
+                        <div class="text-sm bg-gray-50 text-gray-800 px-4 py-1.5 rounded border border-gray-100 mt-1">
+                            @php
+                            $areaPadre = $item->toArea->parent_id ? \App\Models\Area::find($item->toArea->parent_id) :
+                            null;
+                            @endphp
+                            @if ($areaPadre)
+                            Área: <strong>{{ $areaPadre->nombre }}</strong><br>
+                            Subárea: <strong>{{ $item->toArea->nombre }}</strong>
+                            @else
+                            Área: <strong>{{ $item->toArea->nombre }}</strong>
+                            @endif
+                        </div>
+                        @endif
 
                         @if ($item->comentario)
                         <p class="text-xs text-gray-500 italic mt-1">
