@@ -21,14 +21,12 @@
                     Estadísticas de Tickets
                 </flux:navlist.item>
             </flux:navlist.group>
-
             @if(auth()->user()?->role === 'admin')
                 <flux:navlist.group :heading="__('Users')" class="grid">
                     <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')"
                         wire:navigate>{{ __('Users') }}</flux:navlist.item>
                 </flux:navlist.group>
             @endif
-
             <flux:navlist.group :heading="__('Tickets')" class="grid">
                 <flux:navlist.item icon="ticket" :href="route('tickets.index')"
                     :current="request()->routeIs('tickets.*') && !request()->routeIs('tickets.estadisticas')"
@@ -36,7 +34,6 @@
                     {{ __('Tickets') }}
                 </flux:navlist.item>
             </flux:navlist.group>
-
             <flux:navlist.group expandable heading="Areas" :expanded="false" class="grid">
                 <flux:navlist.item href="{{ route('areas.show', ['slug' => 'operaciones']) }}"
                     :current="request()->fullUrlIs(route('areas.show', ['slug' => 'operaciones']))">

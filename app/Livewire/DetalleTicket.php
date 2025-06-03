@@ -141,7 +141,7 @@ class DetalleTicket extends Component
                 'is_current' => true,
             ]);
             DB::commit();
-             $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
+            $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
             $this->dispatch('notifyActu', type: 'success', message: 'Ticket reanudado correctamente');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -162,11 +162,9 @@ class DetalleTicket extends Component
             if ($this->ticket->assigned_to !== Auth::id()) {
                 abort(403, 'No tienes permiso para actualizar este ticket.');
             }
-
             $accionHistorial = 'Actualizado';
             $comentarioHistorial = $this->comentario; // por defecto
             $usuariosDestino = collect(); // Inicializado vacío por si no se usa
-
             if ($this->reasignarAOrigen) {
                 $historialActual = TicketHistorial::where('ticket_id', $this->ticket->id)
                     ->where('accion', 'Derivado')
@@ -270,7 +268,7 @@ class DetalleTicket extends Component
             'usuario',
             'estado',
             'fromArea',
-            'toArea.parent', // 👈 Agrega esto
+            'toArea.parent', 
             'asignadoA',
             'archivos'
         ])
