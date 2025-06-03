@@ -107,10 +107,10 @@
                         </span>
                     </td>
                     <td class="py-3 px-4">
-                        <button wire:click="$emit('confirmarAnulacion', {{ $ticket->id }})"
+                        {{-- <button wire:click="$emit('confirmarAnulacion', {{ $ticket->id }})"
                             class="text-red-500 hover:underline">
                             Anular
-                        </button>
+                        </button> --}}
                     </td>
                 </tr>
                 @endforeach

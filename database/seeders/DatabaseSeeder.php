@@ -23,13 +23,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             EstadoSeeder::class,
             AreaSeeder::class,
-            UsersSeeder::class,
-            EmpresaSeeder::class,
-            ClientSeeder::class,
-            AgenciaSeeder::class,
-            EquiposSeeder::class,
+            HelpDeskUserSeeder::class,
+            ///EmpresaSeeder::class,
+            //ClientSeeder::class,
+            //AgenciaSeeder::class,
+            //EquiposSeeder::class,
             ObservacionSeeder::class,
-            TicketSeeder::class,
+            //TicketSeeder::class,
 
         ]);
     }

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('direccion')->nullable();
             $table->string('phone')->nullable();
             $table->foreignId('area_id')->nullable()->constrained('areas');
+            $table->string('role')->default('user'); 
             $table->rememberToken();
             $table->timestamps();
         });

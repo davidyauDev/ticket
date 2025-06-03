@@ -33,4 +33,8 @@ class Area extends Model
     {
         return $this->hasMany(TicketHistorial::class, 'to_area_id');
     }
+    public function parent()
+    {
+        return $this->belongsTo(Area::class, 'parent_id');
+    }
 }

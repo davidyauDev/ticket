@@ -14,19 +14,14 @@ class AreaSeeder extends Seeder
     public function run(): void
     {
         $areas = [
-            'Operaciones',
-            'Programación Lima',
-            'Presupuestos',
-            'Supervisor',
-            'Técnicos LIMA',
-            'Técnicos PROV',
-            'Sistemas y TI',
-            'Programación Provincia',
-            'Taller',
+            'Mesa de Ayuda',
             'Ingeniería',
-            'Almacén',
-            'Call Center',
-            'RRHH',
+        ];
+
+        $subareas = [
+            'CIMA',
+            'MONEDAS',
+            'MAQUINAS CHICAS',
         ];
 
         foreach ($areas as $nombre) {
@@ -35,16 +30,14 @@ class AreaSeeder extends Seeder
                 'nombre' => $nombre,
                 'slug' => Str::slug($nombre),
                 'created_at' => now(),
-                'updated_at' => now(),
+                'updated_at' => now(),  
             ]);
 
-            // Insertar 3 subáreas para cada área
-            for ($i = 1; $i <= 3; $i++) {
-                $subNombre = "SubArea {$i} de {$nombre}";
-
+            // Insertar subáreas específicas para cada área
+            foreach ($subareas as $subNombre) {
                 DB::table('areas')->insert([
                     'nombre' => $subNombre,
-                    'slug' => Str::slug($subNombre),
+                    'slug' => Str::slug($subNombre . ' ' . $nombre),
                     'parent_id' => $parentId,
                     'created_at' => now(),
                     'updated_at' => now(),

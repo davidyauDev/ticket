@@ -20,7 +20,7 @@
     </div>
 
     <!-- Estadísticas -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    {{-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="p-4 rounded-lg bg-white border ">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-600">Total Tickets</p>
@@ -49,7 +49,7 @@
             </div>
             <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $derivados }}</p>
         </div>
-    </div>
+    </div> --}}
     <!-- Tabs y Búsqueda -->
     <!-- Tabs y Búsqueda agrupados visualmente -->
     <div class="p-4 mt-4 border rounded-xl bg-white ">

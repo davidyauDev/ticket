@@ -300,11 +300,20 @@
                             <strong class="text-gray-900">{{ $item->asignadoA->name }}</strong>
                         </p>
                         @endif
-                        @if ($item->toArea)
-                        <div class="text-sm bg-gray-50 text-gray-800 px-4 py-1.5 rounded border border-gray-100 mt-1">
-                            Hacia área: {{ $item->toArea->nombre }}
-                        </div>
-                        @endif
+                       @if ($item->toArea)
+    <div class="text-sm bg-gray-50 text-gray-800 px-4 py-1.5 rounded border border-gray-100 mt-1">
+        @php
+            $areaPadre = $item->toArea->parent_id ? \App\Models\Area::find($item->toArea->parent_id) : null;
+        @endphp
+        @if ($areaPadre)
+            Área: <strong>{{ $areaPadre->nombre }}</strong><br>
+            Subárea: <strong>{{ $item->toArea->nombre }}</strong>
+        @else
+            Área: <strong>{{ $item->toArea->nombre }}</strong>
+        @endif
+    </div>
+@endif
+
                         @if ($item->comentario)
                         <p class="text-xs text-gray-500 italic mt-1">
                             {{ Str::limit($item->comentario, 100) }}
