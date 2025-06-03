@@ -14,41 +14,47 @@
     <!-- Título y Acción -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Gestión de Tickets</h1>
+        @if(auth()->user()?->area_id === 1)
         <flux:button icon="plus" class="bg-black" variant="primary" wire:click="$dispatch('abrirModalCreacionTicket')">
             Crear Nuevo Ticket
         </flux:button>
+        @else
+        <span class="text-sm "">
+        Solo el área <strong>Mesa de Ayuda</strong> puede crear tickets.
+    </span>
+@endif
     </div>
 
     <!-- Estadísticas -->
-    {{-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="p-4 rounded-lg bg-white border ">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Total Tickets</p>
-                <x-icon name="ticket" class="w-5 h-5 text-blue-500" />
+    {{-- <div class=" grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="p-4 rounded-lg bg-white border ">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-600">Total Tickets</p>
+                    <x-icon name="ticket" class="w-5 h-5 text-blue-500" />
+                </div>
+                <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $total }}</p>
             </div>
-            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $total }}</p>
-        </div>
-        <div class="p-4 rounded-lg bg-white border ">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Pendientes</p>
-                <x-icon name="clock" class="w-5 h-5 text-yellow-500" />
+            <div class="p-4 rounded-lg bg-white border ">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-600">Pendientes</p>
+                    <x-icon name="clock" class="w-5 h-5 text-yellow-500" />
+                </div>
+                <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $pendientes }}</p>
             </div>
-            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $pendientes }}</p>
-        </div>
-        <div class="p-4 rounded-lg bg-white border ">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">En Proceso</p>
-                <x-icon name="chart-bar" class="w-5 h-5 text-purple-500" />
+            <div class="p-4 rounded-lg bg-white border ">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-600">En Proceso</p>
+                    <x-icon name="chart-bar" class="w-5 h-5 text-purple-500" />
+                </div>
+                <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $enProceso }}</p>
             </div>
-            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $enProceso }}</p>
-        </div>
-        <div class="p-4 rounded-lg bg-white border ">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Derivados</p>
-                <x-icon name="users" class="w-5 h-5 text-orange-500" />
+            <div class="p-4 rounded-lg bg-white border ">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-600">Derivados</p>
+                    <x-icon name="users" class="w-5 h-5 text-orange-500" />
+                </div>
+                <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $derivados }}</p>
             </div>
-            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $derivados }}</p>
-        </div>
     </div> --}}
     <!-- Tabs y Búsqueda -->
     <!-- Tabs y Búsqueda agrupados visualmente -->
@@ -72,7 +78,8 @@
 
             <!-- Buscador + Filtro -->
             <div class="flex gap-2 items-center w-full md:w-auto">
-                {{-- <flux:input wire:model.live="search" as="text" placeholder="Buscar por ID, técnico, equipo..."
+                {{--
+                <flux:input wire:model.live="search" as="text" placeholder="Buscar por ID, técnico, equipo..."
                     icon="magnifying-glass" class="w-full md:w-72" /> --}}
                 <flux:button variant="outline" icon="users">
                     Filtros
@@ -84,7 +91,7 @@
     <!-- Tabla y Modal -->
     <livewire:ticket.ticket-list :tipo="$tab" wire:key="tickets-table-{{ $tab }}" />
     <livewire:ticket.ticket-form-modal wire:key="ticket-form-modal" />
-   
+
 </div>
 @script
 <script>
