@@ -14,15 +14,16 @@
     <!-- Título y Acción -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Gestión de Tickets</h1>
-        @if(auth()->user()?->area_id === 1)
-        <flux:button icon="plus" class="bg-black" variant="primary" wire:click="$dispatch('abrirModalCreacionTicket')">
-            Crear Nuevo Ticket
-        </flux:button>
-        @else
-        <span class="text-sm "">
-        Solo el área <strong>Mesa de Ayuda</strong> puede crear tickets.
+       @if(auth()->user()?->area?->parent_id === 1)
+    <flux:button icon="plus" class="bg-black" variant="primary" wire:click="$dispatch('abrirModalCreacionTicket')">
+        Crear Nuevo Ticket
+    </flux:button>
+@else
+    <span class="text-sm ">
+        Solo las áreas bajo <strong>Mesa de Ayuda</strong> pueden crear tickets.
     </span>
 @endif
+
     </div>
 
     <!-- Estadísticas -->
