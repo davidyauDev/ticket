@@ -198,7 +198,7 @@ class DetalleTicket extends Component
         $this->ticket->historiales()->create([
             'usuario_id' => Auth::id(),
             'estado_id' => 6,
-            'accion' => 'Ticket pausado',
+            'accion' => 'Pausado',
             'started_at'   => now(),
             'comentario' => $this->comentario,
         ]);

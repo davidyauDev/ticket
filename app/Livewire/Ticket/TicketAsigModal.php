@@ -11,11 +11,14 @@ class TicketAsigModal extends Component
 {
     public $showModal = false;
     public $ticket;
+    public $ultimoHistorialComentario;
 
     #[On('asignarUsuario')]
     public function abrirModal($id)
     {
         $this->ticket = Ticket::find($id);
+        $this->ultimoHistorialComentario = $this->ticket->ultimoHistorial->comentario ?? 'Sin comentarios';
+
         $this->showModal = true;
     }
 

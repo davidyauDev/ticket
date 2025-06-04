@@ -76,5 +76,9 @@ class Ticket extends Model
     return 'TCK-' . str_pad($this->id, 11, '0', STR_PAD_LEFT);
 }
 
+    public function ultimoHistorial()
+{
+    return $this->hasOne(TicketHistorial::class)->latestOfMany();
+}
 
 }
