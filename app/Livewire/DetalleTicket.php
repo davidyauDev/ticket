@@ -37,6 +37,7 @@ class DetalleTicket extends Component
         $this->ticket = Ticket::findOrFail($ticket);
         $this->areas = Area::whereNull('parent_id')->get()->toArray();
         $this->estados = Estado::all();
+        $this->subareas = Area::where('parent_id', 1)->get()->toArray();
     }
 
     public function getFechaInicioProperty()
@@ -91,6 +92,100 @@ class DetalleTicket extends Component
         ]);
     }
 
+    public function ActualizarTicket()
+    {
+        DB::beginTransaction();
+        try {
+            if ($this->ticket->assigned_to !== Auth::id()) {
+                abort(403, 'No tienes permiso para actualizar este ticket.');
+            }
+            $accionHistorial = 'Actualizado';
+            $comentarioHistorial = $this->comentario; // por defecto
+            $usuariosDestino = collect(); // Inicializado vacío por si no se usa
+            if ($this->reasignarAOrigen) {
+                $historialActual = TicketHistorial::where('ticket_id', $this->ticket->id)
+                    ->where('accion', 'Derivado')
+                    ->orderByDesc('created_at')
+                    ->first();
+                if ($historialActual && $historialActual->usuario_id) {
+                    $this->ticket->assigned_to = $historialActual->usuario_id;
+                    $this->estado_id = 1; // Pendiente
+                    $accionHistorial = 'Reasignado';
+                }
+            } elseif ($this->estado_id == 2) { // Derivado
+                if (!$this->selectedArea || !$this->selectedSubarea) {
+                    throw new \Exception('Debe seleccionar un área y subárea al derivar el ticket.');
+                }
+                $this->ticket->area_id = $this->selectedSubarea;
+                $this->ticket->assigned_to = null;
+                $comentarioHistorial = $comentarioHistorial;
+                $accionHistorial = 'Derivado';
+                $usuariosDestino = User::where('area_id', $this->selectedSubarea)->get();
+                Log::info('Usuarios destino: ', $usuariosDestino->pluck('email')->toArray());
+            } elseif ($this->estado_id == 5) { // Cerrado
+                $comentarioHistorial = $comentarioHistorial;
+                $accionHistorial = 'Cerrado';
+            } elseif ($this->estado_id == 6) { // Pausado
+                $comentarioHistorial = $comentarioHistorial;
+                $accionHistorial = 'Pausado';
+                DB::commit();
+                $this->pausarTicket();
+                return;
+            } else {
+                $this->ticket->assigned_to = Auth::id();
+                $this->ticket->area_id = Auth::user()->area_id;
+                $this->estado_id = 1; // Pendiente
+            }
+
+            $this->ticket->estado_id = $this->estado_id;
+            $this->ticket->save();
+            TicketHistorial::where('ticket_id', $this->ticket->id)
+                ->where('is_current', true)
+                ->update([
+                    'ended_at' => now(),
+                    'is_current' => false,
+                ]);
+            $isCerrado = $this->estado_id == 5;
+            $historial = TicketHistorial::create([
+                'ticket_id'    => $this->ticket->id,
+                'usuario_id'   => Auth::id(),
+                'from_area_id' => Auth::user()->area_id,
+                'to_area_id'   => $this->selectedSubarea,
+                'asignado_a'   => $this->ticket->assigned_to,
+                'estado_id'    => $this->estado_id,
+                'accion'       => $accionHistorial,
+                'comentario'   => $comentarioHistorial,
+                'started_at'   => now(),
+                'ended_at'     => $isCerrado ? now() : null,
+                'is_current'   => !$isCerrado,
+            ]);
+
+            if ($this->archivo) {
+                $ruta = $this->archivo->store('tickets', 'public');
+                $historial->archivos()->create([
+                    'nombre_original' => $this->archivo->getClientOriginalName(),
+                    'ruta' => $ruta,
+                ]);
+            }
+            DB::commit();
+            if ($accionHistorial === 'Derivado') {
+                foreach ($usuariosDestino as $usuario) {
+                    try {
+                        Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
+                    } catch (\Exception $e) {
+                        Log::error("Error al enviar correo a {$usuario->email}: " . $e->getMessage());
+                    }
+                }
+            }
+            $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
+            $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al asignar ticket: ' . $e->getMessage());
+            $this->addError('asignacion', 'Ocurrió un error al asignar el ticket.');
+        }
+    }
+
     public function pausarTicket()
     {
         TicketHistorial::where('ticket_id', $this->ticket->id)
@@ -105,6 +200,7 @@ class DetalleTicket extends Component
             'estado_id' => 6,
             'accion' => 'Ticket pausado',
             'started_at'   => now(),
+            'comentario' => $this->comentario,
         ]);
         $this->dispatch('notifyActu');
     }
@@ -155,108 +251,7 @@ class DetalleTicket extends Component
         $this->archivoNombre = $value->getClientOriginalName();
     }
 
-    public function ActualizarTicket()
-    {
-        DB::beginTransaction();
-        try {
-            if ($this->ticket->assigned_to !== Auth::id()) {
-                abort(403, 'No tienes permiso para actualizar este ticket.');
-            }
-            $accionHistorial = 'Actualizado';
-            $comentarioHistorial = $this->comentario; // por defecto
-            $usuariosDestino = collect(); // Inicializado vacío por si no se usa
-            if ($this->reasignarAOrigen) {
-                $historialActual = TicketHistorial::where('ticket_id', $this->ticket->id)
-                    ->where('accion', 'Derivado')
-                    ->orderByDesc('created_at')
-                    ->first();
 
-                if ($historialActual && $historialActual->usuario_id) {
-                    $this->ticket->assigned_to = $historialActual->usuario_id;
-                    $this->estado_id = 1; // Pendiente
-                    $accionHistorial = 'Reasignado';
-                }
-            } elseif ($this->estado_id == 2) { // Derivado
-                if (!$this->selectedArea || !$this->selectedSubarea) {
-                    throw new \Exception('Debe seleccionar un área y subárea al derivar el ticket.');
-                }
-
-                $this->ticket->area_id = $this->selectedSubarea;
-                $this->ticket->assigned_to = null;
-                $comentarioHistorial = 'Derivado al área correspondiente.';
-                $accionHistorial = 'Derivado';
-
-                // Usuarios destino para notificación
-                $usuariosDestino = User::where('area_id', $this->selectedSubarea)->get();
-                Log::info('Usuarios destino: ', $usuariosDestino->pluck('email')->toArray());
-            } elseif ($this->estado_id == 5) { // Cerrado
-                $comentarioHistorial = $comentarioHistorial;
-                $accionHistorial = 'Cerrado';
-            } elseif ($this->estado_id == 6) { // Pausado
-                $comentarioHistorial = $comentarioHistorial;
-                $accionHistorial = 'Pausado';
-                DB::commit();
-                $this->pausarTicket();
-                return;
-            } else {
-                $this->ticket->assigned_to = Auth::id();
-                $this->ticket->area_id = Auth::user()->area_id;
-                $this->estado_id = 1; // Pendiente
-            }
-
-            $this->ticket->estado_id = $this->estado_id;
-            $this->ticket->save();
-
-            TicketHistorial::where('ticket_id', $this->ticket->id)
-                ->where('is_current', true)
-                ->update([
-                    'ended_at' => now(),
-                    'is_current' => false,
-                ]);
-
-            $isCerrado = $this->estado_id == 5;
-
-            $historial = TicketHistorial::create([
-                'ticket_id'    => $this->ticket->id,
-                'usuario_id'   => Auth::id(),
-                'from_area_id' => Auth::user()->area_id,
-                'to_area_id'   => $this->selectedSubarea,
-                'asignado_a'   => $this->ticket->assigned_to,
-                'estado_id'    => $this->estado_id,
-                'accion'       => $accionHistorial,
-                'comentario'   => $comentarioHistorial,
-                'started_at'   => now(),
-                'ended_at'     => $isCerrado ? now() : null,
-                'is_current'   => !$isCerrado,
-            ]);
-
-            if ($this->archivo) {
-                $ruta = $this->archivo->store('tickets', 'public');
-                $historial->archivos()->create([
-                    'nombre_original' => $this->archivo->getClientOriginalName(),
-                    'ruta' => $ruta,
-                ]);
-            }
-
-            DB::commit();
-
-            if ($accionHistorial === 'Derivado') {
-                foreach ($usuariosDestino as $usuario) {
-                    try {
-                        ///Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
-                    } catch (\Exception $e) {
-                        Log::error("Error al enviar correo a {$usuario->email}: " . $e->getMessage());
-                    }
-                }
-            }
-            $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
-            $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error al asignar ticket: ' . $e->getMessage());
-            $this->addError('asignacion', 'Ocurrió un error al asignar el ticket.');
-        }
-    }
     public function getPuedeActualizarProperty(): bool
     {
         return $this->ticket->assigned_to === Auth::id();
@@ -268,7 +263,7 @@ class DetalleTicket extends Component
             'usuario',
             'estado',
             'fromArea',
-            'toArea.parent', 
+            'toArea.parent',
             'asignadoA',
             'archivos'
         ])

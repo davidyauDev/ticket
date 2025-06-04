@@ -73,15 +73,11 @@ class DashboardTickets extends Component
     {
         $fechaInicio = $this->fechaInicio . ' 00:00:00';
         $fechaFin = $this->fechaFin . ' 23:59:59';
-
         $tickets = Ticket::whereBetween('created_at', [$fechaInicio, $fechaFin])->get();
-
         $this->totalTickets = $tickets->count();
         $this->cerrados = $tickets->where('estado_id', 5)->count();
-
         $promedioSegundos = $tickets->whereNotNull('tiempo_total_segundos')->avg('tiempo_total_segundos');
         $this->tiempoPromedio = $promedioSegundos ? gmdate('H:i:s', (int)$promedioSegundos) : '00:00:00';
-
         $this->porcentajeCerrados = $this->totalTickets > 0
             ? round(($this->cerrados / $this->totalTickets) * 100, 1)
             : 0;

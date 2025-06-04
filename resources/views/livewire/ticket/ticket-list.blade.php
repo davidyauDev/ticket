@@ -10,7 +10,7 @@
                     <th class="px-3 py-2">Técnico</th>
                     <th class="px-3 py-2">Equipo</th>
                     <th class="px-3 py-2">Agencia</th>
-                    <th class="px-3 py-2">Asignado a</th>
+                    <th class="px-3 py-2 text-center align-middle">Asignado a</th>
                     <th class="px-3 py-2">Creado por</th>
                     <th class="px-3 py-2">Estado</th>
                     <th class="px-3 py-2">Acciones</th>
@@ -62,23 +62,26 @@
                     <td class="py-3 px-4 text-gray-400 italic">
                         {{ $ticket->agencia->nombre ?? 'No especificada' }}
                     </td>
-                    <td class="py-3 px-4 text-center">
-                        @if ($ticket->assignedUser)
-                        {{ $ticket->assignedUser->name }}
-                        @else
-                        <a href="#" wire:click="$dispatch('asignarUsuario', { id: {{ $ticket->id }} })"
-                            class="text-blue-600 hover:underline font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-user-plus-icon lucide-user-plus">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <line x1="19" x2="19" y1="8" y2="14" />
-                                <line x1="22" x2="16" y1="11" y2="11" />
-                            </svg>
-                        </a>
-                        @endif
+                    <td class="py-3 px-4">
+                        <div class="flex justify-center items-center h-full">
+                            @if ($ticket->assignedUser)
+                            <span class="text-center">{{ $ticket->assignedUser->name }}</span>
+                            @else
+                            <a href="#" wire:click="$dispatch('asignarUsuario', { id: {{ $ticket->id }} })"
+                                class="text-blue-600 hover:underline font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-user-plus-icon lucide-user-plus">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <line x1="19" x2="19" y1="8" y2="14" />
+                                    <line x1="22" x2="16" y1="11" y2="11" />
+                                </svg>
+                            </a>
+                            @endif
+                        </div>
                     </td>
+
                     <td class="py-3 px-4">
                         <div class="flex flex-col gap-1 text-gray-800">
                             <div class="flex items-center gap-2">
@@ -91,7 +94,6 @@
                     </td>
                     @php
                     $estado = strtolower($ticket->estado->nombre ?? 'sin estado');
-
                     $estadoClass = match ($estado) {
                     'pendiente' => 'bg-yellow-100 text-yellow-800',
                     'cerrado' => 'bg-green-100 text-green-800',
@@ -126,5 +128,4 @@
         </div>
     </div>
     <livewire:ticket.ticket-asig-modal wire:key="ticket-asig-modal" />
-
 </div>

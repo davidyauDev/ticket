@@ -73,7 +73,7 @@ class Ticket extends Model
 
     public function getCodigoFormateadoAttribute(): string
 {
-    return 'TCK-' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+    return 'TCK-' . str_pad($this->id, 11, '0', STR_PAD_LEFT);
 }
 
 
