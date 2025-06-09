@@ -19,6 +19,7 @@ use Livewire\WithFileUploads;
 class DetalleTicket extends Component
 {
     use WithFileUploads;
+    public $searchComentario = '';
     public $archivo;
     public $ticket;
     public $areas = [];
@@ -269,6 +270,9 @@ class DetalleTicket extends Component
         ])
             ->where('ticket_id', $this->ticket->id)
             ->orderBy('created_at', 'desc')
+              ->when($this->searchComentario, function ($query) {
+                $query->where('comentario', 'like', '%' . $this->searchComentario . '%');
+            })
             ->get();
         return view('livewire.detalle-ticket', [
             'ticket' => $this->ticket,

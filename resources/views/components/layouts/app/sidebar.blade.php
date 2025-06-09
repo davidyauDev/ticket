@@ -35,7 +35,7 @@
                 </flux:navlist.item>
             </flux:navlist.group>
             
-            @foreach ($areas as $area)
+            {{-- @foreach ($areas as $area)
             <flux:navlist.group  expandable heading="{{ $area->nombre }}" :expanded="false" class="grid">
                 @foreach ($area->children as $subarea)
                 <flux:navlist.item href="{{ route('areas.show', ['slug' => $subarea->slug]) }}"
@@ -44,7 +44,7 @@
                 </flux:navlist.item>
                 @endforeach
             </flux:navlist.group>
-            @endforeach
+            @endforeach --}}
 
 
             {{-- <flux:navlist.group :heading="__('Tickets')" class="bg-dark">

@@ -36,6 +36,7 @@
                         <th>Apellidos</th>
                         <th>DNI</th>
                         <th>Fecha de Creación</th>
+                        <th>Áreas y Subárea</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -47,6 +48,16 @@
                         <td class="py-3 px-4">{{ $user->lastname }}</td>
                         <td class="py-3 px-4">{{ $user->dni }}</td>
                         <td class="py-3 px-4">{{ $user->created_at }}</td>
+                        <td class="py-3 px-4">
+                                 <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+                                    {{ $user->area->parent->nombre ?? 'Admin' }}</span>
+                                </span> -
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+                                    {{ $user->area->nombre ?? 'Admin' }}</span>
+                                </span> 
+                                
+                               
+                        </td>
                         <td class="py-3 px-4">
                             <flux:dropdown position="bottom" offset="-15">
                                 <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom" />

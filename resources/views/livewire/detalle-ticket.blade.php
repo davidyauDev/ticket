@@ -269,7 +269,7 @@
                         </button>
                     </div>
                     @else
-                    
+
                     @endif
                 </div>
             </div>
@@ -284,7 +284,7 @@
                                 d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 11-6.5 6.5A6.5 6.5 0 0112 5.5z" />
                         </svg>
                         <span>Este ticket está pausado. Puedes reanudarlo para
-                        continuar.</span>
+                            continuar.</span>
                     </div>
                     <button wire:click="reanudarTicket"
                         class="text-sm px-4 py-1.5 bg-blue-500 hover:bg-blue-700 text-white rounded-md">
@@ -313,7 +313,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z" />
                     </svg>
-                    <input type="text" wire:model="searchComentario"
+                    <input type="text" wire:model.live="searchComentario"
                         class="w-full text-sm pl-8 pr-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-0 focus:outline-none placeholder:text-gray-400"
                         placeholder="Buscar comentarios...">
                 </div>
@@ -451,6 +451,23 @@
                             @endif
                         </p>
                         @endif
+                        @if ($item->archivos && $item->archivos->count())
+                        <div class="mt-1 text-sm text-gray-700">
+                            <strong class="block text-xs text-gray-500 mb-1">Archivos adjuntos:</strong>
+                            <ul class="list-disc pl-5 text-sm text-blue-600 space-y-1">
+                                @foreach($item->archivos as $archivo)
+                                <li>
+                                    <a href="{{ asset('storage/' . $archivo->ruta) }}" target="_blank"
+                                        class="hover:underline">
+                                        {{ $archivo->nombre_original }}
+                                    </a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
+
                     </div>
                 </div>
                 @empty

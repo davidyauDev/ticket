@@ -35,7 +35,7 @@ class HelpDeskUserSeeder extends Seeder
             ['name' => 'JORGE CHAVEZ', 'area_id' => 4, 'email' => 'jorge.chavez@cechriza.net'],
 
             // Otros con correos específicos
-            ['name' => 'JOAL SILVA', 'email' => 'joal.silva@cechriza.com', 'area_id' => 6],
+            ['name' => 'JOAL SILVA', 'email' => 'joal.silva@cechriza.com', 'area_id' => 8],
             ['name' => 'CARLOS CORDOVA', 'email' => 'carlos.cordova@cechriza.com', 'area_id' => 7],
             ['name' => 'FELIX GALAGARZA', 'email' => 'felix.galagarza@cechriza.com', 'area_id' => 8],
             ['name' => 'JUAN ASENCIOS', 'email' => 'juan.asencios@cechriza.com', 'area_id' => 8],

@@ -67,6 +67,31 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
+                        <select wire:model="areaSeleccionada" wire:change="actualizarSubareas"
+                            class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black">
+                            <option value="">Selecciona un área</option>
+                            @foreach ($areas as $area)
+                                <option value="{{ $area->id }}">{{ $area->nombre }}</option>
+                            @endforeach
+                        </select>
+                        @error('areaSeleccionada') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Sub área</label>
+                        <select wire:model="subareaSeleccionada"
+                            class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black">
+                            <option value="">Selecciona una sub área</option>
+                            @foreach ($subareas as $subarea)
+                                <option value="{{ $subarea->id }}">{{ $subarea->nombre }}</option>
+                            @endforeach
+                        </select>
+                        @error('subareaSeleccionada') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
                 <div class="flex justify-end gap-3 pt-4">
                     <button wire:click="$set('showModal', false)"
                         class="px-5 py-2.5 rounded-md bg-gray-100 text-gray-800 hover:bg-gray-200 transition">

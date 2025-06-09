@@ -3,6 +3,7 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
+use App\Models\Area;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -11,6 +12,10 @@ class CreateUser extends Component
 
     public $showModal = false;
     public $nombres, $apellidos, $email, $password, $direccion, $celular, $dni;
+    public $areas = [];
+    public $subareas = [];
+    public $areaSeleccionada;
+    public $subareaSeleccionada;
 
     #[On('abrirModalCreacionUsuario')]
     public function abrirModal()
@@ -38,10 +43,22 @@ class CreateUser extends Component
             'direccion' => $this->direccion,
             'phone' => $this->celular,
             'dni' => $this->dni,
+            'area_id' => $this->subareaSeleccionada,
         ]);
 
         $this->reset();
         $this->dispatch('user-saved');
+    }
+
+    public function mount()
+    {
+        $this->areas = Area::whereNull('parent_id')->get();
+        $this->subareas = Area::whereNotNull('parent_id')->get();
+    }
+
+    public function actualizarSubareas()
+    {
+        $this->subareas = Area::where('parent_id', $this->areaSeleccionada)->get();
     }
 
     public function render()

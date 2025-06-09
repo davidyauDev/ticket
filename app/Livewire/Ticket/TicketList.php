@@ -20,30 +20,44 @@ class TicketList extends Component
     protected $listeners = ['user-saved' => '$refresh'];
 
 
-    public function asignarUsuario($id) {
-       $this->dispatch('asignarUsuario', id: $id);
+    public function asignarUsuario($id)
+    {
+        $this->dispatch('asignarUsuario', id: $id);
     }
-    
+
     public function render()
     {
         $user = Auth::user();
-        $tickets = Ticket::query()
-            ->when($this->tipo === 'mis', function ($q) use ($user) {
+
+        $tickets = Ticket::query();
+
+        if ($user->role === 'admin') {
+            // Admin puede ver todos los tickets con filtros globales
+            $tickets->when($this->search, fn($q) => $q->where(function ($q2) {
+                $q2->where('codigo', 'like', "%{$this->search}%")
+                    ->orWhere('id', $this->search);
+            }))
+                ->when($this->filterType, fn($q) => $q->where('tipo', $this->filterType))
+                ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
+        } else {
+            // Usuarios normales: filtrados por tipo y área
+            $tickets->when($this->tipo === 'mis', function ($q) use ($user) {
                 $q->where(function ($q2) use ($user) {
                     $q2->where('assigned_to', $user->id)
                         ->orWhereNull('assigned_to');
                 });
             })
-            ->when($this->tipo === 'pendientes', fn($q) => $q->where('area_id', $user->area_id)->whereNull('assigned_to'))
-            ->when($this->tipo === 'todos', fn($q) => $q->where('area_id', $user->area_id))
-            ->when($this->search, fn($q) => $q->where(function ($q2) {
-                $q2->where('codigo', 'like', "%{$this->search}%")
-                    ->orWhere('id', $this->search);
-            }))
-            ->when($this->filterType, fn($q) => $q->where('tipo', $this->filterType))
-            ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]))
-            ->latest()
-            ->paginate(8);
+                ->when($this->tipo === 'pendientes', fn($q) => $q->where('area_id', $user->area_id)->whereNull('assigned_to'))
+                ->when($this->tipo === 'todos', fn($q) => $q->where('area_id', $user->area_id))
+                ->when($this->search, fn($q) => $q->where(function ($q2) {
+                    $q2->where('codigo', 'like', "%{$this->search}%")
+                        ->orWhere('id', $this->search);
+                }))
+                ->when($this->filterType, fn($q) => $q->where('tipo', $this->filterType))
+                ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
+        }
+
+        $tickets = $tickets->latest()->paginate(8);
 
         return view('livewire.ticket.ticket-list', compact('tickets'));
     }

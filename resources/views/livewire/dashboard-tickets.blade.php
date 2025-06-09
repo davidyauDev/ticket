@@ -105,18 +105,31 @@
         </div>
     </div>
 
-    {{-- FILTROS DE FECHA --}}
+    {{-- FILTROS DE FECHA Y USUARIO --}}
     <div class="flex flex-wrap items-center gap-4">
-        <span class="text-sm font-medium text-gray-700">📅 Filtros de Fecha:</span>
+        <span class="text-sm font-medium text-gray-700">📅 Filtros:</span>
         <div class="flex items-center gap-2">
             <label class="text-sm text-gray-600">Desde:</label>
-            <input type="date" wire:model.live="fechaInicio"
-                class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
+            <input type="date" wire:model.live="fechaInicio" class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
         </div>
         <div class="flex items-center gap-2">
             <label class="text-sm text-gray-600">Hasta:</label>
             <input type="date" wire:model.live="fechaFin" class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
         </div>
+        @auth
+    @if($esAdmin)
+    <div class="flex items-center gap-2">
+        <label class="text-sm text-gray-600">Usuario:</label>
+        <select wire:model.live="usuarioSeleccionado" class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
+            <option value="">Todos</option>
+            @foreach($usuarios as $usuario)
+                <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+            @endforeach
+        </select>
+    </div>
+    @endif
+@endauth
+
     </div>
 
     {{-- GRAFICOS --}}
@@ -157,7 +170,7 @@
                         data: this.datos,
                     }],
                     xaxis: {
-                        categories: ['Pendientes', 'Cerrados', 'Derivados'],
+                        categories: ['Pendientes', 'Cerrados', 'Derivados' , 'Pausados'],
                     },
                     colors: ['#3b82f6'], // Azul de Tailwind
                     noData: {
@@ -184,6 +197,31 @@
                         series: [{
                             name: 'Tickets',
                             data: nuevoValor,
+                        }],
+                        xaxis: {
+                            categories: ['Pendientes', 'Cerrados', 'Derivados'],
+                        },
+                        colors: ['#3b82f6'],
+                        noData: {
+                            text: "No hay datos",
+                            style: { color: '#64748b' }
+                        }
+                    });
+
+                    this.chart.render();
+                });
+
+                this.$watch('$wire.usuarioSeleccionado', () => {
+                    this.chart.destroy();
+                    this.chart = new ApexCharts(el, {
+                        chart: {
+                            type: 'bar',
+                            height: 300,
+                            toolbar: { show: false }
+                        },
+                        series: [{
+                            name: 'Tickets',
+                            data: this.datos,
                         }],
                         xaxis: {
                             categories: ['Pendientes', 'Cerrados', 'Derivados'],

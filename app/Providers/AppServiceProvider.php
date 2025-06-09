@@ -22,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::share('areas', Area::with('children')->whereNull('parent_id')->orderBy('nombre')->get());
+        //View::share('areas', Area::with('children')->whereNull('parent_id')->orderBy('nombre')->get());
     }
 }
