@@ -69,9 +69,10 @@ class User extends Authenticatable
     }
 
     public function historiales()
-{
+    
+    {
     return $this->hasMany(TicketHistorial::class, 'usuario_id');
-}
+    }
 
 
     /**

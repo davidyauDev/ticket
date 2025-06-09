@@ -1,4 +1,30 @@
 <div>
+    <div class="mb-4 flex items-center gap-4">
+        <div class="relative w-full">
+            <svg class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z" />
+            </svg>
+            <input type="text" wire:model.live="search" placeholder="Buscar tickets..."
+                class="w-full text-sm pl-8 pr-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-0 focus:outline-none placeholder:text-gray-400">
+        </div>
+        <div>
+            <select wire:model.live="filterType"
+                class="text-sm bg-white border border-gray-300 rounded-md px-3 py-2 focus:ring-0 focus:outline-none">
+                <option value="">Todos los tipos</option>
+                <option value="consulta">Consulta</option>
+                <option value="ticket">Ticket</option>
+            </select>
+        </div>
+        <div class="flex items-center gap-2">
+            <input type="date" wire:model.live="startDate"
+                class="text-sm bg-white border border-gray-300 rounded-md px-3 py-2 focus:ring-0 focus:outline-none">
+            <span class="text-gray-500">a</span>
+            <input type="date" wire:model.live="endDate"
+                class="text-sm bg-white border border-gray-300 rounded-md px-3 py-2 focus:ring-0 focus:outline-none">
+        </div>
+    </div>
+
     <div class="overflow-auto">
         <table class="w-full text-sm text-left border-gray-100 mt-4">
             <thead class="bg-gray-50 text-gray-700">

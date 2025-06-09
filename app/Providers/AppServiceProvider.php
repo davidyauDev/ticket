@@ -20,8 +20,8 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot()
+    public function boot(): void
     {
-         ///View::share('areas', Area::orderBy('nombre')->get());
+        View::share('areas', Area::with('children')->whereNull('parent_id')->orderBy('nombre')->get());
     }
 }

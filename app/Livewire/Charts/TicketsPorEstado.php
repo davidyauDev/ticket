@@ -14,15 +14,15 @@ class TicketsPorEstado extends Component
     public string $fechaFin;
     public int $chartKey = 0;
 
-public function updatedFechaInicio()
-{
-    $this->chartKey++;
-}
+    public function updatedFechaInicio()
+    {
+        $this->chartKey++;
+    }
 
-public function updatedFechaFin()
-{
-    $this->chartKey++;
-}
+    public function updatedFechaFin()
+    {
+        $this->chartKey++;
+    }
 
     #[Computed]
     public function chart(): array
@@ -43,7 +43,6 @@ public function updatedFechaFin()
         ];
 
         Log::info('Fechas: ' . $this->fechaInicio . ' - ' . $this->fechaFin);
-        Log::info($data);
 
         $chart = LarapexChart::barChart()
             ->setTitle('Tickets por Estado')

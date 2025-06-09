@@ -22,10 +22,10 @@
                 </flux:navlist.item>
             </flux:navlist.group>
             @if(auth()->user()?->role === 'admin')
-                <flux:navlist.group :heading="__('Users')" class="grid">
-                    <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')"
-                        wire:navigate>{{ __('Users') }}</flux:navlist.item>
-                </flux:navlist.group>
+            <flux:navlist.group :heading="__('Users')" class="grid">
+                <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')"
+                    wire:navigate>{{ __('Users') }}</flux:navlist.item>
+            </flux:navlist.group>
             @endif
             <flux:navlist.group :heading="__('Tickets')" class="grid">
                 <flux:navlist.item icon="ticket" :href="route('tickets.index')"
@@ -34,53 +34,19 @@
                     {{ __('Tickets') }}
                 </flux:navlist.item>
             </flux:navlist.group>
-            <flux:navlist.group expandable heading="Areas" :expanded="false" class="grid">
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'operaciones']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'operaciones']))">
-                    Operaciones
+            
+            @foreach ($areas as $area)
+            <flux:navlist.group  expandable heading="{{ $area->nombre }}" :expanded="false" class="grid">
+                @foreach ($area->children as $subarea)
+                <flux:navlist.item href="{{ route('areas.show', ['slug' => $subarea->slug]) }}"
+                    :current="request()->fullUrlIs(route('areas.show', ['slug' => $subarea->slug]))" wire:navigate>
+                    {{ $subarea->nombre }}
                 </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'presupuestos']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'presupuestos']))">
-                    Presupuestos
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'supervisor']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'supervisor']))">
-                    Supervisor
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'tecnicos-lima']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'tecnicos-lima']))">
-                    Técnicos LIMA
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'tecnicos-prov']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'tecnicos-prov']))">
-                    Técnicos PROV
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'sistemas-y-ti']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'sistemas-y-ti']))">
-                    Sistemas y TI
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'programacion-provincia']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'programacion-provincia']))">
-                    Programación Provincia
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'taller']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'taller']))">
-                    Taller
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'ingenieria']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'ingenieria']))">
-                    Ingeniería
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'almacen']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'almacen']))">
-                    Almacén
-                </flux:navlist.item>
-                <flux:navlist.item href="{{ route('areas.show', ['slug' => 'call-center']) }}"
-                    :current="request()->fullUrlIs(route('areas.show', ['slug' => 'call-center']))">
-                    Call Center
-                </flux:navlist.item>
-
+                @endforeach
             </flux:navlist.group>
+            @endforeach
+
+
             {{-- <flux:navlist.group :heading="__('Tickets')" class="bg-dark">
                 <flux:navlist.item icon="ticket" :href="route('call-logs.index')"
                     :current="request()->routeIs('call-logs.index') || request()->is('call-logs')" wire:navigate>
@@ -127,7 +93,5 @@
     </flux:sidebar>
     {{ $slot }}
     @fluxScripts
-
 </body>
-
 </html>

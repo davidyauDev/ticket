@@ -14,6 +14,9 @@ class TicketList extends Component
     use WithPagination;
     public string $search = '';
     public string $tipo = 'todos';
+    public string $filterType = ''; // Filtro por tipo
+    public ?string $startDate = null; // Fecha de inicio
+    public ?string $endDate = null; // Fecha de fin
     protected $listeners = ['user-saved' => '$refresh'];
 
 
@@ -37,6 +40,8 @@ class TicketList extends Component
                 $q2->where('codigo', 'like', "%{$this->search}%")
                     ->orWhere('id', $this->search);
             }))
+            ->when($this->filterType, fn($q) => $q->where('tipo', $this->filterType))
+            ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]))
             ->latest()
             ->paginate(8);
 
