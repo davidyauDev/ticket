@@ -91,7 +91,7 @@
                     </select>
                 </div>
 
-                <div>
+                {{-- <div>
                     <label class="block text-sm font-medium mb-1">Usuario que Registra</label>
                     <select wire:model.defer="form.user_id"
                         class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
@@ -100,7 +100,7 @@
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
 
                 <div>
                     <label class="block text-sm font-medium mb-1">Detalle de la Consulta</label>
@@ -121,3 +121,11 @@
 @endif
 
 </div>
+
+@script
+<script>
+    $wire.on("saved", () => {
+        Swal.fire({ icon: 'success', title: 'Llamada', text: 'Registrado exitosamente' });
+    })
+</script>
+@endscript

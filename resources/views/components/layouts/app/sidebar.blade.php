@@ -46,13 +46,13 @@
             </flux:navlist.group>
             @endforeach --}}
 
-
-            {{-- <flux:navlist.group :heading="__('Tickets')" class="bg-dark">
+            
+             <flux:navlist.group :heading="__('Tickets')" class="bg-dark">
                 <flux:navlist.item icon="ticket" :href="route('call-logs.index')"
                     :current="request()->routeIs('call-logs.index') || request()->is('call-logs')" wire:navigate>
                     {{ __('Llamadas') }}
                 </flux:navlist.item>
-            </flux:navlist.group> --}}
+            </flux:navlist.group> 
         </flux:navlist>
         <flux:spacer />
         <flux:dropdown position="bottom" align="start">

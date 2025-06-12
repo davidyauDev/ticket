@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\CallLog;
 use App\Models\User;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth; // Importar la clase Auth
 
 class Index extends Component
 {
@@ -24,7 +25,7 @@ class Index extends Component
 
     protected $rules = [
         'form.type' => 'required|in:Consulta,Reclamo,Soporte',
-        'form.user_id' => 'required|exists:users,id',
+        'form.user_id' => 'nullable|exists:users,id', // Cambiado a nullable
         'form.description' => 'required|string|min:5'
     ];
 
@@ -58,6 +59,11 @@ class Index extends Component
     {
         $this->validate();
 
+        // Asignar el user_id al usuario logueado si no se proporciona
+        if (empty($this->form['user_id'])) {
+            $this->form['user_id'] = Auth::id();
+        }
+
         if ($this->editingId) {
             CallLog::findOrFail($this->editingId)->update($this->form);
         } else {
@@ -66,7 +72,7 @@ class Index extends Component
 
         $this->resetForm();
         $this->showModal = false;
-        session()->flash('message', 'Llamada registrada exitosamente.');
+         $this->dispatch('saved');
     }
 
     public function edit($id)
