@@ -26,37 +26,7 @@
 
     </div>
 
-    <!-- Estadísticas -->
-    {{-- <div class=" grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="p-4 rounded-lg bg-white border ">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Total Tickets</p>
-                <x-icon name="ticket" class="w-5 h-5 text-blue-500" />
-            </div>
-            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $total }}</p>
-        </div>
-        <div class="p-4 rounded-lg bg-white border ">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Pendientes</p>
-                <x-icon name="clock" class="w-5 h-5 text-yellow-500" />
-            </div>
-            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $pendientes }}</p>
-        </div>
-        <div class="p-4 rounded-lg bg-white border ">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">En Proceso</p>
-                <x-icon name="chart-bar" class="w-5 h-5 text-purple-500" />
-            </div>
-            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $enProceso }}</p>
-        </div>
-        <div class="p-4 rounded-lg bg-white border ">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600">Derivados</p>
-                <x-icon name="users" class="w-5 h-5 text-orange-500" />
-            </div>
-            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $derivados }}</p>
-        </div>
-    </div> --}}
+    
     <!-- Tabs y Búsqueda -->
     <!-- Tabs y Búsqueda agrupados visualmente -->
     <div class="p-4 mt-4 border rounded-xl bg-white ">
