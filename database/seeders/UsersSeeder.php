@@ -30,7 +30,7 @@ class UsersSeeder extends Seeder
                 'dni' => isset($user['dni']) ? intval($user['dni']) : null,
                 'direccion' => $user['direccion'],
                 'phone' => $user['phone'],
-                'area_id' => $subareas ? $subareas[array_rand($subareas)] : null, // Solo subáreas
+                //'area_id' => $subareas ? $subareas[array_rand($subareas)] : null, // Solo subáreas
                 'remember_token' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
