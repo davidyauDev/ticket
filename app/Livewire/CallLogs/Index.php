@@ -21,8 +21,13 @@ class Index extends Component
     public $editingId = null;
     public $suboptions = [];
 
+    public $searchTecnico = '';
+public $tecnicoList = [];
+
+
 
     public $form = [
+        'type' => '',
         'option_id' => '',
         'user_id' => '',
         'tecnico_id' => '',
@@ -30,11 +35,38 @@ class Index extends Component
     ];
 
     protected $rules = [
+        'form.type' => 'required',
         'form.option_id' => 'required|exists:options,id',
         'form.user_id' => 'nullable|exists:users,id', 
         'form.description' => 'required|string|min:5',
         'form.tecnico_id' => 'nullable|exists:users,id', 
     ];
+
+    public function updatedSearchTecnico()
+{
+    $this->tecnicoList = User::whereNull('area_id')
+        ->where('role', '!=', 'admin')
+        ->where(function ($query) {
+            $query->where('firstname', 'like', '%' . $this->searchTecnico . '%')
+                ->orWhere('lastname', 'like', '%' . $this->searchTecnico . '%');
+        })
+        ->limit(10)
+        ->get()
+        ->toArray();
+}
+
+public function selectTecnico($id)
+{
+    $tecnico = User::find($id);
+
+    if ($tecnico) {
+        $this->form['tecnico_id'] = $tecnico->id;
+        $this->searchTecnico = $tecnico->lastname . ' ' . $tecnico->firstname;
+        $this->tecnicoList = [];
+    }
+}
+
+
 
     public function render()
     {
@@ -67,11 +99,13 @@ class Index extends Component
         $this->form = [
             'option_id' => '',
             'user_id' => '',
-            'tecnico_id' => '',
+            'tecnico_id' => null,
             'description' => ''
         ];
 
         $this->editingId = null;
+          $this->searchTecnico = '';
+    $this->tecnicoList = [];
         $this->dispatch('reset-tecnico'); 
     }
 
@@ -86,7 +120,6 @@ class Index extends Component
     {
         FacadesLog::info('Storing call log', $this->form);
         $this->validate();
-        FacadesLog::info('Storing call log', $this->form);
         if (empty($this->form['user_id'])) {
             $this->form['user_id'] = Auth::id();
         }

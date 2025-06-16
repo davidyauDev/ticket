@@ -14,6 +14,7 @@ class CallLog extends Model
         'description',
         'user_id',
         'tecnico_id',
+        'type',
         'option_id'
     ];
 

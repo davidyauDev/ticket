@@ -43,6 +43,8 @@
         <table class="min-w-full text-sm border">
             <thead class="bg-gray-100 text-left">
                 <tr>
+
+                    <th class="px-4 py-2 font-semibold">Tipo</th>
                     <th class="px-4 py-2 font-semibold">Motivo</th>
                     <th class="px-4 py-2 font-semibold">Consulta</th>
                     <th class="px-4 py-2 font-semibold">Usuario</th>
@@ -54,6 +56,8 @@
             <tbody>
                 @forelse ($callLogs as $log)
                 <tr class="border-t hover:bg-gray-50">
+                    <td class="px-4 py-2">{{ $log->type ?? '' }}</td>
+
                     <td class="px-4 py-2">{{ $log->option->label ?? '' }}</td>
                     <td class="px-4 py-2">{{ $log->description }}</td>
                     <td class="px-4 py-2">{{ $log->user->name }}</td>
@@ -102,10 +106,23 @@
 
 
 
+
+
     <!-- Modal -->
     <x-modal wire:model="showModal" class="w-full">
         <div class="bg-white rounded-lg p-6 w-full space-y-4">
             <h3 class="text-lg font-semibold">Registrar Nueva Llamada</h3>
+            <!-- Tipo -->
+            <div>
+                <label class="block text-sm font-medium mb-1">Tipo de Llamada</label>
+                <select wire:model.defer="form.type"
+                    class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                    <option value="Consulta">Consulta</option>
+                    <option value="Reclamo">Reclamo</option>
+                    <option value="Soporte">Soporte</option>
+                </select>
+            </div>
+
 
             <!-- Tipo -->
             <div>
@@ -122,42 +139,32 @@
 
 
             <!-- Técnico con búsqueda -->
-            <div x-data="{
-                search: '',
-                open: false,
-                select(user) {
-                    this.search = `${user.lastname} ${user.firstname}`;
-                    this.open = false;
-                    $wire.set('form.tecnico_id', user.id);
-                },
-                filtered() {
-                    return @js($tecnicos).filter(user =>
-                        (`${user.lastname} ${user.firstname}`).toLowerCase().includes(this.search.toLowerCase())
-                    );
-                },
-                reset() { this.search = ''; },
-                init() {
-                    Livewire.on('reset-tecnico', () => this.reset());
-                    this.search = @js($form['tecnico_id'] ? optional($tecnicos->firstWhere('id', $form['tecnico_id']))->lastname . ' ' . optional($tecnicos->firstWhere('id', $form['tecnico_id']))->firstname : '');
-                }
-            }" x-init="init" class="relative w-full">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
-                <input type="text" x-model="search" @focus="open = true" @click.away="open = false"
-                    placeholder="Buscar técnico..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" />
+<div class="relative w-full">
+    <label class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
 
-                <div x-show="open && filtered().length > 0"
-                    class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                    <template x-for="user in filtered()" :key="user.id">
-                        <div @click="select(user)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm">
-                            <span x-text="user.lastname"></span>
-                            <span x-text="' ' + user.firstname"></span>
-                        </div>
-                    </template>
+    <input type="text"
+        wire:model.live="searchTecnico"
+        placeholder="Buscar técnico..."
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" />
+
+    @if (!empty($tecnicoList))
+        <div class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+            @foreach ($tecnicoList as $user)
+                <div wire:click="selectTecnico({{ $user['id'] }})"
+                    class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm">
+                    {{ $user['lastname'] }} {{ $user['firstname'] }}
                 </div>
+            @endforeach
+        </div>
+    @endif
 
-                @error('form.tecnico_id') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
+    @error('form.tecnico_id')
+    <span class="text-sm text-red-600">{{ $message }}</span>
+    @enderror
+</div>
+
+
+
 
             <!-- Descripción -->
             <div>
@@ -188,5 +195,7 @@
     $wire.on("saved", () => {
         Swal.fire({ icon: 'success', title: 'Llamada', text: 'Registrado exitosamente' });
     });
+
+    Livewire.on('reset-tecnico', () => this.reset());
 </script>
 @endscript
