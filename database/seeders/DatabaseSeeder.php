@@ -30,7 +30,8 @@ class DatabaseSeeder extends Seeder
             //EquiposSeeder::class,
             ///ObservacionSeeder::class,
             //TicketSeeder::class,
-            UsersSeeder::class,
+            ///UsersSeeder::class,
+            OpcionesSeguimientoSeeder::class,
         ]);
     }
 }

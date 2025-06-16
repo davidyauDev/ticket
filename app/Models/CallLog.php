@@ -13,7 +13,8 @@ class CallLog extends Model
         'type',
         'description',
         'user_id',
-        'tecnico_id' // Asegúrate de que este campo esté en la migración
+        'tecnico_id',
+        'option_id'
     ];
 
     // Relación con el modelo User
@@ -27,4 +28,8 @@ class CallLog extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function option()
+    {
+        return $this->belongsTo(Option::class);
+    }
 }

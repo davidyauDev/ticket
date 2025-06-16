@@ -43,7 +43,7 @@
         <table class="min-w-full text-sm border">
             <thead class="bg-gray-100 text-left">
                 <tr>
-                    <th class="px-4 py-2 font-semibold">Tipo</th>
+                    <th class="px-4 py-2 font-semibold">Motivo</th>
                     <th class="px-4 py-2 font-semibold">Consulta</th>
                     <th class="px-4 py-2 font-semibold">Usuario</th>
                     <th class="px-4 py-2 font-semibold">Técnico</th>
@@ -53,39 +53,46 @@
             </thead>
             <tbody>
                 @forelse ($callLogs as $log)
-                    <tr class="border-t hover:bg-gray-50">
-                        <td class="px-4 py-2">
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold
-                                {{
-                                    $log->type === 'Consulta' ? 'bg-black text-white' :
-                                    ($log->type === 'Reclamo' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-800')
-                                }}">
-                                {{ $log->type }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-2">{{ $log->description }}</td>
-                        <td class="px-4 py-2">{{ $log->user->name }}</td>
-                        <td class="px-4 py-2">{{ $log->tecnico->lastname ?? '' }} {{ $log->tecnico->firstname ?? '' }}</td>
-                        <td class="px-4 py-2">{{ $log->created_at->format('d/m/Y, H:i:s') }}</td>
-                        <td class="px-4 py-2 flex gap-2">
-                            <button wire:click="edit({{ $log->id }})" class="text-black-500 hover:text-black-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-pen-icon lucide-user-round-pen"><path d="M2 21a8 8 0 0 1 10.821-7.487"/><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><circle cx="10" cy="8" r="5"/></svg>
-                            </button>
-                            {{-- <button wire:click="delete({{ $log->id }})" class="text-red-500 hover:text-red-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x-icon lucide-user-x"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="8" y2="13"/><line x1="22" x2="17" y1="8" y2="13"/></svg>
-                            </button> --}}
-                        </td>
-                    </tr>
+                <tr class="border-t hover:bg-gray-50">
+                    <td class="px-4 py-2">{{ $log->option->label ?? '' }}</td>
+                    <td class="px-4 py-2">{{ $log->description }}</td>
+                    <td class="px-4 py-2">{{ $log->user->name }}</td>
+                    <td class="px-4 py-2">{{ $log->tecnico->lastname ?? '' }} {{ $log->tecnico->firstname ?? '' }}</td>
+                    <td class="px-4 py-2">{{ $log->created_at->format('d/m/Y, H:i:s') }}</td>
+                    <td class="px-4 py-2 flex gap-2">
+                        <button wire:click="edit({{ $log->id }})" class="text-black-500 hover:text-black-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-user-round-pen-icon lucide-user-round-pen">
+                                <path d="M2 21a8 8 0 0 1 10.821-7.487" />
+                                <path
+                                    d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
+                                <circle cx="10" cy="8" r="5" />
+                            </svg>
+                        </button>
+                        {{-- <button wire:click="delete({{ $log->id }})" class="text-red-500 hover:text-red-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-user-x-icon lucide-user-x">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <line x1="17" x2="22" y1="8" y2="13" />
+                                <line x1="22" x2="17" y1="8" y2="13" />
+                            </svg>
+                        </button> --}}
+                    </td>
+                </tr>
                 @empty
-                    <tr>
-                        <td colspan="6" class="px-4 py-4 text-center text-gray-500">No se encontraron registros.</td>
-                    </tr>
+                <tr>
+                    <td colspan="6" class="px-4 py-4 text-center text-gray-500">No se encontraron registros.</td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
-         <div class="mt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center ml-2 text-sm opacity-70">
+        <div class="mt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center ml-2 text-sm opacity-70">
             <div class="mb-2 sm:mb-0">
-                Mostrando {{ $callLogs->firstItem() }} a {{ $callLogs->lastItem() }} de {{ $callLogs->total() }} registros
+                Mostrando {{ $callLogs->firstItem() }} a {{ $callLogs->lastItem() }} de {{ $callLogs->total() }}
+                registros
             </div>
             <div class="inline-flex rounded-md px-4 py-2">
                 {{ $callLogs->links('vendor.livewire.custom-tailwind') }}
@@ -102,14 +109,17 @@
 
             <!-- Tipo -->
             <div>
-                <label class="block text-sm font-medium mb-1">Tipo de Llamada</label>
-                <select wire:model.defer="form.type"
+                <label class="block text-sm font-medium mb-1">Motivo</label>
+                <select wire:model.defer="form.option_id"
                     class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
-                    <option value="Consulta">Consulta</option>
-                    <option value="Reclamo">Reclamo</option>
-                    <option value="Soporte">Soporte</option>
+                    <option value="">Seleccione un motivo</option>
+                    @foreach ($seguimientoOpciones as $opcion)
+                    <option value="{{ $opcion->id }}">{{ $opcion->label }}</option>
+                    @endforeach
                 </select>
+                @error('form.option_id') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
             </div>
+
 
             <!-- Técnico con búsqueda -->
             <div x-data="{
@@ -139,8 +149,7 @@
                 <div x-show="open && filtered().length > 0"
                     class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                     <template x-for="user in filtered()" :key="user.id">
-                        <div @click="select(user)"
-                            class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm">
+                        <div @click="select(user)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm">
                             <span x-text="user.lastname"></span>
                             <span x-text="' ' + user.firstname"></span>
                         </div>

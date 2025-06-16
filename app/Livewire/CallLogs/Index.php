@@ -5,11 +5,9 @@ namespace App\Livewire\CallLogs;
 use Livewire\Component;
 use App\Models\CallLog;
 use App\Models\User;
-use Illuminate\Container\Attributes\Log;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Auth; // Importar la clase Auth
+use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\Log as FacadesLog;
-
 
 
 class Index extends Component
@@ -21,19 +19,21 @@ class Index extends Component
     public $typeFilter = '';
     public $showModal = false;
     public $editingId = null;
+    public $suboptions = [];
+
 
     public $form = [
-        'type' => 'Consulta',
+        'option_id' => '',
         'user_id' => '',
         'tecnico_id' => '',
         'description' => ''
     ];
 
     protected $rules = [
-        'form.type' => 'required|in:Consulta,Reclamo,Soporte',
-        'form.user_id' => 'nullable|exists:users,id', // Cambiado a nullable
+        'form.option_id' => 'required|exists:options,id',
+        'form.user_id' => 'nullable|exists:users,id', 
         'form.description' => 'required|string|min:5',
-        'form.tecnico_id' => 'nullable|exists:users,id', // Asegúrate de que este campo esté en la migración
+        'form.tecnico_id' => 'nullable|exists:users,id', 
     ];
 
     public function render()
@@ -44,25 +44,35 @@ class Index extends Component
             ->latest()
             ->paginate(10);
 
+        $seguimientoPadre = \App\Models\Option::where('group', 'seguimiento_tecnico')
+            ->where('label', 'SEGUIMIENTO AL TECNICO')
+            ->first();
+
+        $this->suboptions = $seguimientoPadre
+            ? $seguimientoPadre->children()->get()
+            : [];
+
         return view('livewire.call-logs.index', [
             'callLogs' => $callLogs,
             'tecnicos' => User::whereNull('area_id')
                 ->where('role', '!=', 'admin')
-                ->get()
+                ->get(),
+            'seguimientoOpciones' => $this->suboptions,
         ]);
     }
+
 
     public function resetForm()
     {
         $this->form = [
-            'type' => 'Consulta',
+            'option_id' => '',
             'user_id' => '',
             'tecnico_id' => '',
             'description' => ''
         ];
 
         $this->editingId = null;
-        $this->dispatch('reset-tecnico'); // 👈 esto está bien
+        $this->dispatch('reset-tecnico'); 
     }
 
 
@@ -74,6 +84,7 @@ class Index extends Component
 
     public function store()
     {
+        FacadesLog::info('Storing call log', $this->form);
         $this->validate();
         FacadesLog::info('Storing call log', $this->form);
         if (empty($this->form['user_id'])) {
