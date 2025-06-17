@@ -196,6 +196,7 @@
         Swal.fire({ icon: 'success', title: 'Llamada', text: 'Registrado exitosamente' });
     });
 
-    Livewire.on('reset-tecnico', () => this.reset());
+    Livewire.on('reset-tecnico', () => {});
+
 </script>
 @endscript
