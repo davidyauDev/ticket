@@ -27,7 +27,7 @@ public $tecnicoList = [];
 
 
     public $form = [
-        'type' => '',
+        'type' => 'Consulta',
         'option_id' => '',
         'user_id' => '',
         'tecnico_id' => '',
@@ -97,6 +97,7 @@ public function selectTecnico($id)
     public function resetForm()
     {
         $this->form = [
+             'type' => 'Consulta',
             'option_id' => '',
             'user_id' => '',
             'tecnico_id' => null,
