@@ -69,12 +69,12 @@
                     <p class="text-sm font-semibold text-gray-600">Detalles del Ticket</p>
                     <!-- Estado -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                        {{-- <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                         <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
                             @foreach($estados as $estado)
                             <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
                             @endforeach
-                        </flux:select>
+                        </flux:select> --}}
                         @error('estado_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
                     @if($estado_id == 2)

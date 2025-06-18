@@ -52,7 +52,7 @@
                     </td>
                     <td class="p-4 align-middle font-medium">
                         <a href="{{ route('tickets.show', $ticket->id) }}" class="text-blue-500 hover:underline">
-                            {{ $ticket->codigo ?? $ticket->codigo_formateado }}
+                            {{ $ticket->osticket ?? $ticket->codigo }}
                         </a>
                     </td>
                     <td class="py-3 px-4">

@@ -33,7 +33,7 @@ class TicketFormModal extends Component
     public $selectedArea = null;
     public $selectedSubarea = null;
     public $subareas = [];
-    public $codigoInput = '';
+    public $codigoInput = 'OS00';
     public $ticketData = null;
     public $showModal = false;
     public $tipoTicket = 'consulta';

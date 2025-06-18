@@ -62,6 +62,7 @@ class TicketService
 
             $ticketData = [
                 'codigo' => $data['ticketData']['ticket_id'] ?? null,
+                'osticket' => $data['ticketData']['number'] ?? null,
                 'asunto' => $data['ticketData']['subject'] ?? null,
                 'falla_reportada' => $data['ticketData']['falla_reportada'] ?? $data['notes'],
                 'tecnico_dni' => $data['ticketData']['dni'] ?? null,

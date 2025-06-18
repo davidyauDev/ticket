@@ -11,6 +11,7 @@ class Ticket extends Model
 
     protected $fillable = [
         'codigo',
+        'osticket',
         'asunto',
         'comentario',
         'observacion_id',
