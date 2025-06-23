@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Estado;
+use App\Models\TipoSoporte;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -31,7 +32,8 @@ class DatabaseSeeder extends Seeder
             ///ObservacionSeeder::class,
             //TicketSeeder::class,
             ///UsersSeeder::class,
-            OpcionesSeguimientoSeeder::class,
+            //OpcionesSeguimientoSeeder::class,
+            TipoSoporteSeeder::class,
         ]);
     }
 }

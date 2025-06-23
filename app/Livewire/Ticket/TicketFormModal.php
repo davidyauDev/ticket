@@ -11,6 +11,7 @@ use App\Models\Estado;
 use App\Models\Observacion;
 use App\Models\Ticket;
 use App\Models\TicketHistorial;
+use App\Models\TipoSoporte;
 use App\Services\TicketService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -44,13 +45,17 @@ class TicketFormModal extends Component
     public $comentario = '';
     public $notes = '';
     public $archivo;
+    public $soporte = [];
     public bool $resueltoAlCrear = false;
+    public bool $derivar = false;
 
     public function mount()
     {
         $this->areas = Area::whereNull('parent_id')->get()->toArray();
         $this->estados = Estado::where('nombre', 'Pendiente')->get();
         $this->observaciones = Observacion::select('id', 'descripcion')->get()->toArray();
+        $this->soporte = TipoSoporte::select('id', 'nombre')->get()->toArray();
+
     }
 
     #[On('abrirModalCreacionTicket')]

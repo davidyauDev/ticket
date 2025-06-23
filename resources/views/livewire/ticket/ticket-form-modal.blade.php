@@ -142,12 +142,21 @@
                         @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
                     @endif
+
+                    <div class="flex items-center mt-4 space-x-2">
+                        <input type="checkbox" id="resuelto" wire:model="resueltoAlCrear"
+                            class="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500" />
+                        <label for="resuelto" class="text-sm text-gray-700">
+                            Derivar
+                        </label>
+                    </div>
+
                     <!-- Comentario -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
-                        <textarea wire:model="comentario"
+                        <textarea rows="4" wire:model="comentario"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
-                            placeholder="Detalles adicionales..."></textarea>
+                            placeholder="Detalles adicionales..."></textarea rows="4">
                         @error('comentario') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
                     <div class="flex items-center mt-4 space-x-2">
@@ -157,6 +166,18 @@
                             Registrar este ticket como resuelto
                         </label>
                     </div>
+                     <!-- Soporte -->
+                     <div>
+                         <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Soporte</label>
+                         <select wire:model="tipoSoporte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                             <option value="">Seleccione un tipo de soporte</option>
+                             @foreach($soporte as $tipo)
+                                 <option value="{{ $tipo['id'] }}">{{ $tipo['nombre'] }}</option>
+                             @endforeach
+                         </select>
+                         @error('tipoSoporte') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                     </div>
+
                     <!-- Archivo adjunto -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>

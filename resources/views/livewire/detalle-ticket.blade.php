@@ -136,8 +136,8 @@
                     </div>
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Comentario Inicial</label>
-                        <input readonly type="text" value="{{ $ticket->comentario ?? 'No hay comentarios' }}"
-                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
+                        <textarea rows="4" readonly
+                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm">{{ $ticket->comentario ?? 'No hay comentarios' }}</textarea>
                     </div>
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Observación Inicial</label>
@@ -444,12 +444,21 @@
                         @endif
 
                         @if ($item->comentario)
-                        <p class="text-xs text-gray-500 italic mt-1">
-                            {{ Str::limit($item->comentario, 100) }}
-                            @if (strlen($item->comentario) > 100)
-                            <a @click="verMas = true" class="text-blue-500 font-medium cursor-pointer ml-1">ver más</a>
-                            @endif
-                        </p>
+                        <div x-data="{ verMas: false }">
+                            <p class="text-xs text-gray-500 italic mt-1">
+                                <template x-if="verMas">
+                                    <span>{{ $item->comentario }}</span>
+                                </template>
+                                <template x-if="!verMas">
+                                    <span>{{ Str::limit($item->comentario, 100) }}</span>
+                                </template>
+                                @if (strlen($item->comentario) > 100)
+                                <a @click="verMas = !verMas" class="text-blue-500 font-medium cursor-pointer ml-1"
+                                    x-text="verMas ? 'ver menos' : 'ver más'"></a>
+                                @endif
+                            </p>
+                        </div>
+
                         @endif
                         @if ($item->archivos && $item->archivos->count())
                         <div class="mt-1 text-sm text-gray-700">
