@@ -24,6 +24,7 @@ class Ticket extends Model
         'tipo',
         'tecnico_nombres',
         'tecnico_apellidos',
+        'tipo_soporte_id',
         'area_id',
         'assigned_to',
         'created_by',

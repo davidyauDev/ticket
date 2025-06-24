@@ -80,6 +80,7 @@ class TicketService
                 'agencia_id' => $agencia->id ?? null,
                 'cliente_id' => $cliente->id ?? null,
                 'empresa_id' => $empresa->id ?? null,
+                'tipo_soporte_id' => $data['tipo_soporte_id'] ?? null,
             ];
 
             $ticket = Ticket::create($ticketData);
@@ -127,6 +128,8 @@ class TicketService
             DB::commit();
             return $ticket;
         } catch (\Exception $e) {
+            Log::error('Error en TicketService: ' . $e->getMessage());
+
             DB::rollBack();
             Log::error('Error en TicketService: ' . $e->getMessage());
             throw $e;

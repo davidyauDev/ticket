@@ -143,13 +143,7 @@
                     </div>
                     @endif
 
-                    <div class="flex items-center mt-4 space-x-2">
-                        <input type="checkbox" id="resuelto" wire:model="resueltoAlCrear"
-                            class="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500" />
-                        <label for="resuelto" class="text-sm text-gray-700">
-                            Derivar
-                        </label>
-                    </div>
+                   
 
                     <!-- Comentario -->
                     <div>
@@ -159,13 +153,7 @@
                             placeholder="Detalles adicionales..."></textarea rows="4">
                         @error('comentario') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
-                    <div class="flex items-center mt-4 space-x-2">
-                        <input type="checkbox" id="resuelto" wire:model="resueltoAlCrear"
-                            class="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500" />
-                        <label for="resuelto" class="text-sm text-gray-700">
-                            Registrar este ticket como resuelto
-                        </label>
-                    </div>
+                    
                      <!-- Soporte -->
                      <div>
                          <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Soporte</label>
@@ -177,6 +165,14 @@
                          </select>
                          @error('tipoSoporte') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                      </div>
+
+                     <div class="flex items-center mt-4 space-x-2">
+                        <input type="checkbox" id="resuelto" wire:model="resueltoAlCrear"
+                            class="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500" />
+                        <label for="resuelto" class="text-sm text-gray-700">
+                            Registrar este ticket como resuelto
+                        </label>
+                    </div>
 
                     <!-- Archivo adjunto -->
                     <div>

@@ -48,6 +48,7 @@ class TicketFormModal extends Component
     public $soporte = [];
     public bool $resueltoAlCrear = false;
     public bool $derivar = false;
+    public $tipoSoporte = null;
 
     public function mount()
     {
@@ -103,7 +104,6 @@ class TicketFormModal extends Component
             $this->addError('ticketError', 'Busque primero el ticket');
             return;
         }
-
         try {
             $service->registrar([
                 'ticketData' => $this->ticketData,
@@ -115,11 +115,13 @@ class TicketFormModal extends Component
                 'notes' => $this->notes,
                 'archivo' => $this->archivo,
                 'resuelto' => $this->resueltoAlCrear,
+                'tipo_soporte_id' => $this->tipoSoporte
             ]);
 
             $this->resetForm();
             $this->dispatch('user-saved');
         } catch (\Exception $e) {
+            Log::error('Error al registrar ticket: ' . $e->getMessage());
             $this->dispatch('notifyError');
         }
     }
@@ -139,7 +141,8 @@ class TicketFormModal extends Component
             'codigoInput',
             'notes',
             'showModal',
-            'resueltoAlCrear'
+            'resueltoAlCrear',
+            'tipoSoporte'
         ]);
         $this->resetErrorBag();
     }
