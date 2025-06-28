@@ -1,13 +1,12 @@
 <x-layouts.app.sidebar :title="$title ?? null" >
    
     @livewireStyles
-    <flux:main class=" ">
-         @php
-    $areas = \App\Models\Area::all();
-@endphp
+        <x-layouts.app.header2 />
+    
+    <div  class="" >
         {{ $slot }}
         @livewireScripts
 @stack('scripts')
-    </flux:main>
+    </div>
     
 </x-layouts.app.sidebar>

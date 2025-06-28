@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="space-y-6 p-5">
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2 text-sm text-muted-foreground">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"

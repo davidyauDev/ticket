@@ -1,4 +1,4 @@
-<div>
+<div class="p-5 space-x-6">
     {{-- Breadcrumb --}}
     <div class="flex items-center gap-2 text-sm text-muted-foreground mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"
@@ -22,9 +22,11 @@
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <flux:input wire:model.live="search" as="text" placeholder="Buscar Usuario..." icon="magnifying-glass"
                 class="w-full sm:w-auto" />
-            <flux:button wire:click="$dispatch('abrirModalCreacionUsuario')" icon="plus" class="!bg-black !text-white">
+            {{-- <flux:button wire:click="$dispatch('abrirModalCreacionUsuario')" icon="plus" class="!bg-black !text-white">
                 Crear Nuevo Usuario
-            </flux:button>
+            </flux:button> --}}
+
+            <button wire:click="$dispatch('abrirModalCreacionUsuario')" class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white shadow-theme-xs hover:bg-brand-600"> Crear Nuevo Usuario <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.2502 4.99951C9.2502 4.5853 9.58599 4.24951 10.0002 4.24951C10.4144 4.24951 10.7502 4.5853 10.7502 4.99951V9.24971H15.0006C15.4148 9.24971 15.7506 9.5855 15.7506 9.99971C15.7506 10.4139 15.4148 10.7497 15.0006 10.7497H10.7502V15.0001C10.7502 15.4143 10.4144 15.7501 10.0002 15.7501C9.58599 15.7501 9.2502 15.4143 9.2502 15.0001V10.7497H5C4.58579 10.7497 4.25 10.4139 4.25 9.99971C4.25 9.5855 4.58579 9.24971 5 9.24971H9.2502V4.99951Z" fill=""></path></svg></button>
         </div>
         {{-- Table --}}
         <div class="mt-6 border rounded-md overflow-x-auto">
