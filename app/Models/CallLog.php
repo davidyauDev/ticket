@@ -18,7 +18,6 @@ class CallLog extends Model
         'option_id'
     ];
 
-    // Relación con el modelo User
     public function user()
     {
         return $this->belongsTo(User::class);

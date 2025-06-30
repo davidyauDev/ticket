@@ -6,14 +6,14 @@ use Livewire\Component;
 use App\Models\CallLog;
 use App\Models\User;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as FacadesLog;
 
 
 class Index extends Component
 {
     use WithPagination;
-
+     public int $perPage = 8;
 
     public $search = '';
     public $typeFilter = '';
@@ -22,7 +22,7 @@ class Index extends Component
     public $suboptions = [];
 
     public $searchTecnico = '';
-public $tecnicoList = [];
+    public $tecnicoList = [];
 
 
 
@@ -37,34 +37,34 @@ public $tecnicoList = [];
     protected $rules = [
         'form.type' => 'required',
         'form.option_id' => 'required|exists:options,id',
-        'form.user_id' => 'nullable|exists:users,id', 
+        'form.user_id' => 'nullable|exists:users,id',
         'form.description' => 'required|string|min:5',
-        'form.tecnico_id' => 'nullable|exists:users,id', 
+        'form.tecnico_id' => 'nullable|exists:users,id',
     ];
 
     public function updatedSearchTecnico()
-{
-    $this->tecnicoList = User::whereNull('area_id')
-        ->where('role', '!=', 'admin')
-        ->where(function ($query) {
-            $query->where('firstname', 'like', '%' . $this->searchTecnico . '%')
-                ->orWhere('lastname', 'like', '%' . $this->searchTecnico . '%');
-        })
-        ->limit(10)
-        ->get()
-        ->toArray();
-}
-
-public function selectTecnico($id)
-{
-    $tecnico = User::find($id);
-
-    if ($tecnico) {
-        $this->form['tecnico_id'] = $tecnico->id;
-        $this->searchTecnico = $tecnico->lastname . ' ' . $tecnico->firstname;
-        $this->tecnicoList = [];
+    {
+        $this->tecnicoList = User::whereNull('area_id')
+            ->where('role', '!=', 'admin')
+            ->where(function ($query) {
+                $query->where('firstname', 'like', '%' . $this->searchTecnico . '%')
+                    ->orWhere('lastname', 'like', '%' . $this->searchTecnico . '%');
+            })
+            ->limit(10)
+            ->get()
+            ->toArray();
     }
-}
+
+    public function selectTecnico($id)
+    {
+        $tecnico = User::find($id);
+
+        if ($tecnico) {
+            $this->form['tecnico_id'] = $tecnico->id;
+            $this->searchTecnico = $tecnico->lastname . ' ' . $tecnico->firstname;
+            $this->tecnicoList = [];
+        }
+    }
 
 
 
@@ -74,7 +74,7 @@ public function selectTecnico($id)
             ->when($this->search, fn($q) => $q->where('description', 'like', '%' . $this->search . '%'))
             ->when($this->typeFilter, fn($q) => $q->where('type', $this->typeFilter))
             ->latest()
-            ->paginate(10);
+            ->paginate($this->perPage);
 
         $seguimientoPadre = \App\Models\Option::where('group', 'seguimiento_tecnico')
             ->where('label', 'SEGUIMIENTO AL TECNICO')
@@ -97,7 +97,7 @@ public function selectTecnico($id)
     public function resetForm()
     {
         $this->form = [
-             'type' => 'Consulta',
+            'type' => 'Consulta',
             'option_id' => '',
             'user_id' => '',
             'tecnico_id' => null,
@@ -105,9 +105,9 @@ public function selectTecnico($id)
         ];
 
         $this->editingId = null;
-          $this->searchTecnico = '';
-    $this->tecnicoList = [];
-        $this->dispatch('reset-tecnico'); 
+        $this->searchTecnico = '';
+        $this->tecnicoList = [];
+        $this->dispatch('reset-tecnico');
     }
 
 
