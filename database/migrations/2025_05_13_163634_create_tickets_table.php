@@ -30,8 +30,6 @@ return new class extends Migration
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('estado_id')->constrained('estados');
             $table->unsignedInteger('tiempo_total_segundos')->nullable();
-
-
             $table->timestamps();
         });
     }

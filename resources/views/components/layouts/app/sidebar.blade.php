@@ -27,8 +27,8 @@
                 <!-- Estadísticas -->
                 <div class="mb-6">
                     <p class="mb-4 text-xs uppercase text-gray-400">Estadísticas</p>
-                    <a href="{{ route('tickets.estadisticas') }}"
-                        class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 {{ request()->routeIs('tickets.estadisticas') ? 'bg-gray-100 dark:bg-zinc-800' : '' }}"
+                    <a href="{{ route('tickets.dashboard') }}"
+                        class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 {{ request()->routeIs('tickets.dashboard') ? 'bg-gray-100 dark:bg-zinc-800' : '' }}"
                         wire:navigate>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

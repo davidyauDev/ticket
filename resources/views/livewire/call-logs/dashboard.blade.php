@@ -7,15 +7,17 @@
                 @livewire('call-logs.dashboard.yearly-closed-calls-card')
             </div>
         </div>
-        <div class="col-span-12">
-            @livewire('call-logs.dashboard.calls-per-day-bar-chart')
-        </div>
+
         <div class="col-span-12 xl:col-span-12">
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 @livewire('call-logs.dashboard.most-called-technicians-card')
                 @livewire('call-logs.dashboard.top-callers-list')
                 @livewire('call-logs.dashboard.call-types-donut-chart')
             </div>
+        </div>
+
+        <div class="col-span-12">
+            @livewire('call-logs.dashboard.calls-per-day-bar-chart')
         </div>
     </div>
 </div>
