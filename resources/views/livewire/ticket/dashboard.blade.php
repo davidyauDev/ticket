@@ -117,13 +117,20 @@
                 @livewire('ticket.dashboard.tickets-by-support-type-chart')
             </div>
             <div class="col-span-6 xl:col-span-6">
+                @livewire('ticket.dashboard.closed-tickets-chart')
             </div>
             <div class="col-span-12 xl:col-span-12">
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                     @livewire('ticket.dashboard.top-clients-list')
                     @livewire('ticket.dashboard.top-agenciaslist')
                     @livewire('ticket.dashboard.top-equipos-list')
-                    @livewire('call-logs.dashboard.top-callers-list')
+                </div>
+            </div>
+
+            <div class="col-span-12 xl:col-span-12">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-2">
+                    @livewire('ticket.dashboard.top-clients-list')
+                    @livewire('ticket.dashboard.top-agenciaslist')
                 </div>
             </div>
         </div>

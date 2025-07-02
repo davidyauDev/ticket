@@ -1,21 +1,10 @@
 <div class="p-5 space-x-6">
     {{-- Breadcrumb --}}
-    <div class="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" />
-        </svg>
-        <a href="{{ route('dashboard') }}" class="hover:underline text-gray-600">Dashboard</a>
-        <span class="text-gray-400">›</span>
-        <span class="text-black font-medium">Gestión de Usuarios</span>
-    </div>
-
+  
     <flux:separator variant="subtle" class="my-4" />
     <!-- Título y Acción -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
-       
     </div>
     {{-- Main Card --}}
     <div class="mt-8">
@@ -57,8 +46,6 @@
                                 <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
                                     {{ $user->area->nombre ?? 'Admin' }}</span>
                                 </span> 
-                                
-                               
                         </td>
                         <td class="py-3 px-4">
                             <flux:dropdown position="bottom" offset="-15">

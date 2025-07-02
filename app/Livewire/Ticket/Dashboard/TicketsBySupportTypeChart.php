@@ -31,17 +31,14 @@ class TicketsBySupportTypeChart extends Component
 
         foreach ($tiposSoporte as $tipo) {
             $categories[] = $tipo->nombre;
-
             $totalTickets = Ticket::where('tipo_soporte_id', $tipo->id)
                 ->whereYear('created_at', now()->year)
                 ->when($this->selectedMonth, function ($query) {
                     return $query->whereMonth('created_at', $this->selectedMonth);
                 })
                 ->count();
-
             $series[] = $totalTickets;
         }
-
         $this->chartData = [
             'series' => $series,
             'categories' => $categories
