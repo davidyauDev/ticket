@@ -2,7 +2,7 @@
     <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
         <div class="grid grid-cols-12 gap-4 md:gap-6">
             <div class="col-span-12">
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
+                {{-- <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
                     <div
                         class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                         <p class="text-gray-500 text-theme-sm dark:text-gray-400">
@@ -111,7 +111,15 @@
                                 </span></div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
+            </div>
+             <div class="col-span-12 xl:col-span-6">
+                @livewire('ticket.dashboard.tickets-por-area-mesa')
+
+            </div>
+            <div class="col-span-12 xl:col-span-6">
+                @livewire('ticket.dashboard.tickets-por-area')
+
             </div>
             <div class="col-span-12 xl:col-span-6">
                 @livewire('ticket.dashboard.tickets-by-support-type-chart')
@@ -126,12 +134,6 @@
                     @livewire('ticket.dashboard.top-equipos-list')
                 </div>
             </div>
-
-            <div class="col-span-12 xl:col-span-12">
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-2">
-                    @livewire('ticket.dashboard.top-clients-list')
-                    @livewire('ticket.dashboard.top-agenciaslist')
-                </div>
-            </div>
+           
         </div>
     </div>

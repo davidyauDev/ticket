@@ -7,20 +7,18 @@
 
 <body class="">
     <div class="flex h-screen overflow-hidden">
-        <aside x-data="{ sidebarToggle: false, selected: '' }"
-            :class="sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full lg:translate-x-0'"
-            class="fixed left-0 top-0 z-50 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0">
+        <aside class="fixed left-0 top-0 z-50 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0"">
             <!-- Sidebar Header -->
-            <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
-                class="flex items-center gap-2 pt-8 pb-7">
+            <div class="flex items-center justify-between gap-2 pt-8 pb-7">
                 <a href="{{ route('tickets.dashboard') }}" class="flex items-center space-x-2">
-                    <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
-                        <img src="{{ asset('storage/images/image.png') }}" alt="Logo" class="dark:hidden" />
-                    </span>
-                </a>
-                <button @click="sidebarToggle = !sidebarToggle" class="lg:hidden">
+            <span class="logo">
+                <img src="{{ asset('images/image.png') }}" alt="Logo" class="dark:hidden" />
+
+            </span>
+        </a>
+                {{-- <button @click="sidebarToggle = !sidebarToggle" class="lg:hidden">
                     <i class="fa-solid fa-bars"></i>
-                </button>
+                </button> --}}
             </div>
             <!-- Sidebar Menu -->
             <nav class="flex-1 overflow-y-auto">
@@ -132,3 +130,4 @@
 </body>
 
 </html>
+

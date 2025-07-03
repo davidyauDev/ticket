@@ -1,11 +1,9 @@
 <div>
     <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-
         <!-- Valor Principal -->
         <h4 class="font-bold text-gray-800 text-title-sm dark:text-white/90">
             {{ number_format($currentYearCalls) }}
         </h4>
-
         <!-- Detalle -->
         <div class="flex items-end justify-between mt-4 sm:mt-5">
             <div>

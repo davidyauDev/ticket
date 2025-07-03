@@ -5,6 +5,7 @@ use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Areaticket;
 use App\Livewire\CallLogs\Dashboard;
+use App\Livewire\CallLogs\Dashboard\MostCalledTechniciansCard;
 use App\Livewire\CallLogs\Index;
 use App\Livewire\Ticket\Dashboard as DashboardTickets;
 use App\Livewire\DetalleTicket;

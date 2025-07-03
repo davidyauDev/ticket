@@ -172,7 +172,7 @@ class DetalleTicket extends Component
             if ($accionHistorial === 'Derivado') {
                 foreach ($usuariosDestino as $usuario) {
                     try {
-                        Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
+                        //Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
                     } catch (\Exception $e) {
                         Log::error("Error al enviar correo a {$usuario->email}: " . $e->getMessage());
                     }
