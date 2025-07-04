@@ -121,7 +121,14 @@ class DetalleTicket extends Component
                 $this->ticket->assigned_to = null;
                 $comentarioHistorial = $comentarioHistorial;
                 $accionHistorial = 'Derivado';
-                $usuariosDestino = User::where('area_id', $this->selectedSubarea)->get();
+                //$usuariosDestino = User::where('area_id', $this->selectedSubarea)->get();
+                // Correos por defecto si no hay usuarios destino
+                if ($usuariosDestino->isEmpty()) {
+                    $usuariosDestino = collect([
+                        (object)[ 'email' => 'isaac.ramos@cechriza.com' ],
+                        (object)[ 'email' => 'jenyfer.rojas@cechriza.com' ]
+                    ]);
+                }
                 Log::info('Usuarios destino: ', $usuariosDestino->pluck('email')->toArray());
             } elseif ($this->estado_id == 5) { // Cerrado
                 $comentarioHistorial = $comentarioHistorial;
@@ -170,9 +177,10 @@ class DetalleTicket extends Component
             }
             DB::commit();
             if ($accionHistorial === 'Derivado') {
+                Log::info($accionHistorial);
                 foreach ($usuariosDestino as $usuario) {
                     try {
-                        //Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
+                        Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
                     } catch (\Exception $e) {
                         Log::error("Error al enviar correo a {$usuario->email}: " . $e->getMessage());
                     }

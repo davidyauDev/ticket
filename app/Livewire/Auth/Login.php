@@ -39,7 +39,12 @@ class Login extends Component
         }
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
-        $this->redirectIntended(default: route('tickets.dashboard', absolute: false), navigate: true);
+        $user = Auth::user();
+        if ($user && $user->role === 'admin') {
+            $this->redirectIntended(default: route('tickets.dashboard', absolute: false), navigate: true);
+        } else {
+            $this->redirectIntended(default: route('tickets.index', absolute: false), navigate: true);
+        }
     }
 
     /**

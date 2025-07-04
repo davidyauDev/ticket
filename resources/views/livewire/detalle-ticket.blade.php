@@ -258,15 +258,24 @@
                     </div>
                     <!-- Botón -->
                     <div class="flex justify-end mt-4">
-                        <button wire:click="ActualizarTicket" wire:loading.attr="disabled"
-                            class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7" />
-                            </svg>
-                            Actualizar Ticket
-                        </button>
+                       <button 
+    wire:click="ActualizarTicket" 
+    wire:loading.attr="disabled" 
+    wire:target="ActualizarTicket"
+    x-data
+    x-on:click="Swal.fire({ 
+        title: 'Actualizando...', 
+        text: 'Por favor espera.', 
+        allowOutsideClick: false, 
+        didOpen: () => { Swal.showLoading() } 
+    })"
+    class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    Actualizar Ticket
+</button>
+
                     </div>
                     @else
 
@@ -485,6 +494,7 @@
             </div>
         </div>
     </div>
+    
 </div>
 @script
 <script>
@@ -498,5 +508,18 @@
                 text: message,
             });
         });
+        
 </script>
+
+<script>
+    $wire.on("notifyActu", ({ type, message }) => {
+        Swal.close(); // Cierra el loader
+        Swal.fire({
+            icon: type,
+            title: 'Ticket',
+            text: message,
+        });
+    });
+</script>
+
 @endscript

@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
-
 <head>
     @include('partials.head')
 </head>
-
 <body class="">
     <div class="flex h-screen overflow-hidden">
         <aside class="fixed left-0 top-0 z-50 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0"">
             <!-- Sidebar Header -->
             <div class="flex items-center justify-between gap-2 pt-8 pb-7">
-                <a href="{{ route('tickets.dashboard') }}" class="flex items-center space-x-2">
+                <a href="{{ auth()->user()?->role === 'admin' ? route('tickets.dashboard') : route('tickets.index') }}" class="flex items-center space-x-2">
             <span class="logo">
                 <img src="{{ asset('images/image.png') }}" alt="Logo" class="dark:hidden" />
 
@@ -22,6 +20,7 @@
             </div>
             <!-- Sidebar Menu -->
             <nav class="flex-1 overflow-y-auto">
+                 @if(auth()->user()?->role === 'admin')
                 <!-- Estadísticas -->
                 <div class="mb-6">
                     <p class="mb-2 text-xs uppercase text-gray-400">Estadísticas</p>
@@ -53,7 +52,7 @@
                         </span>
                     </a>
                 </div>
-               
+                @endif
                 <!-- Usuarios (Admin) -->
                 @if(auth()->user()?->role === 'admin')
                 <div class="mb-6">
