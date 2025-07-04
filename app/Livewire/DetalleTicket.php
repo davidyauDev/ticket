@@ -15,6 +15,7 @@ use Livewire\Component;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Http;
 
 class DetalleTicket extends Component
 {
@@ -125,8 +126,7 @@ class DetalleTicket extends Component
                 // Correos por defecto si no hay usuarios destino
                 if ($usuariosDestino->isEmpty()) {
                     $usuariosDestino = collect([
-                        (object)[ 'email' => 'isaac.ramos@cechriza.com' ],
-                        (object)[ 'email' => 'jenyfer.rojas@cechriza.com' ]
+                        (object)['email' => 'isaac.ramos@cechriza.com'],
                     ]);
                 }
                 Log::info('Usuarios destino: ', $usuariosDestino->pluck('email')->toArray());
@@ -180,9 +180,23 @@ class DetalleTicket extends Component
                 Log::info($accionHistorial);
                 foreach ($usuariosDestino as $usuario) {
                     try {
-                        Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
+                        // Llamada a tu API de WhatsApp para enviar el mensaje
+                        //             $response = Http::post('http://127.0.0.1:4000/api/send', [
+                        //                 'sessionId' => 'mi-sesion-prueba1',
+                        //                 'to' => '51923158511', // Mismo número que enviaste en Postman
+                        //                 'message' => '¡Hola! 😊 Este es un mensaje de prueba.
+                        // Se te ha asignado un ticket 🎫, por favor revísalo y resuélvelo cuando puedas 💪. ¡Gracias! 🙌'
+                        //             ]);
+
+                        //             // Verificar si la respuesta fue exitosa
+                        //             if (!$response->ok() || !$response->json('success')) {
+                        //                 Log::error('Error al enviar WhatsApp: ' . $response->body());
+                        //             } else {
+                        //                 Log::info('Mensaje de WhatsApp enviado correctamente a ' . $usuario->email);
+                        //             }
+
                     } catch (\Exception $e) {
-                        Log::error("Error al enviar correo a {$usuario->email}: " . $e->getMessage());
+                        Log::error("Error al enviar WhatsApp a {$usuario->email}: " . $e->getMessage());
                     }
                 }
             }
@@ -278,7 +292,7 @@ class DetalleTicket extends Component
         ])
             ->where('ticket_id', $this->ticket->id)
             ->orderBy('created_at', 'desc')
-              ->when($this->searchComentario, function ($query) {
+            ->when($this->searchComentario, function ($query) {
                 $query->where('comentario', 'like', '%' . $this->searchComentario . '%');
             })
             ->get();
