@@ -9,6 +9,7 @@ use App\Livewire\CallLogs\Dashboard\MostCalledTechniciansCard;
 use App\Livewire\CallLogs\Index;
 use App\Livewire\Ticket\Dashboard as DashboardTickets;
 use App\Livewire\DetalleTicket;
+use App\Livewire\Settings\SettingsMainComponent;
 use App\Livewire\Ticket\TicketManager;
 use App\Livewire\Users\Index as UsersIndex;
 
@@ -33,9 +34,10 @@ Route::get('/tickets', TicketManager::class)->middleware('auth')->name('tickets.
 
 Route::get('/areas/{slug}', Areaticket::class)->name('areas.show');
 Route::prefix('settings')->name('settings.')->middleware('auth')->group(function () {
-    Route::redirect('/', '/settings/profile');
-    Route::get('/profile', Profile::class)->name('profile');
-    Route::get('/password', Password::class)->name('password');
-    Route::get('/appearance', Appearance::class)->name('appearance');
+    //Route::redirect('/', '/settings/profile');
+   // Route::get('/profile', Profile::class)->name('profile');
+    //Route::get('/password', Password::class)->name('password');
+    //Route::get('/appearance', Appearance::class)->name('appearance');
+    Route::get('/', SettingsMainComponent::class)->name('index'); // Nueva ruta para settings principal
 });
 require __DIR__ . '/auth.php';

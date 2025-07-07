@@ -10,7 +10,6 @@
         <span class="text-gray-400">›</span>
         <span class="text-black font-medium">Gestión de Tickets</span>
     </div>
-
     <!-- Título y Acción -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Gestión de Tickets</h1>
@@ -24,10 +23,7 @@
             Solo las áreas bajo <strong>Mesa de Ayuda</strong> pueden crear tickets.
         </span>
         @endif
-
     </div>
-
-    
     <!-- Tabs y Búsqueda -->
     <!-- Tabs y Búsqueda agrupados visualmente -->
     <div class="p-4 mt-4 border rounded-xl bg-white ">
@@ -47,16 +43,12 @@
                     Todos del Área
                 </button>
             </div>
-
             <!-- Buscador + Filtro -->
-           
         </div>
     </div>
-
     <!-- Tabla y Modal -->
     <livewire:ticket.ticket-list :tipo="$tab" wire:key="tickets-table-{{ $tab }}" />
     <livewire:ticket.ticket-form-modal wire:key="ticket-form-modal" />
-
 </div>
 @script
 <script>

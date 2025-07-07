@@ -52,6 +52,7 @@
                         </span>
                     </a>
                 </div>
+              
                 @endif
                 <!-- Usuarios (Admin) -->
                 @if(auth()->user()?->role === 'admin')
@@ -109,6 +110,20 @@
                     <div style="display: none;">
                         <ul class="mt-2 space-y-1 ml-9"></ul>
                     </div>
+                </div>
+
+                  <!-- Settings -->
+                <div class="mb-6">
+                    <p class="mb-2 text-xs uppercase text-gray-400">Settings</p>
+                    <a href="{{ route('settings.index') }}" wire:navigate
+                        class="menu-item group {{ request()->routeIs('settings.index') ? 'bg-gray-100 dark:bg-zinc-800' : '' }}">
+                        <span class="{{ request()->routeIs('settings.index') ? 'text-blue-600' : 'text-gray-500 dark:text-gray-400' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09c0 .66.38 1.26 1 1.51a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.66 0 1.26.38 1.51 1H21a2 2 0 0 1 0 4h-.09c-.13 0-.26.03-.38.08z"/></svg>
+                        </span>
+                        <span class="menu-item-text ml-2 {{ request()->routeIs('settings.index') ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-400' }}">
+                            Settings
+                        </span>
+                    </a>
                 </div>
             </nav>
         </aside>

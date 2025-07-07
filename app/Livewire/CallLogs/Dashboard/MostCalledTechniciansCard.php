@@ -44,7 +44,7 @@ class MostCalledTechniciansCard extends Component
             ->get()
             ->map(function ($log) {
                 return [
-                    'name' => $log->tecnico->name ?? 'Sin Nombre',
+                    'name' => $log->tecnico->name.$log->tecnico->lastname ?? 'Sin Nombre',
                     'total_calls' => $log->total_calls
                 ];
             })
@@ -76,7 +76,7 @@ class MostCalledTechniciansCard extends Component
     $grouped = [];
 
     foreach ($calls as $call) {
-        $technicianName = $call->tecnico->name ?? 'Sin Nombre';
+        $technicianName = $call->tecnico->name.$call->tecnico->lastname ?? 'Sin Nombre';
 
         if (!isset($grouped[$technicianName])) {
             $grouped[$technicianName] = [

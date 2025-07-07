@@ -26,7 +26,9 @@ class User extends Authenticatable
         'dni',
         'firstname',
         'lastname',
-        'area_id'
+        'area_id',
+        'available',
+        'priority'
     ];
 
     /**

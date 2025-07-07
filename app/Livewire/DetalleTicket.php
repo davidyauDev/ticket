@@ -28,7 +28,7 @@ class DetalleTicket extends Component
     public $estado_id;
     public $observacion = '';
     public $comentario = '';
-    public $selectedArea = null;
+    public $selectedArea = 5;
     public string $archivoNombre = '';
     public $subareas = [];
     public $selectedSubarea = null;
@@ -39,7 +39,7 @@ class DetalleTicket extends Component
         $this->ticket = Ticket::findOrFail($ticket);
         $this->areas = Area::whereNull('parent_id')->get()->toArray();
         $this->estados = Estado::all();
-        $this->subareas = Area::where('parent_id', 1)->get()->toArray();
+        $this->subareas = Area::where('parent_id', 5)->get()->toArray();
     }
 
     public function getFechaInicioProperty()
@@ -130,6 +130,28 @@ class DetalleTicket extends Component
                     ]);
                 }
                 Log::info('Usuarios destino: ', $usuariosDestino->pluck('email')->toArray());
+
+                // Buscar usuario disponible por prioridad ascendente (dinámico)
+                $usuarioAsignado = null;
+                $prioridades = User::where('area_id', $this->selectedSubarea)
+                    ->where('available', true)
+                    ->orderBy('priority')
+                    ->pluck('priority')
+                    ->unique();
+                foreach ($prioridades as $prioridad) {
+                    $usuarioAsignado = User::where('area_id', $this->selectedSubarea)
+                        ->where('available', true)
+                        ->where('priority', $prioridad)
+                        ->first();
+                    if ($usuarioAsignado) {
+                        break;
+                    }
+                }
+                if ($usuarioAsignado) {
+                    $this->ticket->assigned_to = $usuarioAsignado->id;
+                } else {
+                    $this->ticket->assigned_to = null;
+                }
             } elseif ($this->estado_id == 5) { // Cerrado
                 $comentarioHistorial = $comentarioHistorial;
                 $accionHistorial = 'Cerrado';

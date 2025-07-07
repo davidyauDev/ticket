@@ -121,8 +121,8 @@
                     @php
                     $estado = strtolower($ticket->estado->nombre ?? 'sin estado');
                     $estadoClass = match ($estado) {
-                    'pendiente' => 'bg-yellow-100 text-yellow-800',
-                    'cerrado' => 'bg-green-100 text-green-800',
+                    'pendiente' => 'bg-green-100 text-green-700', // Ahora verde
+                    'cerrado' => 'bg-red-100 text-red-700',
                     'derivado' => 'bg-blue-100 text-blue-800',
                     'anulado' => 'bg-red-100 text-red-700',
                     default => 'bg-gray-100 text-gray-600',
@@ -131,7 +131,7 @@
                     <td class="py-3 px-4">
                         <span
                             class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $estadoClass }}">
-                            {{ ucfirst($ticket->estado->nombre ?? 'Sin estado') }}
+                            {{ $estado === 'pendiente' ? 'En proceso' : ucfirst($ticket->estado->nombre ?? 'Sin estado') }}
                         </span>
                     </td>
                     <td class="py-3 px-4">
