@@ -17,7 +17,7 @@ class ReassignUnresolvedTickets extends Command
     {
         $tickets = Ticket::where('estado_id', 2)
             ->whereNotNull('assigned_to')
-            ->where('updated_at', '<=', now()->subMinutes(30))
+            // ->where('updated_at', '<=', now()->subMinutes(30))
             ->get();
 
         foreach ($tickets as $ticket) {
