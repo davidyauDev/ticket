@@ -10,11 +10,10 @@
     </div>
 
     @if(session()->has('error'))
-<div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
-    {{ session('error') }}
-</div>
-@endif
-
+    <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
+        {{ session('error') }}
+    </div>
+    @endif
 
     @if(session()->has('success'))
     <div class="mb-4 p-3 bg-green-100 text-green-700 rounded">
@@ -58,8 +57,6 @@
             No hay agentes en esta área.
         </li>
         @endforelse
-
-
     </ul>
 
     <div class="mt-6">
@@ -77,7 +74,6 @@
             transform: translateX(100%);
             /* Mueve el círculo */
         }
-
         .dot {
             transition: transform 0.3s ease;
         }
