@@ -302,6 +302,40 @@ class DetalleTicket extends Component
         return $this->ticket->assigned_to === Auth::id();
     }
 
+
+    public function asignarme()
+    {
+        if ($this->ticket->estado_id !== 2 || Auth::user()->area_id !== $this->ticket->area_id) {
+            $this->dispatch('notifyActu', type: 'error', message: 'No puedes asignarte este ticket.');
+            return;
+        }
+
+        $this->ticket->assigned_to = Auth::id();
+        $this->ticket->estado_id = 1; // Cambia a pendiente
+        $this->ticket->save();
+
+        // Cierra historial anterior
+        TicketHistorial::where('ticket_id', $this->ticket->id)
+            ->where('is_current', true)
+            ->update([
+                'ended_at' => now(),
+                'is_current' => false,
+            ]);
+
+        // Crea nuevo historial
+        $this->ticket->historiales()->create([
+            'usuario_id' => Auth::id(),
+            'estado_id' => 1,
+            'accion' => 'Asignado manualmente',
+            'comentario' => 'El ticket fue asignado manualmente por el usuario.',
+            'started_at' => now(),
+            'is_current' => true,
+        ]);
+
+        $this->dispatch('notifyActu', type: 'success', message: 'Te has asignado el ticket correctamente.');
+    }
+
+
     public function render()
     {
         $historiales = TicketHistorial::with([
