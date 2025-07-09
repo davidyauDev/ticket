@@ -27,7 +27,7 @@ class Index extends Component
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
-            ->paginate(13);
+            ->paginate(10);
 
         return view('livewire.users.index', [
             'users' => $users,

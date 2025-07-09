@@ -2,16 +2,28 @@
 
 namespace App\Livewire\Users;
 
+use App\Models\Area;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class EditUser extends Component
 {
     public $showModal = false;
-
     public $userId;
     public $nombres, $apellidos, $email, $password, $direccion, $celular, $dni;
+    public $areas = [];
+    public $subareas = [];
+    public $areaSeleccionada = null;
+    public $subareaSeleccionada = null;
+
+    public function mount()
+    {
+        $this->areas = \App\Models\Area::whereNull('parent_id')->get();
+        $this->subareas = collect(); // vacío hasta que se cargue un área
+    }
+
 
     #[On('editarUsuario')]
     public function cargarUsuario($id)
@@ -25,6 +37,19 @@ class EditUser extends Component
         $this->dni = $user->dni;
         $this->direccion = $user->direccion;
         $this->celular = $user->celular;
+        $this->subareaSeleccionada = $user->area_id;
+
+        $subarea = Area::find($user->area_id);
+        $areaPadre = $subarea?->parent;
+        if ($areaPadre) {
+            $this->areaSeleccionada = $areaPadre->id;
+            Log::info($this->areaSeleccionada);
+            $this->subareas = Area::where('parent_id', $areaPadre->id)->get();
+            Log::info($this->subareas);
+        } else {
+            $this->areaSeleccionada = null;
+            $this->subareas = collect();
+        }
 
         $this->showModal = true;
     }
@@ -49,12 +74,19 @@ class EditUser extends Component
             'dni' => $this->dni,
             'direccion' => $this->direccion,
             'celular' => $this->celular,
+            'area_id' => $this->subareaSeleccionada,
         ]);
 
         $this->reset();
         $this->showModal = false;
 
         $this->dispatch('user-updated');
+    }
+
+    public function actualizarSubareas()
+    {
+        $this->subareas = \App\Models\Area::where('parent_id', $this->areaSeleccionada)->get();
+        $this->subareaSeleccionada = null;
     }
 
     public function render()
