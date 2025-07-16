@@ -6,18 +6,18 @@
                 <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                Crear Nuevo Ticket
+                Crear Nuevo Ticket de Llamada
             </h2>
             <p class="text-sm text-gray-500 mb-4">Completa los datos para registrar el ticket.</p>
             <hr class="mb-6">
             @if ($errors->any())
-            <div class="p-3 mb-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                <ul class="list-disc list-inside text-sm">
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+                <div class="p-3 mb-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
             <!-- Formulario -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -31,37 +31,44 @@
                             <flux:select.option value="ticket">Ticket</flux:select.option>
                             <flux:select.option value="consulta">Consulta</flux:select.option>
                         </flux:select>
-                        @error('tipoTicket') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        @error('tipoTicket')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>
                     @if ($tipoTicket == 'ticket')
-                    <!-- Código -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Código del ticket</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <input wire:model="codigoInput"
-                                class="col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
-                                placeholder="Código">
-                            <button wire:click="buscarTicket" wire:loading.attr="disabled"
-                                class="col-span-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 flex justify-center items-center gap-1">
-                                <span>Buscar</span>
-                            </button>
+                        <!-- Código -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Código del ticket</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input wire:model="codigoInput"
+                                    class="col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
+                                    placeholder="Código">
+                                <button wire:click="buscarTicket" wire:loading.attr="disabled"
+                                    class="col-span-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 flex justify-center items-center gap-1">
+                                    <span>Buscar</span>
+                                </button>
+                            </div>
+                            @error('codigoInput')
+                                <span class="text-red-600 text-sm">{{ $message }}</span>
+                            @enderror
+                            @error('ticketError')
+                                <span class="text-red-600 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
-                        @error('codigoInput') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                        @error('ticketError') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                    </div>
                     @endif
                     <!-- Datos del ticket -->
-                    @if($ticketData)
-                    <div class="bg-gray-100 p-3 rounded-lg shadow text-sm text-gray-800">
-                        <h3 class="text-base font-semibold mb-2">🎫 Ticket {{ $ticketData['number'] }}</h3>
-                        <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
-                        <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
-                        <p><strong>Equipo:</strong> {{ $ticketData['serie'] }} - {{ $ticketData['modelo'] }}</p>
-                        <p><strong>Usuario:</strong> {{ $ticketData['nombres'] }} {{ $ticketData['apellidos'] }}</p>
-                        <p><strong>Agencia:</strong> {{ $ticketData['agencia'] }}</p>
-                        <p><strong>Cliente:</strong> {{ $ticketData['cliente'] }}</p>
-                        <p><strong>Empresa:</strong> {{ $ticketData['empresa'] }}</p>
-                    </div>
+                    @if ($ticketData)
+                        <div class="bg-gray-100 p-3 rounded-lg shadow text-sm text-gray-800">
+                            <h3 class="text-base font-semibold mb-2">🎫 Ticket {{ $ticketData['number'] }}</h3>
+                            <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
+                            <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
+                            <p><strong>Equipo:</strong> {{ $ticketData['serie'] }} - {{ $ticketData['modelo'] }}</p>
+                            <p><strong>Usuario:</strong> {{ $ticketData['nombres'] }} {{ $ticketData['apellidos'] }}
+                            </p>
+                            <p><strong>Agencia:</strong> {{ $ticketData['agencia'] }}</p>
+                            <p><strong>Cliente:</strong> {{ $ticketData['cliente'] }}</p>
+                            <p><strong>Empresa:</strong> {{ $ticketData['empresa'] }}</p>
+                        </div>
                     @endif
                 </div>
                 <!-- Columna 2 -->
@@ -71,39 +78,47 @@
                     <div>
                         {{-- <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                         <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
-                            @foreach($estados as $estado)
+                            @foreach ($estados as $estado)
                             <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
                             @endforeach
                         </flux:select> --}}
-                        @error('estado_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        @error('estado_id')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>
-                    @if($estado_id == 2)
-                    <!-- Área principal -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
-                        <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
-                            @foreach($areas as $area)
-                            <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}</flux:select.option>
-                            @endforeach
-                        </flux:select>
-                        @error('selectedArea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                    </div>
-                    <!-- Subárea (solo si hay área seleccionada) -->
-                    @if (!empty($subareas))
-                    <div class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Subárea</label>
-                        <flux:select wire:model.live="selectedSubarea" placeholder="Seleccione una subárea...">
-                            @foreach($subareas as $sub)
-                            <flux:select.option value="{{ $sub['id'] }}">{{ $sub['nombre'] }}</flux:select.option>
-                            @endforeach
-                        </flux:select>
-                        @error('selectedSubarea') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                    </div>
-                    @endif
+                    @if ($estado_id == 2)
+                        <!-- Área principal -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
+                            <flux:select wire:model.live="selectedArea" placeholder="Seleccione un área...">
+                                @foreach ($areas as $area)
+                                    <flux:select.option value="{{ $area['id'] }}">{{ $area['nombre'] }}
+                                    </flux:select.option>
+                                @endforeach
+                            </flux:select>
+                            @error('selectedArea')
+                                <span class="text-red-600 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <!-- Subárea (solo si hay área seleccionada) -->
+                        @if (!empty($subareas))
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Subárea</label>
+                                <flux:select wire:model.live="selectedSubarea" placeholder="Seleccione una subárea...">
+                                    @foreach ($subareas as $sub)
+                                        <flux:select.option value="{{ $sub['id'] }}">{{ $sub['nombre'] }}
+                                        </flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                @error('selectedSubarea')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endif
                     @endif
                     <!-- Observación -->
                     @if ($tipoTicket == 'ticket')
-                    <div x-data="{
+                        {{-- <div x-data="{
                         open: false,
                         search: '',
                         filtered() {
@@ -132,18 +147,59 @@
                             </template>
                         </div>
                         @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                    </div>
+                    </div> --}}
                     @else
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                        <textarea wire:model="observacion"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
-                            placeholder="Escribe una observación..."></textarea>
-                        @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
+                            <textarea wire:model="observacion"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
+                                placeholder="Escribe una observación..."></textarea>
+                            @error('observacion')
+                                <span class="text-red-600 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
+                    <!-- Derivar -->
+                    <div class="flex items-center mt-4 space-x-2">
+                        <input type="checkbox" id="derivar" wire:model.live="derivar"
+                            class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
+                        <label for="derivar" class="text-sm text-gray-700">
+                            Derivar este ticket
+                        </label>
                     </div>
+
+                    @if ($derivar)
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Motivo de derivación</label>
+                            <select wire:model="motivo_derivacion"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                                <option value="">Seleccione un motivo</option>
+                                @foreach ($motivosDerivacion as $motivo)
+                                    <option value="{{ $motivo }}">{{ $motivo }}</option>
+                                @endforeach
+                            </select>
+                            @error('motivo_derivacion')
+                                <span class="text-red-600 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
                     @endif
 
-                   
+                    <!-- Soporte -->
+                    @if (!$derivar)
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Soporte</label>
+                            <select wire:model="tipoSoporte"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                                <option value="">Seleccione un tipo de soporte</option>
+                                @foreach ($soporte as $tipo)
+                                    <option value="{{ $tipo['id'] }}">{{ $tipo['nombre'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('tipoSoporte')
+                                <span class="text-red-600 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
 
                     <!-- Comentario -->
                     <div>
@@ -151,29 +207,20 @@
                         <textarea rows="4" wire:model="comentario"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"
                             placeholder="Detalles adicionales..."></textarea rows="4">
-                        @error('comentario') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        @error('comentario')
+    <span class="text-red-600 text-sm">{{ $message }}</span>
+@enderror
                     </div>
-                    
-                     <!-- Soporte -->
-                     <div>
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Soporte</label>
-                         <select wire:model="tipoSoporte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
-                             <option value="">Seleccione un tipo de soporte</option>
-                             @foreach($soporte as $tipo)
-                                 <option value="{{ $tipo['id'] }}">{{ $tipo['nombre'] }}</option>
-                             @endforeach
-                         </select>
-                         @error('tipoSoporte') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                     </div>
-
-                     <div class="flex items-center mt-4 space-x-2">
+                  
+                     @if (!$derivar)
+<div class="flex items-center mt-4 space-x-2">
                         <input type="checkbox" id="resuelto" wire:model="resueltoAlCrear"
                             class="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500" />
                         <label for="resuelto" class="text-sm text-gray-700">
-                            Registrar este ticket como resuelto
+                            Registrar llamada como resuelta
                         </label>
                     </div>
-
+@endif
                     <!-- Archivo adjunto -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>
@@ -186,11 +233,12 @@
                             </svg>
                             <span class="text-sm text-gray-600 font-medium">Arrastra o haz clic para subir
                                 archivo</span>
-                            <span class="text-xs text-gray-400">{{ $archivoNombre ?: 'Ningún archivo seleccionado'
-                                }}</span>
+                            <span class="text-xs text-gray-400">{{ $archivoNombre ?: 'Ningún archivo seleccionado' }}</span>
                             <input id="archivo" type="file" wire:model="archivo" class="hidden" />
                         </label>
-                        @error('archivo') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        @error('archivo')
+    <span class="text-red-600 text-sm">{{ $message }}</span>
+@enderror
                         <div wire:loading wire:target="archivo" class="text-sm text-gray-500 mt-1">Subiendo archivo...
                         </div>
                     </div>
@@ -204,7 +252,7 @@
                 </button>
                 <button wire:click="registrarTicket" wire:loading.attr="disabled"
                     class="px-5 py-2.5 bg-black text-white rounded-md hover:bg-gray-900">
-                    Registrar Ticket
+                    Guardar Llamada
                 </button>
             </div>
         </div>
