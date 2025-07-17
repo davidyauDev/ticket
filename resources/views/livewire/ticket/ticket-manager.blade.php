@@ -13,6 +13,8 @@
     <!-- Título y Acción -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Gestión de Tickets</h1>
+        <h1>Hola</h1>
+        <h1>{{ auth()->user()?->area }}</h1>
         @if(Auth()->user()?->area?->parent_id === 1)
         {{ Auth()->user()?->area?->parent_id }}
         {{-- <flux:button icon="plus" class="bg-black" variant="primary" wire:click="$dispatch('abrirModalCreacionTicket')">
