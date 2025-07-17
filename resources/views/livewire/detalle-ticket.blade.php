@@ -121,8 +121,7 @@
                 <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Falla Reportada</label>
-                        <input readonly type="text" value="{{ $ticket->falla_reportada ?? 'Sin información' }}"
-                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
+<textarea readonly rows="3" class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm">{{ $ticket->falla_reportada ?? 'Sin información' }}</textarea>
                     </div>
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Tipo</label>
