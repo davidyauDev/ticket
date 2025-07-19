@@ -264,7 +264,9 @@
           @click.prevent="dropdownOpen = ! dropdownOpen"
         >
           <span class="mr-3 h-11 w-11 overflow-hidden rounded-full">
-            <img src="{{ asset('images/owner.jpg') }}" alt="User" />
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-brand-100">
+                                    <span class="text-xs font-semibold text-brand-500">{{ auth()->user()->initials() }}</span>
+                                </div>
           </span>
 
           <span class="text-theme-sm mr-1 block font-medium"> {{ auth()->user()->name }} </span>

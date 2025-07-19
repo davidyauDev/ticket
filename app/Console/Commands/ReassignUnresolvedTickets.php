@@ -19,15 +19,21 @@ class ReassignUnresolvedTickets extends Command
             ->whereNotNull('assigned_to')
             ->get();
 
+        Log::info('Reasignando tickets sin resolver', [
+            'count' => $tickets->count(),
+            'timestamp' => now(),
+        ]);
+
         foreach ($tickets as $ticket) {
             $areaId = $ticket->area_id;
-            $usuariosPrevios = TicketHistorial::where('ticket_id', $ticket->id)->pluck('usuario_id')->toArray();
+            $usuariosPrevios = TicketHistorial::where('ticket_id', $ticket->id)->pluck('asignado_a')->toArray();
             $usuariosDisponibles = User::where('area_id', $areaId)
                 ->whereNotIn('id', array_merge($usuariosPrevios, [$ticket->assigned_to]))
                 ->where('available', true)
                 ->orderBy('priority')
                 ->get();
-
+            Log::info($usuariosDisponibles->toArray());
+            Log::info($usuariosPrevios);
             if ($usuariosDisponibles->isNotEmpty()) {
                 $nuevoResponsable = $usuariosDisponibles->first()->id;
                 $nuevoResponsableName = $usuariosDisponibles->first()->name;

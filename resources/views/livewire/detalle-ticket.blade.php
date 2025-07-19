@@ -31,7 +31,10 @@
                 $esMiArea = Auth::check() && Auth::user()->area_id === $ticket->area_id;
             @endphp
 
-            @if ($ticketDerivado && $esMiArea)
+            @php
+                $yaAsignadoAMi = isset($ticket->assignedUser) && Auth::check() && $ticket->assignedUser->id === Auth::user()->id;
+            @endphp
+            @if ($ticketDerivado && $esMiArea && !$yaAsignadoAMi)
                 <button wire:click="asignarme"
                     class="ml-4 inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-full shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -47,13 +50,6 @@
         </div>
         <!-- Leyenda y fechas -->
         <div class="flex items-center flex-wrap gap-4 text-sm text-gray-700">
-            <!-- Leyenda estados -->
-            {{-- <div class="flex items-center gap-2">
-                <span class="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700 font-medium">Pendiente</span>
-                <span class="text-xs px-2 py-1 rounded-full border text-gray-700">En Proceso</span>
-                <span class="text-xs px-2 py-1 rounded-full border text-gray-700">Cerrado</span>
-                <span class="text-xs px-2 py-1 rounded-full border text-gray-700">Anulado</span>
-            </div> --}}
             <!-- Fechas -->
             <div class="flex flex-wrap items-center gap-6 text-sm text-gray-600">
                 <div class="flex items-center gap-2">
@@ -121,12 +117,14 @@
                 <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Falla Reportada</label>
-<textarea readonly rows="3" class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm">{{ $ticket->falla_reportada ?? 'Sin información' }}</textarea>
+                        <textarea readonly rows="3"
+                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm">{{ $ticket->falla_reportada ?? 'Sin información' }}</textarea>
                     </div>
-                    <div>
-                        <label class="block text-gray-500 font-medium mb-1">Tipo</label>
-                        <span
-                            class="inline-block rounded-full bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 mt-1">{{ strtoupper($ticket->tipo ?? 'No especificado') }}</span>
+                   
+                      <div>
+                        <label class="block text-gray-500 font-medium mb-1">Comentario Inicial</label>
+                        <textarea rows="3" readonly
+                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm">{{ $ticket->comentario ?? 'No hay comentarios' }}</textarea>
                     </div>
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Técnico</label>
@@ -143,15 +141,22 @@
                         <input readonly type="text" value="{{ $ticket->area->nombre ?? 'Sin Área' }}"
                             class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
                     </div>
+                    @if (!empty($ticket->motivo_derivacion))
+                        <div>
+                            <label class="block text-gray-500 font-medium mb-1">Motivo de Derivación</label>
+                            <input readonly type="text" value="{{ $ticket->motivo_derivacion }}"
+                                class="w-full rounded-md border border-gray-200 bg-yellow-50 px-3 py-2 text-yellow-800 text-sm font-semibold" />
+                        </div>
+                    @endif
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Asignado a</label>
                         <input readonly type="text" value="{{ $ticket->assignedUser->name ?? 'No asignado' }}"
                             class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
                     </div>
-                    <div>
-                        <label class="block text-gray-500 font-medium mb-1">Comentario Inicial</label>
-                        <textarea rows="4" readonly
-                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm">{{ $ticket->comentario ?? 'No hay comentarios' }}</textarea>
+                     <div>
+                        <label class="block text-gray-500 font-medium mb-1">Tipo</label>
+                        <span
+                            class="inline-block rounded-full bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 mt-1">{{ strtoupper($ticket->tipo ?? 'No especificado') }}</span>
                     </div>
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Observación Inicial</label>

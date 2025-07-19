@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             //AgenciaSeeder::class,
             //EquiposSeeder::class,
             ObservacionSeeder::class,
-            TicketSeeder::class,
+            //TicketSeeder::class,
             UsersSeeder::class,
             OpcionesSeguimientoSeeder::class,
             TipoSoporteSeeder::class,

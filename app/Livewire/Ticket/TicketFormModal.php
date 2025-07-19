@@ -30,7 +30,7 @@ class TicketFormModal extends Component
     public $selectedArea = null;
     public $selectedSubarea = null;
     public $subareas = [];
-    public $codigoInput = 'OS00';
+    public $codigoInput = 'OS0056400';
     public $ticketData = null;
     public $showModal = false;
     public $tipoTicket = 'ticket';
@@ -127,7 +127,6 @@ class TicketFormModal extends Component
                 'tipo_soporte_id' => $this->tipoSoporte ?? null
             ]);
             if ($this->derivar) {
-                Log::info($ticket->id);
                 $this->asignarDerivacion($ticket->id);
             }
 
@@ -145,17 +144,15 @@ class TicketFormModal extends Component
     public function asignarDerivacion($ticketID)
     {
         $ticket = Ticket::find($ticketID);
-        if (!$ticket) {
-            Log::error('Ticket no encontrado para derivación: ' . $ticketID);
-            return;
-        }
         $user = Auth::user();
         $areaNombre = $user?->area?->nombre;
+
         $AreaSelecionada = Area::where('nombre', $areaNombre)
             ->whereHas('parent', function ($query) {
                 $query->where('nombre', 'Ingeniería')->whereNull('parent_id');
             })
             ->value('id');
+
         $prioridades = User::where('area_id', $AreaSelecionada)
             ->where('available', true)
             ->orderBy('priority')
@@ -175,15 +172,14 @@ class TicketFormModal extends Component
         }
 
         if ($usuarioAsignado) {
-            Log::info("Asignando ticket a usuario: " . $usuarioAsignado->id);
             $ticket->assigned_to = $usuarioAsignado->id;
-        } else {
-            Log::info("vacio");
-            $ticket->assigned_to = null;
-        }
+            $ticket->area_id = $AreaSelecionada;
+            $ticket->estado_id = 2; 
 
+        }
         // Guardar motivo de derivación
         $ticket->motivo_derivacion = $this->motivo_derivacion;
+        $ticket->save();
         $historial = TicketHistorial::create([
             'ticket_id'    => $ticketID,
             'usuario_id'   => Auth::id(),
@@ -197,21 +193,7 @@ class TicketFormModal extends Component
             'ended_at'     => null,
             'is_current'   => false,
         ]);
-        if ($this->archivo) {
-            $ruta = $this->archivo->store('tickets', 'public');
-            $historial->archivos()->create([
-                'nombre_original' => $this->archivo->getClientOriginalName(),
-                'ruta' => $ruta,
-            ]);
-        }
-        if ($usuarioAsignado) {
-            $ticket->assigned_to = $usuarioAsignado->id;
-        } else {
-            $ticket->assigned_to = null;
-        }
         $ticket->save();
-
-        Log::info('Ticket derivado', ['ticket_id' => $ticketID, 'asignado_a' => $usuarioAsignado?->id, 'motivo_derivacion' => $this->motivo_derivacion]);
     }
 
     public function resetForm()
