@@ -1,8 +1,13 @@
-<div class="bg-white  rounded-xl  p-5">
+<div class="  rounded-xl  p-5">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <!-- Volver + título + estado principal -->
-        <div class="flex items-center flex-wrap gap-3">
-            <button onclick="window.location.href='{{ route('tickets.index') }}'"
+       
+        <!-- Leyenda y fechas -->
+        <div class="flex items-center flex-wrap gap-4 text-sm text-gray-700">
+            <!-- Fechas -->
+            
+            <div class="flex bg-white flex-wrap items-center gap-6 text-sm text-gray-600 border-2 p-4 rounded-xl">
+                 <button onclick="window.location.href='{{ route('tickets.index') }}'"
                 class="flex items-center text-sm text-gray-700 hover:underline">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 text-gray-500" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
@@ -11,47 +16,6 @@
                 Volver
             </button>
 
-            <h1 class="text-xl font-bold text-gray-900">Ticket {{ $ticket->codigo ?? $ticket->codigo_formateado }}</h1>
-            @php
-                $estadoNombre = strtolower($ticket->estado->nombre ?? 'sin estado');
-                $estiloEstado = match ($estadoNombre) {
-                    'pendiente' => 'bg-blue-100 text-blue-700',
-                    'cerrado' => 'bg-red-100 text-red-700',
-                    'proceso' => 'bg-indigo-100 text-indigo-700',
-                    'derivado' => 'bg-yellow-100 text-yellow-700',
-                    'anulado' => 'bg-red-100 text-red-700',
-                    default => 'bg-gray-100 text-gray-700',
-                };
-            @endphp
-            <span class="text-xs font-semibold px-3 py-1 rounded-full {{ $estiloEstado }}">
-                {{ ucfirst($estadoNombre) }}
-            </span>
-            @php
-                $ticketDerivado = $ticket->estado_id === 2;
-                $esMiArea = Auth::check() && Auth::user()->area_id === $ticket->area_id;
-            @endphp
-
-            @php
-                $yaAsignadoAMi = isset($ticket->assignedUser) && Auth::check() && $ticket->assignedUser->id === Auth::user()->id;
-            @endphp
-            @if ($ticketDerivado && $esMiArea && !$yaAsignadoAMi)
-                <button wire:click="asignarme"
-                    class="ml-4 inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-full shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="m16 11 2 2 4-4M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m13-14a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" />
-                    </svg>
-                    Asignarme
-                </button>
-            @endif
-
-
-        </div>
-        <!-- Leyenda y fechas -->
-        <div class="flex items-center flex-wrap gap-4 text-sm text-gray-700">
-            <!-- Fechas -->
-            <div class="flex flex-wrap items-center gap-6 text-sm text-gray-600">
                 <div class="flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="#000000" stroke-width="0.75" stroke-linecap="round"
@@ -86,15 +50,16 @@
                     <span>{{ $this->getTiempoTotalProperty() }}</span>
                 </div>
             </div>
-
+            
         </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div class="md:col-span-8 space-y-6">
-            <div class="rounded-xl border bg-white shadow-sm">
+            <div class="rounded-xl border bg-white ">
                 <!--  Detalle ticket-->
                 <!-- Encabezado Detalle-->
+                
                 @php
                     $estadoNombre = strtolower($ticket->estado->nombre ?? 'sin estado');
                     $estiloEncabezado = match ($estadoNombre) {
@@ -154,41 +119,27 @@
                             class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
                     </div>
                      <div>
-                        <label class="block text-gray-500 font-medium mb-1">Tipo</label>
-                        <span
-                            class="inline-block rounded-full bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 mt-1">{{ strtoupper($ticket->tipo ?? 'No especificado') }}</span>
+                        <label class="block text-gray-500 font-medium mb-1">Observación Inicial</label>
+                            <input readonly type="text"
+                            value="{{ $ticket->observacion->descripcion ?? ($ticket->observacion_consulta ?? 'No hay observaciones') }}"
+                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
                     </div>
-                    <div>
+                    {{-- <div>
                         <label class="block text-gray-500 font-medium mb-1">Observación Inicial</label>
                         <input readonly type="text"
                             value="{{ $ticket->observacion->descripcion ?? ($ticket->observacion_consulta ?? 'No hay observaciones') }}"
                             class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
-                    </div>
+                    </div> --}}
                 </div>
 
                 @if ($ticket->estado_id == 5)
                     <div class="px-6 pb-6">
-                        <div
-                            class="rounded-md bg-red-50 border border-red-200 p-4 mt-4 text-sm text-red-700 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 11-6.5 6.5A6.5 6.5 0 0112 5.5z" />
-                            </svg>
-                            <span>Este ticket ha sido cerrado y no puede ser modificado.</span>
-                        </div>
+                        <div class="rounded-xl border p-4 border-success-500 bg-success-50 dark:border-success-500/30 dark:bg-success-500/15"><div class="flex items-start gap-3"><div class="-mt-0.5 text-success-500"><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M3.70186 12.0001C3.70186 7.41711 7.41711 3.70186 12.0001 3.70186C16.5831 3.70186 20.2984 7.41711 20.2984 12.0001C20.2984 16.5831 16.5831 20.2984 12.0001 20.2984C7.41711 20.2984 3.70186 16.5831 3.70186 12.0001ZM12.0001 1.90186C6.423 1.90186 1.90186 6.423 1.90186 12.0001C1.90186 17.5772 6.423 22.0984 12.0001 22.0984C17.5772 22.0984 22.0984 17.5772 22.0984 12.0001C22.0984 6.423 17.5772 1.90186 12.0001 1.90186ZM15.6197 10.7395C15.9712 10.388 15.9712 9.81819 15.6197 9.46672C15.2683 9.11525 14.6984 9.11525 14.347 9.46672L11.1894 12.6243L9.6533 11.0883C9.30183 10.7368 8.73198 10.7368 8.38051 11.0883C8.02904 11.4397 8.02904 12.0096 8.38051 12.3611L10.553 14.5335C10.7217 14.7023 10.9507 14.7971 11.1894 14.7971C11.428 14.7971 11.657 14.7023 11.8257 14.5335L15.6197 10.7395Z" fill="currentColor"></path></svg></div><div><h4 class="mb-1 text-sm font-semibold text-gray-800 dark:text-white/90">Mensaje</h4><p class="text-sm text-gray-500 dark:text-gray-400">Este ticket ha sido cerrado y no puede ser modificado.</p><!----></div></div></div>
                     </div>
                 @elseif (!$this->puedeActualizar)
                     <div class="px-6 pb-6">
-                        <div
-                            class="rounded-md bg-gray-50 border border-gray-200 p-4 mt-4 text-sm text-gray-700 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 9v2m0 4h.01M12 5.5a6.5 6.5 0 11-6.5 6.5A6.5 6.5 0 0112 5.5z" />
-                            </svg>
-                            <span>No puedes actualizar este ticket porque no está asignado a ti.</span>
-                        </div>
+                        <div class="rounded-xl border p-4 border-blue-light-500 bg-blue-light-50 dark:border-blue-light-500/30 dark:bg-blue-light-500/15"><div class="flex items-start gap-3"><div class="-mt-0.5 text-blue-light-500"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 12C3.5 7.30558 7.30558 3.5 12 3.5C16.6944 3.5 20.5 7.30558 20.5 12C20.5 16.6944 16.6944 20.5 12 20.5C7.30558 20.5 3.5 16.6944 3.5 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM11.0991 7.52507C11.0991 8.02213 11.5021 8.42507 11.9991 8.42507H12.0001C12.4972 8.42507 12.9001 8.02213 12.9001 7.52507C12.9001 7.02802 12.4972 6.62507 12.0001 6.62507H11.9991C11.5021 6.62507 11.0991 7.02802 11.0991 7.52507ZM12.0001 17.3714C11.5859 17.3714 11.2501 17.0356 11.2501 16.6214V10.9449C11.2501 10.5307 11.5859 10.1949 12.0001 10.1949C12.4143 10.1949 12.7501 10.5307 12.7501 10.9449V16.6214C12.7501 17.0356 12.4143 17.3714 12.0001 17.3714Z" fill="currentColor"></path></svg></div><div><h4 class="mb-1 text-sm font-semibold text-gray-800 dark:text-white/90">Informacin del Mensaje </h4><p class="text-sm text-gray-500 dark:text-gray-400">
+No puedes actualizar este ticket porque no está asignado a ti.</p><!----></div></div></div>
                     </div>
                 @endif
             </div>
@@ -329,9 +280,9 @@
             @endif
         </div>
         <!-- Sección Historial del Ticket mejorado con acordeón y buscador -->
-        <div class="md:col-span-4 rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div class="md:col-span-4 rounded-xl border  bg-white ">
             <!-- Encabezado -->
-            <div class="px-6 py-4 border-b bg-gray-50 flex items-center gap-2">
+            <div class="px-6 py-4 border-b  flex items-center gap-2">
                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -355,7 +306,7 @@
             <!-- Lista de historial -->
             <div class="px-6 pb-4 space-y-6 overflow-y-auto max-h-170">
                 @forelse($historiales as $item)
-                    {{ $item->accion }}
+                   
                     @php
                         $accion = strtolower($item->accion ?? 'evento');
 

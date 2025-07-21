@@ -15,7 +15,7 @@
             <div class="col-span-12 xl:col-span-6">
                 @livewire('ticket.dashboard.tickets-by-support-type-chart')
             </div>
-            <div class="col-span-6 xl:col-span-6">
+            <div class="col-span-12 xl:col-span-6">
                 @livewire('ticket.dashboard.closed-tickets-chart')
             </div>
             <div class="col-span-12 xl:col-span-12">

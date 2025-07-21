@@ -4,6 +4,7 @@ namespace App\Livewire\CallLogs;
 
 use Livewire\Component;
 use App\Models\CallLog;
+use App\Models\Option;
 use App\Models\User;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
@@ -13,19 +14,14 @@ use Illuminate\Support\Facades\Log as FacadesLog;
 class Index extends Component
 {
     use WithPagination;
-     public int $perPage = 8;
-
+    public int $perPage = 8;
     public $search = '';
     public $typeFilter = '';
     public $showModal = false;
     public $editingId = null;
     public $suboptions = [];
-
     public $searchTecnico = '';
     public $tecnicoList = [];
-
-
-
     public $form = [
         'type' => 'Consulta',
         'option_id' => '',
@@ -71,12 +67,18 @@ class Index extends Component
     public function render()
     {
         $callLogs = CallLog::with('user')
-            ->when($this->search, fn($q) => $q->where('description', 'like', '%' . $this->search . '%'))
-            ->when($this->typeFilter, fn($q) => $q->where('type', $this->typeFilter))
+            ->when($this->search, function ($q) {
+                $search = $this->search;
+                $q->whereHas('user', function ($query) use ($search) {
+                    $query->where('firstname', 'like', '%' . $search . '%')
+                        ->orWhere('lastname', 'like', '%' . $search . '%');
+                });
+            })
+            // ->when($this->typeFilter, fn($q) => $q->where('type', $this->typeFilter))
             ->latest()
             ->paginate($this->perPage);
 
-        $seguimientoPadre = \App\Models\Option::where('group', 'seguimiento_tecnico')
+        $seguimientoPadre = Option::where('group', 'seguimiento_tecnico')
             ->where('label', 'SEGUIMIENTO AL TECNICO')
             ->first();
 
@@ -139,7 +141,12 @@ class Index extends Component
     public function edit($id)
     {
         $call = CallLog::findOrFail($id);
-        $this->form = $call->only('type', 'user_id', 'description', 'tecnico_id');
+        $this->form = $call->only('type', 'user_id', 'description', 'tecnico_id', 'option_id');
+        if ($call->tecnico) {
+            $this->searchTecnico = $call->tecnico->lastname . ' ' . $call->tecnico->firstname;
+        } else {
+            $this->searchTecnico = '';
+        }
         $this->editingId = $id;
         $this->showModal = true;
     }

@@ -113,6 +113,7 @@
                 </div>
 
                   <!-- Settings -->
+                   @if(auth()->user()?->role === 'admin')
                 <div class="mb-6">
                     <p class="mb-2 text-xs uppercase text-gray-400">Settings</p>
                     <a href="{{ route('settings.index') }}" wire:navigate
@@ -125,6 +126,7 @@
                         </span>
                     </a>
                 </div>
+                @endif
             </nav>
         </aside>
         <!-- Main Content -->

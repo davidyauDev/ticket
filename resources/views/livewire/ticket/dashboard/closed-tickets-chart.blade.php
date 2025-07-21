@@ -1,7 +1,7 @@
-<div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+<div class="rounded-2xl border border-gray-200 bg-white  dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
 
    <!-- Título y Filtro en la misma fila -->
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between">
         <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Tickets Cerrados</h3>
 
         <!-- Selector de Mes -->
