@@ -59,15 +59,15 @@
                     <!-- Datos del ticket -->
                     @if ($ticketData)
                         <div class="bg-gray-100 p-3 rounded-lg shadow text-sm text-gray-800">
-                            <h3 class="text-base font-semibold mb-2">🎫 Ticket {{ $ticketData['number'] }}</h3>
-                            <p><strong>Asunto:</strong> {{ $ticketData['subject'] }}</p>
-                            <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] }}</p>
-                            <p><strong>Equipo:</strong> {{ $ticketData['serie'] }} - {{ $ticketData['modelo'] }}</p>
-                            <p><strong>Usuario:</strong> {{ $ticketData['nombres'] }} {{ $ticketData['apellidos'] }}
+                            <h3 class="text-base font-semibold mb-2">Ticket {{ $ticketData['number'] ?? '' }}</h3>
+                            <p><strong>Asunto:</strong> {{ $ticketData['subject'] ?? '' }}</p>
+                            <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] ?? '' }}</p>
+                            <p><strong>Equipo:</strong> {{ $ticketData['serie'] ?? '' }} - {{ $ticketData['modelo'] ?? '' }}</p>
+                            <p><strong>Usuario:</strong> {{ $ticketData['nombres'] ?? '' }} {{ $ticketData['apellidos'] ?? '' }}
                             </p>
-                            <p><strong>Agencia:</strong> {{ $ticketData['agencia'] }}</p>
-                            <p><strong>Cliente:</strong> {{ $ticketData['cliente'] }}</p>
-                            <p><strong>Empresa:</strong> {{ $ticketData['empresa'] }}</p>
+                            <p><strong>Agencia:</strong> {{ $ticketData['agencia'] ?? '' }}</p>
+                            <p><strong>Cliente:</strong> {{ $ticketData['cliente'] ?? '' }}</p>
+                            <p><strong>Empresa:</strong> {{ $ticketData['empresa'] ?? '' }}</p>
                         </div>
                     @endif
                 </div>
