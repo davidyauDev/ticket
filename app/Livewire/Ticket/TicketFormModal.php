@@ -85,7 +85,7 @@ class TicketFormModal extends Component
             'codigoInput' => 'required|string'
         ]);
         try {
-            $response = Http::get("http://172.19.0.14/api/numbers.php?search=" . urlencode($this->codigoInput));
+            $response = Http::get("http://54.197.148.155/numbers.php?search=" . urlencode($this->codigoInput));
             $data = $response->json();
             if (empty($data)) {
                 $this->addError('ticketError', 'No se encontraron datos para el ticket ingresado.');
