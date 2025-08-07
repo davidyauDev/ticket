@@ -98,7 +98,7 @@ class DetalleTicket extends Component
     {
         DB::beginTransaction();
         try {
-            if ($this->ticket->assigned_to !== Auth::id()) {
+            if ($this->ticket->assigned_to != Auth::id()) {
                 abort(403, 'No tienes permiso para actualizar este ticket.');
             }
             $accionHistorial = 'Actualizado';
