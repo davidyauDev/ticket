@@ -299,7 +299,7 @@ class DetalleTicket extends Component
 
     public function getPuedeActualizarProperty(): bool
     {
-        return $this->ticket->assigned_to === Auth::id();
+        return $this->ticket->assigned_to == Auth::id();
     }
 
 
