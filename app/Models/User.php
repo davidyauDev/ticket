@@ -28,7 +28,8 @@ class User extends Authenticatable
         'lastname',
         'area_id',
         'available',
-        'priority'
+        'priority',
+        'role'
     ];
 
     /**

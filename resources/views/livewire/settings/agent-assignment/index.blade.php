@@ -1,12 +1,15 @@
 <div class="p-6">
     <div class="flex border-b mb-4">
-        <button wire:click="switchTab('agentes')"
-            class="px-4 py-2 font-semibold focus:outline-none {{ $tab === 'agentes' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500' }}">Cima</button>
-        <button wire:click="switchTab('asignaciones')"
-            class="px-4 py-2 font-semibold focus:outline-none {{ $tab === 'asignaciones' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500' }}">Monedas</button>
-        <button wire:click="switchTab('historial')"
-            class="px-4 py-2 font-semibold focus:outline-none {{ $tab === 'historial' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500' }}">Maquinas
-            Chicas</button>
+        @foreach($this->availableTabs as $tabKey)
+            <button wire:click="switchTab('{{ $tabKey }}')"
+                class="px-4 py-2 font-semibold focus:outline-none {{ $tab === $tabKey ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500' }}">
+                @if($tabKey === 'agentes') Cima
+                @elseif($tabKey === 'asignaciones') Monedas
+                @elseif($tabKey === 'historial') Maquinas Chicas
+                @else {{ ucfirst($tabKey) }}
+                @endif
+            </button>
+        @endforeach
     </div>
 
     @if(session()->has('error'))

@@ -9,13 +9,13 @@ use Livewire\Component;
 
 class CreateUser extends Component
 {
-
     public $showModal = false;
     public $nombres, $apellidos, $email, $password, $direccion, $celular, $dni;
     public $areas = [];
     public $subareas = [];
     public $areaSeleccionada;
     public $subareaSeleccionada;
+    public bool $esSupervisor = false;
 
     #[On('abrirModalCreacionUsuario')]
     public function abrirModal()
@@ -44,6 +44,7 @@ class CreateUser extends Component
             'phone' => $this->celular,
             'dni' => $this->dni,
             'area_id' => $this->subareaSeleccionada,
+            'role' => $this->esSupervisor ? 'Supervisor' : 'user',
         ]);
 
         $this->reset();

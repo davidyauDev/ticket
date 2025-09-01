@@ -17,6 +17,7 @@ class EditUser extends Component
     public $subareas = [];
     public $areaSeleccionada = null;
     public $subareaSeleccionada = null;
+    public bool $esSupervisor = false;
 
     public function mount()
     {
@@ -38,6 +39,7 @@ class EditUser extends Component
         $this->direccion = $user->direccion;
         $this->celular = $user->celular;
         $this->subareaSeleccionada = $user->area_id;
+        $this->esSupervisor = $user->role === 'Supervisor';
 
         $subarea = Area::find($user->area_id);
         $areaPadre = $subarea?->parent;
@@ -75,6 +77,7 @@ class EditUser extends Component
             'direccion' => $this->direccion,
             'celular' => $this->celular,
             'area_id' => $this->subareaSeleccionada,
+            'role' => $this->esSupervisor ? 'Supervisor' : 'user',
         ]);
 
         $this->reset();
@@ -85,7 +88,7 @@ class EditUser extends Component
 
     public function actualizarSubareas()
     {
-        $this->subareas = \App\Models\Area::where('parent_id', $this->areaSeleccionada)->get();
+        $this->subareas = Area::where('parent_id', $this->areaSeleccionada)->get();
         $this->subareaSeleccionada = null;
     }
 

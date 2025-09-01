@@ -44,13 +44,15 @@ class TicketService
                 );
 
                 $serie = $data['ticketData']['serie'] ?? null;
-                if ($serie) {
+                if (!empty($data['ticketData']['id_equipo'])) {
                     $equipo = Equipo::firstOrCreate(
-                        ['serie' => $serie],
-                        ['modelo' => $data['ticketData']['modelo'] ?? 'Modelo Desconocido']
+                        ['id_equipo' => (int) $data['ticketData']['id_equipo']],
+                        [
+                            'serie'  => $serie,
+                            'modelo' => $data['ticketData']['modelo'] ?? 'Modelo Desconocido',
+                        ]
                     );
                 }
-
                 $agencia = Agencia::firstOrCreate(
                     ['id' => $data['ticketData']['id_agencia']],
                     ['nombre' => $data['ticketData']['agencia'] ?? 'Agencia Desconocida', 'cliente_id' => $cliente->id]

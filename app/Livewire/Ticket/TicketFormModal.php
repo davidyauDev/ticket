@@ -3,6 +3,7 @@
 namespace App\Livewire\Ticket;
 
 use App\Models\Area;
+use App\Models\Equipo;
 use App\Models\Estado;
 use App\Models\Observacion;
 use App\Models\Ticket;
@@ -95,6 +96,33 @@ class TicketFormModal extends Component
                 $this->addError('ticketError', 'Ticket no asignado a un usuario');
                 return;
             }
+
+            $equipo = Equipo::where('id_equipo', $data[0]['id_equipo'])->first();
+            if ($equipo) {
+                $ticketsEquipo = Ticket::where('equipo_id', $equipo->id)->get();
+                $ultimoTicket = Ticket::where('equipo_id', $equipo->id)
+                          ->orderBy('created_at', 'desc') // o 'id', 'desc'
+                          ->first();
+
+                if($ultimoTicket){
+                    Log::info('Último ticket encontrado para equipo_id ' . $equipo->id . ':', $ultimoTicket->toArray());
+                }
+
+                if ($ultimoTicket->estado_id != 5) {
+                    $this->addError('ticketError', 'Hay un ticket abierto');
+                    return;
+                }
+
+                if ($ticketsEquipo->count() > 0) {
+                    foreach ($ticketsEquipo as $ticket) {
+                       // Log::info('Ticket encontrado para equipo_id ' . $equipo->id . ':', $ticket->toArray());
+                    }
+                } else {
+                    // Log::info('No se encontraron tickets para equipo_id ' . $equipo->id);
+                }
+            }
+
+
             $this->ticketData = count($data) ? $data[0] : null;
         } catch (\Exception $e) {
             $this->addError('ErrorConsulta', 'Error al obtener datos del ticket');
@@ -138,9 +166,6 @@ class TicketFormModal extends Component
         }
     }
 
-    /**
-     * Lógica de derivación separada
-     */
     public function asignarDerivacion($ticketID)
     {
         $ticket = Ticket::find($ticketID);
@@ -174,10 +199,8 @@ class TicketFormModal extends Component
         if ($usuarioAsignado) {
             $ticket->assigned_to = $usuarioAsignado->id;
             $ticket->area_id = $AreaSelecionada;
-            $ticket->estado_id = 2; 
-
+            $ticket->estado_id = 2;
         }
-        // Guardar motivo de derivación
         $ticket->motivo_derivacion = $this->motivo_derivacion;
         $ticket->save();
         $historial = TicketHistorial::create([

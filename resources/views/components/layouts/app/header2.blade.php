@@ -269,8 +269,14 @@
                                 </div>
           </span>
 
-          <span class="text-theme-sm mr-1 block font-medium"> {{ auth()->user()->name }} </span>
-
+    @php
+      $area = auth()->user()->area->nombre ?? null;
+    @endphp
+    <span class="text-theme-sm mr-1 block font-medium"> {{ auth()->user()->name }}
+      @if($area)
+        <span class="ml-2 align-middle inline-block rounded-lg bg-gradient-to-r from-blue-600 to-cyan-400 px-3 py-1 text-xs font-extrabold text-white shadow uppercase tracking-wide border border-blue-700">{{ strtoupper($area) }}</span>
+      @endif
+    </span>
           <svg
             :class="dropdownOpen && 'rotate-180'"
             class="stroke-gray-500 dark:stroke-gray-400"

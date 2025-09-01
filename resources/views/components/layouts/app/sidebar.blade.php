@@ -82,13 +82,13 @@
                         <!-- Icono con cambio de color dinámico -->
                         <span
                             class="{{ request()->routeIs('tickets.index') ? 'text-blue-600' : 'text-gray-500 dark:text-gray-400' }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tag-icon lucide-tag"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 17.0518V12C20 7.58174 16.4183 4 12 4C7.58168 4 3.99994 7.58174 3.99994 12V17.0518M19.9998 14.041V19.75C19.9998 20.5784 19.3282 21.25 18.4998 21.25H13.9998M6.5 18.75H5.5C4.67157 18.75 4 18.0784 4 17.25V13.75C4 12.9216 4.67157 12.25 5.5 12.25H6.5C7.32843 12.25 8 12.9216 8 13.75V17.25C8 18.0784 7.32843 18.75 6.5 18.75ZM17.4999 18.75H18.4999C19.3284 18.75 19.9999 18.0784 19.9999 17.25V13.75C19.9999 12.9216 19.3284 12.25 18.4999 12.25H17.4999C16.6715 12.25 15.9999 12.9216 15.9999 13.75V17.25C15.9999 18.0784 16.6715 18.75 17.4999 18.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                         </span>
 
                         <!-- Texto con color dinámico -->
                         <span
                             class="menu-item-text ml-2 {{ request()->routeIs('tickets.index') ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-400' }}">
-                            Tickets
+                             Support Ticket
                         </span>
                     </a>
                     <div style="display: none;">
@@ -99,21 +99,20 @@
                         <!-- Icono -->
                         <span
                             class="{{ request()->routeIs('call-logs.index') ? 'text-blue-600' : 'text-gray-500 dark:text-gray-400' }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone-outgoing-icon lucide-phone-outgoing"><path d="m16 8 6-6"/><path d="M22 8V2h-6"/><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 17.0518V12C20 7.58174 16.4183 4 12 4C7.58168 4 3.99994 7.58174 3.99994 12V17.0518M19.9998 14.041V19.75C19.9998 20.5784 19.3282 21.25 18.4998 21.25H13.9998M6.5 18.75H5.5C4.67157 18.75 4 18.0784 4 17.25V13.75C4 12.9216 4.67157 12.25 5.5 12.25H6.5C7.32843 12.25 8 12.9216 8 13.75V17.25C8 18.0784 7.32843 18.75 6.5 18.75ZM17.4999 18.75H18.4999C19.3284 18.75 19.9999 18.0784 19.9999 17.25V13.75C19.9999 12.9216 19.3284 12.25 18.4999 12.25H17.4999C16.6715 12.25 15.9999 12.9216 15.9999 13.75V17.25C15.9999 18.0784 16.6715 18.75 17.4999 18.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                         </span>
                         <!-- Texto -->
                         <span
                             class="menu-item-text ml-2 {{ request()->routeIs('call-logs.index') ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-400' }}">
-                            Llamadas
+                            Support Llamadas
                         </span>
                     </a>
                     <div style="display: none;">
                         <ul class="mt-2 space-y-1 ml-9"></ul>
                     </div>
                 </div>
-
                   <!-- Settings -->
-                   @if(auth()->user()?->role === 'admin')
+                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'Supervisor' || auth()->user()?->area_id === 5 || auth()->user()?->area?->parent_id === 5)
                 <div class="mb-6">
                     <p class="mb-2 text-xs uppercase text-gray-400">Settings</p>
                     <a href="{{ route('settings.index') }}" wire:navigate

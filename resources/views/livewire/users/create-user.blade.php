@@ -21,35 +21,47 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nombres</label>
                         <input wire:model="nombres" type="text" placeholder="Ingresa los nombres"
                             class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('nombres') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                        @error('nombres')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
                         <input wire:model="apellidos" type="text" placeholder="Ingresa los apellidos"
                             class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('apellidos') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                        @error('apellidos')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email <span
+                            class="text-red-500">*</span></label>
                     <input wire:model="email" type="email" placeholder="usuario@ejemplo.com"
                         class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                    @error('email') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                    @error('email')
+                        <span class="text-sm text-red-600">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
                     <input wire:model="password" type="password"
                         class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                    @error('password') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                    @error('password')
+                        <span class="text-sm text-red-600">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Dirección <span class="text-gray-400 text-xs">(Opcional)</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Dirección <span
+                            class="text-gray-400 text-xs">(Opcional)</span></label>
                     <input wire:model="direccion" type="text" placeholder="Ingresa la dirección"
                         class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                    @error('direccion') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                    @error('direccion')
+                        <span class="text-sm text-red-600">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -57,13 +69,17 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Número celular</label>
                         <input wire:model="celular" type="text" placeholder="+51 999 999 999"
                             class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('celular') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                        @error('celular')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">DNI</label>
                         <input wire:model="dni" type="text" placeholder="12345678"
                             class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('dni') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                        @error('dni')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -77,7 +93,9 @@
                                 <option value="{{ $area->id }}">{{ $area->nombre }}</option>
                             @endforeach
                         </select>
-                        @error('areaSeleccionada') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                        @error('areaSeleccionada')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Sub área</label>
@@ -88,10 +106,35 @@
                                 <option value="{{ $subarea->id }}">{{ $subarea->nombre }}</option>
                             @endforeach
                         </select>
-                        @error('subareaSeleccionada') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+                        @error('subareaSeleccionada')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
+                <div class="flex items-center space-x-3">
+                    <!-- Switch -->
+                    <label for="toggle-supervisor" class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-supervisor" class="sr-only peer"
+                            wire:model="esSupervisor" />
+
+                        <!-- Fondo del switch -->
+                        <div class="w-11 h-6 bg-gray-400 rounded-full peer-checked:bg-blue-600 transition-colors">
+                        </div>
+
+                        <!-- Botón circular del switch -->
+                        <div
+                            class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-full">
+                        </div>
+                    </label>
+
+                    <!-- Texto que cambia de color según el estado del switch -->
+                    <span
+                        class="text-sm transition-colors peer-checked:text-green-600 text-gray-800 dark:text-white peer">
+                        Supervisor
+                    </span>
+                </div>
+                
                 <div class="flex justify-end gap-3 pt-4">
                     <button wire:click="$set('showModal', false)"
                         class="px-5 py-2.5 rounded-md bg-gray-100 text-gray-800 hover:bg-gray-200 transition">

@@ -1,5 +1,5 @@
 <div class="space-y-6 p-5">
-    <div class="p-4 mt-4 border rounded-xl bg-white ">
+    {{-- <div class="p-4 mt-4 border rounded-xl bg-white ">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex bg-gray-100 p-1 rounded-lg">
                 <button wire:click="switchTab('mis')" @class([
@@ -46,7 +46,7 @@
                 @endif
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- Tabla y Modal -->
     <livewire:ticket.ticket-list :tipo="$tab" wire:key="tickets-table-{{ $tab }}" />
     <livewire:ticket.ticket-form-modal wire:key="ticket-form-modal" />
@@ -67,6 +67,7 @@
                 text: 'Ticket asignado exitosamente'
             });
         })
+       
         $wire.on("notifyError", () => {
             Swal.fire({
                 icon: 'error',

@@ -14,7 +14,7 @@ class TicketList extends Component
     use WithPagination;
     public string $search = '';
     public string $tipo = 'todos';
-    public string $filterType = ''; // Filtro por tipo
+    public string $filterType = ''; // Filtro por tipo o estado
     public ?string $startDate = null; // Fecha de inicio
     public ?string $endDate = null; // Fecha de fin
     protected $listeners = ['user-saved' => '$refresh'];
@@ -35,9 +35,12 @@ class TicketList extends Component
             // Admin puede ver todos los tickets con filtros globales
             $tickets->when($this->search, fn($q) => $q->where(function ($q2) {
                 $q2->where('codigo', 'like', "%{$this->search}%")
-                    ->orWhere('id', $this->search);
+                    ->orWhere('id', $this->search)
+                    ->orWhere('osticket', 'like', "%{$this->search}%");
             }))
-                ->when($this->filterType, fn($q) => $q->where('tipo', $this->filterType))
+                ->when($this->filterType === 'solved', fn($q) => $q->where('estado_id', 5))
+                ->when($this->filterType === 'pending', fn($q) => $q->where('estado_id', 1))
+                ->when($this->filterType !== 'solved' && $this->filterType !== 'pending' && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
                 ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
         } else {
             // Usuarios normales: filtrados por tipo y área
@@ -52,9 +55,12 @@ class TicketList extends Component
                 ->when($this->tipo === 'todos', fn($q) => $q->where('area_id', $user->area_id))
                 ->when($this->search, fn($q) => $q->where(function ($q2) {
                     $q2->where('codigo', 'like', "%{$this->search}%")
-                        ->orWhere('id', $this->search);
+                        ->orWhere('id', $this->search)
+                        ->orWhere('osticket', 'like', "%{$this->search}%");
                 }))
-                ->when($this->filterType, fn($q) => $q->where('tipo', $this->filterType))
+                ->when($this->filterType === 'solved', fn($q) => $q->where('estado_id', 5))
+                ->when($this->filterType === 'pending', fn($q) => $q->where('estado_id', 1))
+                ->when($this->filterType !== 'solved' && $this->filterType !== 'pending' && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
                 ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
         }
 
