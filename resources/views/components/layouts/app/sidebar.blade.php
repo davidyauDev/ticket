@@ -112,7 +112,7 @@
                     </div>
                 </div>
                   <!-- Settings -->
-                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'Supervisor' || auth()->user()?->area_id === 5 || auth()->user()?->area?->parent_id === 5)
+                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'Supervisor' || auth()->user()?->area_id == 5 )
                 <div class="mb-6">
                     <p class="mb-2 text-xs uppercase text-gray-400">Settings</p>
                     <a href="{{ route('settings.index') }}" wire:navigate

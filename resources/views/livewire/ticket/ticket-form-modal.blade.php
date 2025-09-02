@@ -55,6 +55,19 @@
                                 <span class="text-red-600 text-sm">{{ $message }}</span>
                             @enderror
                         </div>
+
+                         @if ($ticketPendiente)
+                        <div class="bg-yellow-100 p-3 rounded-lg shadow text-sm text-yellow-800">
+                            <p> Hay un ticket de soporte en estatus pendiente ya registrado con este equipo
+                                <a href="{{ route('tickets.show', $ticketEnProceso) }}"
+                                    class="text-blue-500 hover:underline">
+                                    {{ $ticketEnProcesoOst }}
+                                </a>
+
+                            </p>
+
+                        </div>
+                    @endif
                     @endif
                     <!-- Datos del ticket -->
                     @if ($ticketData)
@@ -62,14 +75,18 @@
                             <h3 class="text-base font-semibold mb-2">Ticket {{ $ticketData['number'] ?? '' }}</h3>
                             <p><strong>Asunto:</strong> {{ $ticketData['subject'] ?? '' }}</p>
                             <p><strong>Falla reportada:</strong> {{ $ticketData['falla_reportada'] ?? '' }}</p>
-                            <p><strong>Equipo:</strong> {{ $ticketData['serie'] ?? '' }} - {{ $ticketData['modelo'] ?? '' }}</p>
-                            <p><strong>Usuario:</strong> {{ $ticketData['nombres'] ?? '' }} {{ $ticketData['apellidos'] ?? '' }}
+                            <p><strong>Equipo:</strong> {{ $ticketData['serie'] ?? '' }} -
+                                {{ $ticketData['modelo'] ?? '' }}</p>
+                            <p><strong>Usuario:</strong> {{ $ticketData['nombres'] ?? '' }}
+                                {{ $ticketData['apellidos'] ?? '' }}
                             </p>
                             <p><strong>Agencia:</strong> {{ $ticketData['agencia'] ?? '' }}</p>
                             <p><strong>Cliente:</strong> {{ $ticketData['cliente'] ?? '' }}</p>
                             <p><strong>Empresa:</strong> {{ $ticketData['empresa'] ?? '' }}</p>
                         </div>
                     @endif
+
+                   
                 </div>
                 <!-- Columna 2 -->
                 <div class="bg-white border rounded-lg shadow p-4 space-y-4">
@@ -162,7 +179,7 @@
                     <!-- Derivar -->
                     <div class="flex items-center mt-4 space-x-2">
                         <input type="checkbox" id="derivar" wire:model.live="derivar"
-                            class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"  />
+                            class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
                         <label for="derivar" class="text-sm text-gray-700">
                             Derivar este ticket
                         </label>
@@ -258,4 +275,3 @@
         </div>
     </x-modal>
 </div>
-

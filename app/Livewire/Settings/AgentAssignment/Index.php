@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Livewire\Settings\AgentAssignment;
 
 use App\Models\User;
@@ -10,6 +9,7 @@ class Index extends Component
 {
     public string $tab = 'agentes';
     public array $availableTabs = ['agentes', 'asignaciones', 'historial'];
+    public $userRole;
 
     // Separar los arrays por pestaña
     public array $usersByTab = [
@@ -35,12 +35,13 @@ class Index extends Component
     public function mount()
     {
         $user = \Illuminate\Support\Facades\Auth::user();
+        $this->userRole = $user ? strtolower($user->role) : null;
         $areaTabs = [
             6 => 'agentes',
             7 => 'asignaciones',
             8 => 'historial',
         ];
-        if ($user && !in_array($user->role, ['supervisor', 'admin'])) {
+        if ($user && !in_array(strtolower($user->role), ['supervisor', 'admin'])) {
             // Solo puede ver el tab de su área
             $this->availableTabs = isset($areaTabs[$user->area_id]) ? [$areaTabs[$user->area_id]] : [];
             $this->tab = $this->availableTabs[0] ?? 'agentes';
@@ -65,11 +66,14 @@ class Index extends Component
         ];
 
         $user = Auth::user();
-        if ($user && in_array($user->role, ['supervisor', 'admin'])) {
-            // Supervisor o admin: muestra todos los usuarios del área
+        if ($user && $user->role === 'admin') {
+            // Admin: muestra todos los usuarios del área seleccionada
             $users = User::where('area_id', $areaIds[$this->tab] ?? 6)->get();
+        } elseif ($user && $user->role === 'Supervisor') {
+            // Supervisor: solo usuarios de su propia área
+            $users = User::where('area_id', $user->area_id)->get();
         } else {
-            // No supervisor ni admin: solo su propio usuario
+            // Otros: solo su propio usuario
             $users = User::where('id', $user->id)->get();
         }
 

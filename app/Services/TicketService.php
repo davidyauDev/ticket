@@ -83,6 +83,7 @@ class TicketService
                 'cliente_id' => $cliente->id ?? null,
                 'empresa_id' => $empresa->id ?? null,
                 'tipo_soporte_id' => $data['tipo_soporte_id'] ?? null,
+                'motivo_derivacion' => $data['motivo_derivacion'] ?? null
             ];
 
             $ticket = Ticket::create($ticketData);

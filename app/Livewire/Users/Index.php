@@ -23,7 +23,9 @@ class Index extends Component
 
     public function render()
     {
+
         $users = User::query()
+            ->whereNotNull('area_id')
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })

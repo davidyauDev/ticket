@@ -44,6 +44,7 @@
                 </label>
             </div>
 
+            @if(in_array(strtolower($this->userRole), ['admin', 'supervisor']))
             <div>
                 <label class="text-sm mr-2">Prioridad:</label>
                 <select wire:model.defer="usersByTab.{{ $tab }}.{{ $index }}.priority"
@@ -54,6 +55,7 @@
                     <option value="3">Tercero</option>
                 </select>
             </div>
+            @endif
         </li>
         @empty
         <li class="p-3 bg-gray-50 rounded">

@@ -24,7 +24,7 @@ class TicketNotificadoMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Se ha notificado el ticket #' . $this->ticket->id,
+            subject: ' Se derivó un nuevo ticket a tu área. Revísalo cuando puedas - MESA DE AYUDA'
         );
     }
 

@@ -126,7 +126,7 @@ class DetalleTicket extends Component
                 // Correos por defecto si no hay usuarios destino
                 if ($usuariosDestino->isEmpty()) {
                     $usuariosDestino = collect([
-                        (object)['email' => 'isaac.ramos@cechriza.com'],
+                        (object)['email' => 'yauridavid00@gmail.com'],
                     ]);
                 }
                 Log::info('Usuarios destino: ', $usuariosDestino->pluck('email')->toArray());
@@ -202,6 +202,9 @@ class DetalleTicket extends Component
                 Log::info($accionHistorial);
                 foreach ($usuariosDestino as $usuario) {
                     try {
+
+
+                        Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
                         // Llamada a tu API de WhatsApp para enviar el mensaje
                         //             $response = Http::post('http://127.0.0.1:4000/api/send', [
                         //                 'sessionId' => 'mi-sesion-prueba1',

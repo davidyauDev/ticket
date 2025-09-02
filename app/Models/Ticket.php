@@ -27,7 +27,7 @@ class Ticket extends Model
         'area_id',
         'assigned_to',
         'created_by',
-        'motivo_derivacion',
+        'motivo_derivacion'
     ];
 
     public function historiales()

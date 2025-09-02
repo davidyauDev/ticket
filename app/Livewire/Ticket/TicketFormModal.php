@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Ticket;
 
+use App\Mail\TicketNotificadoMail;
 use App\Models\Area;
 use App\Models\Equipo;
 use App\Models\Estado;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\TicketService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -47,6 +49,9 @@ class TicketFormModal extends Component
     public bool $derivar = false;
     public $tipoSoporte = null;
     public $ticket;
+    public bool $ticketPendiente = false;
+    public int  $ticketEnProceso ;
+    public $ticketEnProcesoOst;
 
     public $motivosDerivacion = [
         'Derivar a taller por caída',
@@ -82,6 +87,13 @@ class TicketFormModal extends Component
 
     public function buscarTicket()
     {
+        $this->reset([
+            'ticketPendiente',
+            'ticketEnProceso',
+            'ticketEnProcesoOst',
+            'ticketData'
+        ]);
+
         $this->validate([
             'codigoInput' => 'required|string'
         ]);
@@ -109,7 +121,9 @@ class TicketFormModal extends Component
                 }
 
                 if ($ultimoTicket->estado_id != 5) {
-                    $this->addError('ticketError', 'Hay un ticket abierto');
+                    $this->ticketPendiente = true;
+                    $this->ticketEnProceso = $ultimoTicket->id;
+                    $this->ticketEnProcesoOst = $ultimoTicket->osticket;
                     return;
                 }
 
@@ -152,7 +166,8 @@ class TicketFormModal extends Component
                 'notes' => $this->notes,
                 'archivo' => $this->archivo,
                 'resuelto' => $this->resueltoAlCrear,
-                'tipo_soporte_id' => $this->tipoSoporte ?? null
+                'tipo_soporte_id' => $this->tipoSoporte ?? null,
+                'motivo_derivacion' => $this->motivo_derivacion ?? null
             ]);
             if ($this->derivar) {
                 $this->asignarDerivacion($ticket->id);
@@ -192,6 +207,9 @@ class TicketFormModal extends Component
                 ->first();
 
             if ($usuarioAsignado) {
+                // Log::info($ticket);
+                // return;
+                Mail::to('yauridavid00@gmail.com')->queue(new TicketNotificadoMail($ticket));
                 break;
             }
         }
