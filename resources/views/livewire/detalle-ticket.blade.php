@@ -49,6 +49,26 @@
                     <span class="font-medium text-gray-700">Total:</span>
                     <span>{{ $this->getTiempoTotalProperty() }}</span>
                 </div>
+                @php
+                $ticketDerivado = $ticket->estado_id === 2;
+                $esMiArea = Auth::check() && Auth::user()->area_id === $ticket->area_id;
+            @endphp
+
+            @php
+                $yaAsignadoAMi = isset($ticket->assignedUser) && Auth::check() && $ticket->assignedUser->id === Auth::user()->id;
+            @endphp
+
+                @if ($ticketDerivado && $esMiArea && !$yaAsignadoAMi)
+                <button wire:click="asignarme"
+                    class="ml-4 inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-full shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m16 11 2 2 4-4M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m13-14a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" />
+                    </svg>
+                    Asignarme
+                </button>
+            @endif
             </div>
 
         </div>

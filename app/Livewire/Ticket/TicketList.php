@@ -43,13 +43,10 @@ class TicketList extends Component
                 ->when($this->filterType !== 'solved' && $this->filterType !== 'pending' && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
                 ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
         } else {
+
             // Usuarios normales: filtrados por tipo y área
             $tickets->when($this->tipo === 'mis', function ($q) use ($user) {
-                $q->where('area_id', $user->area_id)
-                    ->where(function ($q2) use ($user) {
-                        $q2->where('assigned_to', $user->id)
-                            ->orWhereNull('assigned_to');
-                    });
+                $q->where('area_id', $user->area_id);
             })
                 ->when($this->tipo === 'pendientes', fn($q) => $q->where('area_id', $user->area_id)->whereNull('assigned_to'))
                 ->when($this->tipo === 'todos', fn($q) => $q->where('area_id', $user->area_id))
