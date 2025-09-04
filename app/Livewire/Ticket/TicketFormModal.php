@@ -104,7 +104,7 @@ class TicketFormModal extends Component
                 $this->addError('ticketError', 'No se encontraron datos para el ticket ingresado.');
                 return;
             }
-            if (empty($data[0]['dni'])) {
+            if (empty($data[0]['id_tecnico'])) {
                 $this->addError('ticketError', 'Ticket no asignado a un usuario');
                 return;
             }
