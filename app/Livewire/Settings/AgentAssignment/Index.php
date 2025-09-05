@@ -41,8 +41,8 @@ class Index extends Component
             7 => 'asignaciones',
             8 => 'historial',
         ];
-        if ($user && !in_array(strtolower($user->role), ['supervisor', 'admin'])) {
-            // Solo puede ver el tab de su área
+        if ($user && (strtolower($user->role) === 'supervisor' || !in_array(strtolower($user->role), ['admin']))) {
+            // Supervisor y usuarios normales: solo pueden ver el tab de su área
             $this->availableTabs = isset($areaTabs[$user->area_id]) ? [$areaTabs[$user->area_id]] : [];
             $this->tab = $this->availableTabs[0] ?? 'agentes';
         }

@@ -274,8 +274,14 @@
     @endphp
     <span class="text-theme-sm mr-1 block font-medium"> {{ auth()->user()->name }}
       @if($area)
-        <span class="ml-2 align-middle inline-block rounded-lg bg-gradient-to-r from-blue-600 to-cyan-400 px-3 py-1 text-xs font-extrabold text-white shadow uppercase tracking-wide border border-blue-700">{{ strtoupper($area) }}</span>
+            <span class="ml-2 align-middle inline-block rounded-lg bg-blue-500 px-3 py-1 text-xs font-semibold text-white uppercase tracking-wide border border-blue-600">{{ strtoupper($area) }}</span>
       @endif
+
+          @if(auth()->user()->role)
+        <span class="ml-2 align-middle inline-block rounded-lg bg-gray-700 px-3 py-1 text-xs font-semibold text-white uppercase tracking-wide border border-gray-800">
+            {{ strtoupper(auth()->user()->role) }}
+        </span>
+    @endif
     </span>
           <svg
             :class="dropdownOpen && 'rotate-180'"
