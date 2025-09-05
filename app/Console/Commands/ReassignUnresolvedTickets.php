@@ -44,7 +44,7 @@ class ReassignUnresolvedTickets extends Command
                     'assigned_at' => now(),
                     'estado_id' => 2,
                 ]);
-                Mail::to('yauridavid00@gmail.com')->queue(new TicketNotificadoMail($ticket));
+                Mail::to('isaac.ramos@cechriza.com')->queue(new TicketNotificadoMail($ticket));
                 TicketHistorial::create([
                     'ticket_id'    => $ticket->id,
                     'usuario_id'   => $nuevoResponsable,
