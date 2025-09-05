@@ -196,10 +196,15 @@
                                         </td>
                                         <td class="px-4 py-3 border border-gray-100 dark:border-gray-800">
                                             <p class="text-gray-700 text-theme-sm dark:text-gray-400">
-                                                <a href="{{ route('tickets.show', $ticket->id) }}"
-                                                    class="text-blue-500 hover:underline">
-                                                    {{ $ticket->osticket ?? $ticket->codigo }}
-                                                </a>
+                                                @if ($ticket->osticket)
+                                                    <a href="http://161.132.75.22/scp/tickets.php?a=search&search-type=typeahead&query={{ $ticket->osticket }}&number={{ $ticket->osticket }}" target="_blank" class="text-blue-500 hover:underline">
+                                                        {{ $ticket->osticket }}
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('tickets.show', $ticket->id) }}" class="text-blue-500 hover:underline">
+                                                        {{ $ticket->codigo }}
+                                                    </a>
+                                                @endif
                                             </p>
                                         </td>
                                         {{-- <td class="px-4 py-3 border border-gray-100 dark:border-gray-800">
@@ -227,10 +232,11 @@
                                         <td class="px-4 py-3 border border-gray-100 dark:border-gray-800">
                                             <p class="text-gray-700 text-theme-sm dark:text-gray-400">
                                                 @if ($ticket->equipo)
-                                                {{ \Illuminate\Support\Str::limit($ticket->equipo->serie . ' - ' .
-                                                $ticket->equipo->modelo, 15) }}
+                                                    <a href="http://161.132.75.22/system/busqueda_equipo?equipo={{ $ticket->equipo->id_equipo }}" target="_blank" class="text-blue-500 hover:underline">
+                                                        {{ \Illuminate\Support\Str::limit($ticket->equipo->serie . ' - ' . $ticket->equipo->modelo, 15) }}
+                                                    </a>
                                                 @else
-                                                Sin equipo
+                                                    Sin equipo
                                                 @endif
                                             </p>
                                         </td>

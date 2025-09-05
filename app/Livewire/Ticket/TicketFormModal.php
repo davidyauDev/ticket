@@ -209,7 +209,7 @@ class TicketFormModal extends Component
             if ($usuarioAsignado) {
                 // Log::info($ticket);
                 // return;
-                Mail::to('yauridavid00@gmail.com')->queue(new TicketNotificadoMail($ticket));
+                Mail::to('isaac.ramos@cechriza.com')->queue(new TicketNotificadoMail($ticket));
                 break;
             }
         }
