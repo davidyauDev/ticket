@@ -38,7 +38,7 @@ class DetalleTicket extends Component
     {
         $this->ticket = Ticket::findOrFail($ticket);
         $this->areas = Area::whereNull('parent_id')->get()->toArray();
-    $this->estados = Estado::where('id', '!=', 2)->get();
+    $this->estados = Estado::all();
         $this->subareas = Area::where('parent_id', 5)->get()->toArray();
     }
 
