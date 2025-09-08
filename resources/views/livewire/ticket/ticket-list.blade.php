@@ -19,12 +19,8 @@
                 </button>
                 @endif
             </div>
-
-
             <div>
-
             </div>
-
             <div class="p-4 border-t border-gray-100 dark:border-gray-800 sm:p-6">
                 <div class="space-y-5">
                     <div class="overflow-hidden">
@@ -69,6 +65,11 @@
                                         class="text-theme-sm h-10 rounded-md px-3 py-2 font-medium transition-colors"
                                         style="@if($filterType==='pending')background-color:#3b82f6;color:white;@else background-color:white;color:#6b7280;@endif"
                                     >Pendientes</button>
+                                        <button
+                                            wire:click="$set('filterType', 'paused')"
+                                            class="text-theme-sm h-10 rounded-md px-3 py-2 font-medium transition-colors"
+                                            style="@if($filterType==='paused')background-color:#3b82f6;color:white;@else background-color:white;color:#6b7280;@endif"
+                                        >Pausados</button>
                                 </div>
                                 <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
                                     <div class="relative"><span

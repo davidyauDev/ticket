@@ -40,7 +40,8 @@ class TicketList extends Component
             }))
                 ->when($this->filterType === 'solved', fn($q) => $q->where('estado_id', 5))
                 ->when($this->filterType === 'pending', fn($q) => $q->where('estado_id', 1))
-                ->when($this->filterType !== 'solved' && $this->filterType !== 'pending' && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
+                ->when($this->filterType === 'paused', fn($q) => $q->where('estado_id', 6))
+                ->when(!in_array($this->filterType, ['solved', 'pending', 'paused']) && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
                 ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
         } else {
 
@@ -57,7 +58,8 @@ class TicketList extends Component
                 }))
                 ->when($this->filterType === 'solved', fn($q) => $q->where('estado_id', 5))
                 ->when($this->filterType === 'pending', fn($q) => $q->where('estado_id', 1))
-                ->when($this->filterType !== 'solved' && $this->filterType !== 'pending' && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
+                ->when($this->filterType === 'paused', fn($q) => $q->where('estado_id', 6))
+                ->when(!in_array($this->filterType, ['solved', 'pending', 'paused']) && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
                 ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
         }
 
