@@ -83,4 +83,11 @@ class Ticket extends Model
     return $this->hasOne(TicketHistorial::class)->latestOfMany();
 }
 
+public function ultimoResuelto()
+{
+    return $this->hasOne(TicketHistorial::class)
+        ->where('estado_id', 5)
+        ->latest('created_at');
+}
+
 }
