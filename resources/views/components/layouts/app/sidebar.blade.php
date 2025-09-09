@@ -5,26 +5,20 @@
 
         <!-- SIDEBAR HEADER -->
 
-        <div 
-  class="sidebar-header flex items-center gap-2 pb-7 pt-8"
-  :class="sidebarToggle ? 'justify-center' : 'justify-between'"
->
-  <a href="{{ route('dashboard') }}">
-    {{-- Logo completo (modo claro) --}}
-    <span class="logo" :class="sidebarToggle ? 'hidden' : 'block'">
-      <img src="{{ asset('images/logo.svg') }}" alt="Logo" class="block dark:hidden h-10 w-auto" />
-      <img src="{{ asset('images/logo-dark.svg') }}" alt="Logo" class="hidden dark:block h-10 w-auto" />
-    </span>
+        <div class="sidebar-header flex items-center gap-2 pb-7 pt-8"
+            :class="sidebarToggle ? 'justify-center' : 'justify-between'">
+            <a href="{{ route('dashboard') }}">
+                {{-- Logo completo (modo claro) --}}
+                <span class="logo" :class="sidebarToggle ? 'hidden' : 'block'">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Logo" class="block dark:hidden h-10 w-auto" />
+                    <img src="{{ asset('images/logo-dark.svg') }}" alt="Logo" class="hidden dark:block h-10 w-auto" />
+                </span>
 
-    {{-- Logo reducido (ícono) cuando sidebarToggle = true --}}
-    <img 
-      src="{{ asset('images/logo-icon.svg') }}" 
-      alt="Logo reducido"
-      class="logo-icon h-10 w-auto"
-      :class="sidebarToggle ? 'block' : 'hidden'" 
-    />
-  </a>
-</div>
+                {{-- Logo reducido (ícono) cuando sidebarToggle = true --}}
+                <img src="{{ asset('images/logo-icon.svg') }}" alt="Logo reducido" class="logo-icon h-10 w-auto"
+                    :class="sidebarToggle ? 'block' : 'hidden'" />
+            </a>
+        </div>
 
 
         <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
@@ -174,6 +168,7 @@
             @endif
         </nav>
     </aside>
+    @fluxscripts
     <!-- Main Content -->
     <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
         <main>
@@ -181,7 +176,7 @@
                 {{ $slot }}
             </div>
         </main>
+
     </div>
 
 </div>
-<!-- Sidebar -->
