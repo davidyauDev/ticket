@@ -9,10 +9,18 @@ class Equipo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['serie', 'modelo' , 'id_equipo'];
+    protected $fillable = ['serie', 'modelo' , 'id_equipo' , 'modelo_id'];
 
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
+    }
+    
+    /**
+     * Get the modelo that owns the equipo.
+     */
+    public function modelo()
+    {
+        return $this->belongsTo(Modelo::class);
     }
 }

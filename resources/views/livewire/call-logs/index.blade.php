@@ -249,10 +249,6 @@
                 <span class="text-sm text-red-600">{{ $message }}</span>
                 @enderror
             </div>
-
-
-
-
             <!-- Descripción -->
             <div>
                 <label class="block text-sm font-medium mb-1">Detalle de la Consulta</label>

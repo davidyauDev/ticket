@@ -49,6 +49,7 @@ class TicketService
                         ['id_equipo' => (int) $data['ticketData']['id_equipo']],
                         [
                             'serie'  => $serie,
+                            'modelo_id' => $data['ticketData']['id_modelo'] ?? null,
                             'modelo' => $data['ticketData']['modelo'] ?? 'Modelo Desconocido',
                         ]
                     );

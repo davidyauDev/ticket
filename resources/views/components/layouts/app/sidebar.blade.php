@@ -70,6 +70,26 @@
                         Llamadas
                     </span>
                 </a>
+                 <a href="{{ route('settings.modelos') }}" wire:navigate
+                    class="menu-item group {{ request()->routeIs('settings.modelos') ? 'bg-gray-100 dark:bg-zinc-800' : '' }}">
+                    <!-- Icono con cambio de color dinámico -->
+                    <span
+                        class="{{ request()->routeIs('settings.modelos') ? 'text-blue-600' : 'text-gray-500 dark:text-gray-400' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard">
+                            <rect width="7" height="9" x="3" y="3" rx="1" />
+                            <rect width="7" height="5" x="14" y="3" rx="1" />
+                            <rect width="7" height="9" x="14" y="12" rx="1" />
+                            <rect width="7" height="5" x="3" y="16" rx="1" />
+                        </svg>
+                    </span>
+                    <!-- Texto con color dinámico -->
+                    <span
+                        class="menu-item-text ml-2 {{ request()->routeIs('settings.modelos') ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-400' }}">
+                        Modelos
+                    </span>
+                </a>
             </div>
             @endif
             @if (auth()->user()?->role === 'admin')
@@ -164,6 +184,7 @@
                         Settings
                     </span>
                 </a>
+                
             </div>
             @endif
         </nav>

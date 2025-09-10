@@ -52,11 +52,12 @@
                 @php
                 $ticketDerivado = $ticket->estado_id === 2;
                 $esMiArea = Auth::check() && Auth::user()->area_id === $ticket->area_id;
-            @endphp
+                @endphp
 
-            @php
-                $yaAsignadoAMi = isset($ticket->assignedUser) && Auth::check() && $ticket->assignedUser->id === Auth::user()->id;
-            @endphp
+                @php
+                $yaAsignadoAMi = isset($ticket->assignedUser) && Auth::check() && $ticket->assignedUser->id ===
+                Auth::user()->id;
+                @endphp
 
                 @if ($ticketDerivado && $esMiArea && !$yaAsignadoAMi)
                 <button wire:click="asignarme"
@@ -68,7 +69,7 @@
                     </svg>
                     Asignarme
                 </button>
-            @endif
+                @endif
             </div>
 
         </div>
