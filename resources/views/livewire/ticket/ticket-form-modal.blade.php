@@ -187,6 +187,7 @@
 
                     @if ($derivar)
                         <div>
+                          
                             <label class="block text-sm font-medium text-gray-700 mb-1">Motivo de derivación</label>
                             <select wire:model="motivo_derivacion"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
@@ -198,6 +199,20 @@
                             @error('motivo_derivacion')
                                 <span class="text-red-600 text-sm">{{ $message }}</span>
                             @enderror
+
+                            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Derivar a Usuario</label>
+        <select wire:model="usuario_derivacion"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+            <option value="">Seleccione un usuario</option>
+            @foreach ($responsables as $resp)
+                <option value="{{ $resp->id }}">
+                    {{ $resp->name }} (Prioridad {{ $resp->prioridad }})
+                </option>
+            @endforeach
+        </select>
+        @error('usuario_derivacion')
+            <span class="text-red-600 text-sm">{{ $message }}</span>
+        @enderror
                         </div>
                     @endif
 
@@ -216,6 +231,10 @@
                                 <span class="text-red-600 text-sm">{{ $message }}</span>
                             @enderror
                         </div>
+                        <div>
+                            
+                        </div>
+                        
                     @endif
 
                     <!-- Comentario -->

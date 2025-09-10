@@ -13,6 +13,7 @@ use App\Models\TipoSoporte;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Services\TicketService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -33,7 +34,7 @@ class TicketFormModal extends Component
     public $selectedArea = null;
     public $selectedSubarea = null;
     public $subareas = [];
-    public $codigoInput = 'OS0056400';
+    public $codigoInput = 'OS0056418';
     public $ticketData = null;
     public $showModal = false;
     public $tipoTicket = 'ticket';
@@ -45,13 +46,15 @@ class TicketFormModal extends Component
     public $notes = '';
     public $archivo;
     public $soporte = [];
+    public $responsables;
     public bool $resueltoAlCrear = false;
     public bool $derivar = false;
     public $tipoSoporte = null;
     public $ticket;
     public bool $ticketPendiente = false;
-    public int  $ticketEnProceso ;
+    public int  $ticketEnProceso;
     public $ticketEnProcesoOst;
+    public $usuario_derivacion;
 
     public $motivosDerivacion = [
         'Derivar a taller por caída',
@@ -100,10 +103,26 @@ class TicketFormModal extends Component
         try {
             $response = Http::get("http://172.19.0.14/api/numbers.php?search=" . urlencode($this->codigoInput));
             $data = $response->json();
+
             if (empty($data)) {
                 $this->addError('ticketError', 'No se encontraron datos para el ticket ingresado.');
                 return;
             }
+            $this->responsables = DB::table('responsables_modelo')
+                ->join('users', 'responsables_modelo.id_user', '=', 'users.id')
+                ->select(
+                    'responsables_modelo.prioridad',
+                    'users.id',
+                    'users.name'
+                )
+                ->where('responsables_modelo.id_modelo', $data[0]['id_modelo'])
+                ->orderBy('responsables_modelo.prioridad')
+                ->get();
+            if ($this->responsables->isNotEmpty()) {
+                $this->usuario_derivacion = $this->responsables->sortBy('prioridad')->first()->id;
+            }
+
+            Log::info($this->responsables);
             if (empty($data[0]['id_tecnico'])) {
                 $this->addError('ticketError', 'Ticket no asignado a un usuario');
                 return;
@@ -111,14 +130,11 @@ class TicketFormModal extends Component
 
             $equipo = Equipo::where('id_equipo', $data[0]['id_equipo'])->first();
             if ($equipo) {
-                $ticketsEquipo = Ticket::where('equipo_id', $equipo->id)->get();
                 $ultimoTicket = Ticket::where('equipo_id', $equipo->id)
-                          ->orderBy('created_at', 'desc') // o 'id', 'desc'
-                          ->first();
+                    ->orderBy('created_at', 'desc') // o 'id', 'desc'
+                    ->first();
 
-                if($ultimoTicket){
-                    Log::info('Último ticket encontrado para equipo_id ' . $equipo->id . ':', $ultimoTicket->toArray());
-                }
+
 
                 if ($ultimoTicket->estado_id != 5) {
                     $this->ticketPendiente = true;
@@ -126,17 +142,7 @@ class TicketFormModal extends Component
                     $this->ticketEnProcesoOst = $ultimoTicket->osticket;
                     return;
                 }
-
-                if ($ticketsEquipo->count() > 0) {
-                    foreach ($ticketsEquipo as $ticket) {
-                       // Log::info('Ticket encontrado para equipo_id ' . $equipo->id . ':', $ticket->toArray());
-                    }
-                } else {
-                    // Log::info('No se encontraron tickets para equipo_id ' . $equipo->id);
-                }
             }
-
-
             $this->ticketData = count($data) ? $data[0] : null;
         } catch (\Exception $e) {
             $this->addError('ErrorConsulta', 'Error al obtener datos del ticket');
@@ -193,31 +199,12 @@ class TicketFormModal extends Component
             })
             ->value('id');
 
-        $prioridades = User::where('area_id', $AreaSelecionada)
-            ->where('available', true)
-            ->orderBy('priority')
-            ->pluck('priority')
-            ->unique();
-
-        $usuarioAsignado = null;
-        foreach ($prioridades as $prioridad) {
-            $usuarioAsignado = User::where('area_id', $AreaSelecionada)
-                ->where('available', true)
-                ->where('priority', $prioridad)
-                ->first();
-
-            if ($usuarioAsignado) {
-                // Log::info($ticket);
-                // return;
-                Mail::to('isaac.ramos@cechriza.com')->queue(new TicketNotificadoMail($ticket));
-                break;
-            }
-        }
-
-        if ($usuarioAsignado) {
-            $ticket->assigned_to = $usuarioAsignado->id;
+        if ($this->usuario_derivacion) {
+            $ticket->assigned_to = $this->usuario_derivacion;
             $ticket->area_id = $AreaSelecionada;
             $ticket->estado_id = 2;
+
+            Mail::to('yauridavid00@gmail.com')->queue(new TicketNotificadoMail($ticket));
         }
         $ticket->motivo_derivacion = $this->motivo_derivacion;
         $ticket->save();
@@ -226,7 +213,7 @@ class TicketFormModal extends Component
             'usuario_id'   => Auth::id(),
             'from_area_id' => Auth::user()->area_id,
             'to_area_id'   => $AreaSelecionada,
-            'asignado_a'   => $usuarioAsignado->id,
+            'asignado_a'   => $this->usuario_derivacion,
             'estado_id'    => 2,
             'accion'       => 'Derivado',
             'comentario'   => 'Derivado',

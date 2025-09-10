@@ -223,32 +223,17 @@
                         </div>
                         @if ($estado_id == 2)
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
-                                <flux:select wire:model.live="selectedArea" class="text-sm" placeholder="Área">
-                                    @foreach ($areas as $area)
-                                    <flux:select.option value="{{ $area['id'] }}">
-                                        {{ $area['nombre'] }}
-                                    </flux:select.option>
-                                    @endforeach
-                                </flux:select>
-                                @error('selectedArea')
-                                <span class="text-red-600 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Subárea</label>
-                                <flux:select wire:model.live="selectedSubarea" class="text-sm" placeholder="Subárea">
-                                    @foreach ($subareas as $sub)
-                                    <flux:select.option value="{{ $sub['id'] }}">
-                                        {{ $sub['nombre'] }}
-                                    </flux:select.option>
-                                    @endforeach
-                                </flux:select>
-                                @error('selectedSubarea')
-                                <span class="text-red-600 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
+                         
+                            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Derivar a Usuario</label>
+<select wire:model="usuario_derivacion"
+    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+    <option value="">Seleccione un usuario</option>
+    @foreach ($responsables as $resp)
+        <option value="{{ $resp->id }}">
+            {{ $resp->name }} (Prioridad {{ $resp->prioridad }})
+        </option>
+    @endforeach
+</select>
                         </div>
                         @endif
                     </div>

@@ -70,26 +70,7 @@
                         Llamadas
                     </span>
                 </a>
-                 <a href="{{ route('settings.modelos') }}" wire:navigate
-                    class="menu-item group {{ request()->routeIs('settings.modelos') ? 'bg-gray-100 dark:bg-zinc-800' : '' }}">
-                    <!-- Icono con cambio de color dinámico -->
-                    <span
-                        class="{{ request()->routeIs('settings.modelos') ? 'text-blue-600' : 'text-gray-500 dark:text-gray-400' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard">
-                            <rect width="7" height="9" x="3" y="3" rx="1" />
-                            <rect width="7" height="5" x="14" y="3" rx="1" />
-                            <rect width="7" height="9" x="14" y="12" rx="1" />
-                            <rect width="7" height="5" x="3" y="16" rx="1" />
-                        </svg>
-                    </span>
-                    <!-- Texto con color dinámico -->
-                    <span
-                        class="menu-item-text ml-2 {{ request()->routeIs('settings.modelos') ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-400' }}">
-                        Modelos
-                    </span>
-                </a>
+                
             </div>
             @endif
             @if (auth()->user()?->role === 'admin')
@@ -182,6 +163,20 @@
                     <span
                         class="menu-item-text ml-2 {{ request()->routeIs('settings.index') ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-400' }}">
                         Settings
+                    </span>
+                </a>
+
+                 <a href="{{ route('settings.modelos') }}" wire:navigate
+                    class="menu-item group {{ request()->routeIs('settings.modelos') ? 'bg-gray-100 dark:bg-zinc-800' : '' }}">
+                    <!-- Icono con cambio de color dinámico -->
+                    <span
+                        class="{{ request()->routeIs('settings.modelos') ? 'text-blue-600' : 'text-gray-500 dark:text-gray-400' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-washing-machine-icon lucide-washing-machine"><path d="M3 6h3"/><path d="M17 6h.01"/><rect width="18" height="20" x="3" y="2" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M12 18a2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 1 0-5"/></svg>
+                    </span>
+                    <!-- Texto con color dinámico -->
+                    <span
+                        class="menu-item-text ml-2 {{ request()->routeIs('settings.modelos') ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-400' }}">
+                        Modelos
                     </span>
                 </a>
                 

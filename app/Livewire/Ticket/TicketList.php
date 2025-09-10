@@ -47,7 +47,7 @@ class TicketList extends Component
 
             // Usuarios normales: filtrados por tipo y área
             $tickets->when($this->tipo === 'mis', function ($q) use ($user) {
-                $q->where('area_id', $user->area_id);
+                $q->where('assigned_to', $user->id);
             })
                 ->when($this->tipo === 'pendientes', fn($q) => $q->where('area_id', $user->area_id)->whereNull('assigned_to'))
                 ->when($this->tipo === 'todos', fn($q) => $q->where('area_id', $user->area_id))

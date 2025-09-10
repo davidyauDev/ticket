@@ -33,13 +33,33 @@ class DetalleTicket extends Component
     public $subareas = [];
     public $selectedSubarea = null;
     public bool $reasignarAOrigen = false;
+    public $responsables;
+    public $usuario_derivacion;
 
     public function mount($ticket)
     {
-        $this->ticket = Ticket::findOrFail($ticket);
-        $this->areas = Area::whereNull('parent_id')->get()->toArray();
+       $this->ticket = Ticket::query()
+    ->join('equipos', 'tickets.equipo_id', '=', 'equipos.id')
+    ->select('tickets.*', 'equipos.modelo_id') 
+    ->where('tickets.id', $ticket)
+    ->firstOrFail();
+        Log::info($this->ticket);
     $this->estados = Estado::all();
-        $this->subareas = Area::where('parent_id', 5)->get()->toArray();
+
+        $this->responsables = DB::table('responsables_modelo')
+        ->join('users', 'responsables_modelo.id_user', '=', 'users.id')
+        ->select(
+            'responsables_modelo.prioridad',
+            'users.id',
+            'users.name'
+        )
+        ->where('responsables_modelo.id_modelo', $this->ticket->modelo_id) 
+        ->orderBy('responsables_modelo.prioridad')
+        ->get();
+
+    if ($this->responsables->isNotEmpty()) {
+        $this->usuario_derivacion = $this->responsables->first()->id;
+    }
     }
 
     public function getFechaInicioProperty()
@@ -115,9 +135,9 @@ class DetalleTicket extends Component
                     $accionHistorial = 'Reasignado';
                 }
             } elseif ($this->estado_id == 2) { // Derivado
-                if (!$this->selectedArea || !$this->selectedSubarea) {
-                    throw new \Exception('Debe seleccionar un área y subárea al derivar el ticket.');
-                }
+                // if (!$this->selectedArea || !$this->selectedSubarea) {
+                //     throw new \Exception('Debe seleccionar un área y subárea al derivar el ticket.');
+                // }
                 $this->ticket->area_id = $this->selectedSubarea;
                 $this->ticket->assigned_to = null;
                 $comentarioHistorial = $comentarioHistorial;
@@ -129,26 +149,24 @@ class DetalleTicket extends Component
                         (object)['email' => 'yauridavid00@gmail.com'],
                     ]);
                 }
-                Log::info('Usuarios destino: ', $usuariosDestino->pluck('email')->toArray());
 
-                // Buscar usuario disponible por prioridad ascendente (dinámico)
-                $usuarioAsignado = null;
-                $prioridades = User::where('area_id', $this->selectedSubarea)
-                    ->where('available', true)
-                    ->orderBy('priority')
-                    ->pluck('priority')
-                    ->unique();
-                foreach ($prioridades as $prioridad) {
-                    $usuarioAsignado = User::where('area_id', $this->selectedSubarea)
-                        ->where('available', true)
-                        ->where('priority', $prioridad)
-                        ->first();
-                    if ($usuarioAsignado) {
-                        break;
-                    }
-                }
-                if ($usuarioAsignado) {
-                    $this->ticket->assigned_to = $usuarioAsignado->id;
+                // $usuarioAsignado = null;
+                // $prioridades = User::where('area_id', $this->selectedSubarea)
+                //     ->where('available', true)
+                //     ->orderBy('priority')
+                //     ->pluck('priority')
+                //     ->unique();
+                // foreach ($prioridades as $prioridad) {
+                //     $usuarioAsignado = User::where('area_id', $this->selectedSubarea)
+                //         ->where('available', true)
+                //         ->where('priority', $prioridad)
+                //         ->first();
+                //     if ($usuarioAsignado) {
+                //         break;
+                //     }
+                // }
+                if ($this->usuario_derivacion) {
+                    $this->ticket->assigned_to = $this->usuario_derivacion;
                 } else {
                     $this->ticket->assigned_to = null;
                 }
@@ -180,7 +198,7 @@ class DetalleTicket extends Component
                 'ticket_id'    => $this->ticket->id,
                 'usuario_id'   => Auth::id(),
                 'from_area_id' => Auth::user()->area_id,
-                'to_area_id'   => $this->selectedSubarea,
+                'to_area_id'   => $this->selectedSubarea ?? null,
                 'asignado_a'   => $this->ticket->assigned_to,
                 'estado_id'    => $this->estado_id,
                 'accion'       => $accionHistorial,
