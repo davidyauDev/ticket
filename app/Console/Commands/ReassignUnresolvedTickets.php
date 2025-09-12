@@ -20,7 +20,7 @@ class ReassignUnresolvedTickets extends Command
     {
         $tickets = Ticket::where('estado_id', 2)
             ->whereNotNull('assigned_to')
-            ->with('equipo.modelo') // 👈 asegúrate de tener las relaciones
+            ->with('equipo.modelo') 
             ->get();
 
   

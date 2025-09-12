@@ -19,25 +19,26 @@ class TicketsPorAreaMesa extends Component
 
    public function loadChartData(): void
 {
-    // Obtenemos los usuarios con prioridad 1
+    // Obtenemos los usuarios con prioridad 1 y su modelo asignado
     $usuarios = DB::table('responsables_modelo as rm')
         ->join('users as u', 'rm.id_user', '=', 'u.id')
         ->where('rm.prioridad', 1)
-        ->select('u.id', 'u.name')
+        ->select('u.id', 'u.name', 'rm.id_modelo') // importante traer el modelo
         ->distinct()
         ->get();
 
     $estadisticas = $usuarios->map(function ($usuario) {
-        // Tickets asignados a este usuario
+        // Tickets relacionados al modelo del usuario
         $asignados = DB::table('tickets')
-            ->where('assigned_to', $usuario->id);
+            ->where('id_modelo', $usuario->id_modelo);
 
         $asignadosResueltos = (clone $asignados)->where('estado_id', 5)->count();
         $asignadosNoResueltos = (clone $asignados)->where('estado_id', '!=', 5)->count();
 
-        // Tickets no asignados (en general, no por usuario)
+        // Tickets sin asignación, pero del mismo modelo
         $noAsignados = DB::table('tickets')
             ->whereNull('assigned_to')
+            ->where('id_modelo', $usuario->id_modelo)
             ->count();
 
         return [
@@ -66,6 +67,7 @@ class TicketsPorAreaMesa extends Component
         ],
     ];
 }
+
     public function render()
     {
         return view('livewire.ticket.dashboard.tickets-por-area-mesa');
