@@ -40,15 +40,13 @@ class Index extends Component
 
     public function updatedSearchTecnico()
     {
-        $this->tecnicoList = User::whereNull('area_id')
-            ->where('role', '!=', 'admin')
-            ->where(function ($query) {
-                $query->where('firstname', 'like', '%' . $this->searchTecnico . '%')
-                    ->orWhere('lastname', 'like', '%' . $this->searchTecnico . '%');
-            })
-            ->limit(10)
-            ->get()
-            ->toArray();
+        $this->tecnicoList = User::where(function ($query) {
+        $query->where('firstname', 'like', '%' . $this->searchTecnico . '%')
+              ->orWhere('lastname', 'like', '%' . $this->searchTecnico . '%');
+    })
+    ->limit(10)
+    ->get()
+    ->toArray();
     }
 
     public function selectTecnico($id)
