@@ -37,7 +37,6 @@ class TicketsPorAreaMesa extends Component
 
         // Tickets sin asignación, pero del mismo modelo
         $noAsignados = DB::table('tickets')
-            ->whereNull('assigned_to')
             ->where('id_modelo', $usuario->id_modelo)
             ->count();
 
