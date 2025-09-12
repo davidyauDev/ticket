@@ -146,7 +146,7 @@ class DetalleTicket extends Component
                 // Correos por defecto si no hay usuarios destino
                 if ($usuariosDestino->isEmpty()) {
                     $usuariosDestino = collect([
-                        (object)['email' => 'yauridavid00@gmail.com'],
+                        (object)['email' => 'isaac.ramos@cechriza.com'],
                     ]);
                 }
 

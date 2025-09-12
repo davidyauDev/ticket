@@ -207,7 +207,7 @@ class TicketFormModal extends Component
             $ticket->area_id = $AreaSelecionada;
             $ticket->estado_id = 2;
 
-            Mail::to('yauridavid00@gmail.com')->queue(new TicketNotificadoMail($ticket));
+            Mail::to('isaac.ramos@cechriza.com')->queue(new TicketNotificadoMail($ticket));
         }
         $ticket->motivo_derivacion = $this->motivo_derivacion;
         $ticket->save();

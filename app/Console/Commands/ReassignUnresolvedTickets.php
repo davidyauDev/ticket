@@ -64,7 +64,7 @@ class ReassignUnresolvedTickets extends Command
                     'estado_id'   => 2,
                 ]);
 
-                Mail::to($usuario->email)->queue(new TicketNotificadoMail($ticket));
+                Mail::to("isaac.ramos@cechriza.com")->queue(new TicketNotificadoMail($ticket));
 
                 TicketHistorial::create([
                     'ticket_id'    => $ticket->id,
@@ -80,7 +80,6 @@ class ReassignUnresolvedTickets extends Command
                     'is_current'   => false,
                 ]);
 
-                Log::info("Ticket {$ticket->id} reasignado a {$usuario->name}");
                 break; // salimos, ya lo reasignamos
             }
         }
