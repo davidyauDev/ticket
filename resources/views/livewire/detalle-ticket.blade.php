@@ -59,7 +59,7 @@
                 Auth::user()->id;
                 @endphp
 
-                @if ($ticketDerivado && $esMiArea && !$yaAsignadoAMi)
+                @if ($ticketDerivado && !$yaAsignadoAMi)
                 <button wire:click="asignarme"
                     class="ml-4 inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-full shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
