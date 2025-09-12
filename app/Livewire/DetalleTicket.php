@@ -326,7 +326,7 @@ class DetalleTicket extends Component
 
     public function asignarme()
     {
-        if ($this->ticket->estado_id !== 2 || Auth::user()->area_id !== $this->ticket->area_id) {
+        if ($this->ticket->estado_id !== 2 ) {
             $this->dispatch('notifyActu', type: 'error', message: 'No puedes asignarte este ticket.');
             return;
         }
