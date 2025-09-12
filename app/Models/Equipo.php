@@ -9,7 +9,7 @@ class Equipo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['serie', 'modelo' , 'id_equipo' , 'modelo_id'];
+    protected $fillable = [ 'id','serie', 'modelo' , 'id_equipo' , 'modelo_id'];
 
     public function tickets()
     {

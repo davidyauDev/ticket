@@ -33,6 +33,7 @@ class ModelSeeder extends Seeder
             "SC 820J",
             "DTC 1",
             "MAGNER VC525",
+            "",
             "NEWTON 30",
             "CUMMINS LX",
             "DTC 9",

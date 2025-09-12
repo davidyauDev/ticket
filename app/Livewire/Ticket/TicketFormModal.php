@@ -118,6 +118,9 @@ class TicketFormModal extends Component
                 ->where('responsables_modelo.id_modelo', $data[0]['id_modelo'])
                 ->orderBy('responsables_modelo.prioridad')
                 ->get();
+            
+            Log::info($data);    
+            Log::info($this->responsables);
             if ($this->responsables->isNotEmpty()) {
                 $this->usuario_derivacion = $this->responsables->sortBy('prioridad')->first()->id;
             }

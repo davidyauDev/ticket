@@ -24,10 +24,12 @@ class Ticket extends Model
         'tecnico_nombres',
         'tecnico_apellidos',
         'tipo_soporte_id',
+        'staff_id',
         'area_id',
         'assigned_to',
         'created_by',
-        'motivo_derivacion'
+        'motivo_derivacion',
+        'id_modelo'
     ];
 
     public function historiales()
@@ -82,6 +84,11 @@ class Ticket extends Model
 {
     return $this->hasOne(TicketHistorial::class)->latestOfMany();
 }
+    public function tecnico()
+    {
+        return $this->belongsTo(Tecnico::class, 'staff_id', 'staff_id');
+    }
+
 
 public function ultimoResuelto()
 {

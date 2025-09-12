@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Estado;
-use App\Models\TipoSoporte;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,24 +16,22 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::create([
+            'name' => 'Admin',
+            'firstname' => 'Admin',
+            'lastname' => 'User',
+            'email' => 'admin@cechriza.net',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+        ]);
+
         $this->call([
-            //EstadoSeeder::class,
-            //AreaSeeder::class,
-            //HelpDeskUserSeeder::class,
-            ///EmpresaSeeder::class,
-            //ClientSeeder::class,
-            //AgenciaSeeder::class,
-            //EquiposSeeder::class,
-            //ObservacionSeeder::class,
-            //TicketSeeder::class,
-            //UsersSeeder::class,
-            //OpcionesSeguimientoSeeder::class,
-            //TipoSoporteSeeder::class,
+            EstadoSeeder::class,
+            AreaSeeder::class,
+            ObservacionSeeder::class,
+            TipoSoporteSeeder::class,
             ModelSeeder::class,
+            UsersSeeder::class,
         ]);
     }
 }

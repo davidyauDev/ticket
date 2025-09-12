@@ -1,9 +1,10 @@
-<div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 dark:bg-white/[0.03] dark:border-gray-800">
+<div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 dark:bg-slate-900 dark:border-gray-700">
 
     <!-- Encabezado -->
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Distribución de Tickets en Mesa de Ayuda por
-            Subárea</h2>
+        <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100">
+            Distribución de Tickets por Encargado
+        </h2>
     </div>
 
     <!-- Gráfico -->
@@ -23,69 +24,101 @@
                 const el = document.querySelector('#grafico-tickets-area-mesa');
 
                 this.chart = new ApexCharts(el, {
-    chart: {
-        type: 'bar',
-        stacked: true, // Activar modo apilado
-        height: this.chartData.categories.length * 60,
-        toolbar: { show: false }
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-            borderRadius: 8,
-            barHeight: '45%',
-        }
-    },
-    series: this.chartData.series,
-    xaxis: {
-        categories: this.chartData.categories,
-        labels: {
-            style: {
-                colors: '#334155',
-                fontSize: '14px',
-                fontWeight: 500,
-                whiteSpace: 'normal'
-            }
-        }
-    },
-    yaxis: {
-        labels: {
-            style: {
-                colors: '#334155',
-                fontSize: '14px',
-                fontWeight: 500
-            }
-        }
-    },
-    colors: ['#10b981', '#f59e0b', '#ef4444'],
-    grid: {
-        borderColor: '#e2e8f0'
-    },
-    dataLabels: {
-        enabled: true,
-        style: {
-            colors: ['#000']
-        }
-    },
-    legend: {
-        position: 'top',
-        horizontalAlign: 'center',
-        fontSize: '14px',
-        labels: {
-            colors: '#334155'
-        }
-    },
-    noData: {
-        text: "No hay datos disponibles",
-        align: 'center',
-        verticalAlign: 'middle',
-        style: {
-            color: '#64748b',
-            fontSize: '14px'
-        }
-    }
-});
-
+                    chart: {
+                        type: 'bar',
+                        stacked: true,
+                        height: this.chartData.categories.length * 70, // más alto por fila
+                        toolbar: { show: false },
+                        background: 'transparent'
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            borderRadius: 6,
+                            barHeight: '40%',
+                            dataLabels: {
+                                position: 'center'
+                            }
+                        }
+                    },
+                    series: this.chartData.series,
+                    xaxis: {
+                        categories: this.chartData.categories,
+                        labels: {
+                            style: {
+                                colors: '#475569', // más suave que #334155
+                                fontSize: '13px',
+                                fontWeight: 500
+                            }
+                        },
+                        axisTicks: { show: false },
+                        axisBorder: { show: false }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                colors: '#475569',
+                                fontSize: '13px',
+                                fontWeight: 600
+                            }
+                        }
+                    },
+                    colors: ['#22c55e', '#f59e0b', '#ef4444'], // tonos más modernos
+                    grid: {
+                        borderColor: '#e2e8f0',
+                        strokeDashArray: 4,
+                        xaxis: { lines: { show: false } }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: {
+                            colors: ['#fff'], // etiquetas blancas
+                            fontSize: '12px',
+                            fontWeight: 'bold'
+                        },
+                        dropShadow: {
+                            enabled: true,
+                            top: 1,
+                            left: 1,
+                            blur: 2,
+                            color: '#000',
+                            opacity: 0.4
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'center',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        markers: {
+                            radius: 6
+                        },
+                        labels: {
+                            colors: '#334155'
+                        }
+                    },
+                    tooltip: {
+                        theme: 'light',
+                        style: {
+                            fontSize: '13px'
+                        },
+                        y: {
+                            formatter: function (val) {
+                                return val + " tickets"
+                            }
+                        }
+                    },
+                    noData: {
+                        text: "No hay datos disponibles",
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        style: {
+                            color: '#94a3b8',
+                            fontSize: '14px',
+                            fontWeight: 500
+                        }
+                    }
+                });
 
                 this.chart.render();
 

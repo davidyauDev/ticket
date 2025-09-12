@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('asunto')->nullable();
             $table->text('falla_reportada')->nullable();
             $table->enum('tipo', ['ticket', 'consulta'])->default('ticket');
+            $table->string('staff_id')->nullable();
             $table->string('tecnico_dni')->nullable();
             $table->string('tecnico_nombres')->nullable();
             $table->string('tecnico_apellidos')->nullable();
+            $table->integer('id_modelo')->nullable();
             $table->text('comentario')->nullable();
             $table->foreignId('observacion_id')->nullable()->constrained('observaciones');
             $table->string('observacion_consulta')->nullable();
