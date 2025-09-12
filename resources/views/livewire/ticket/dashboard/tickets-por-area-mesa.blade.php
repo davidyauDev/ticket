@@ -8,9 +8,14 @@
     </div>
 
     <!-- Gráfico -->
-    <div x-data="graficoTicketsAreaMesa(@entangle('chartData'))" x-init="initChart()" wire:ignore>
-        <div id="grafico-tickets-area-mesa" class="w-full min-h-[400px]"></div>
-    </div>
+    <div 
+    x-data="graficoTicketsAreaMesa(@js($chartData))" 
+    x-init="initChart()" 
+    wire:ignore
+>
+    <div id="grafico-tickets-area-mesa" class="w-full min-h-[400px]"></div>
+</div>
+
 
 </div>
 
@@ -27,7 +32,8 @@
                     chart: {
                         type: 'bar',
                         stacked: true,
-                        height: this.chartData.categories.length * 70, // más alto por fila
+                       height: Math.max(this.chartData.categories.length * 70, 400),
+
                         toolbar: { show: false },
                         background: 'transparent'
                     },
