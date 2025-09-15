@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 
 class ReassignUnresolvedTickets extends Command
 {
@@ -65,6 +66,26 @@ class ReassignUnresolvedTickets extends Command
                 ]);
 
                 Mail::to("isaac.ramos@cechriza.com")->queue(new TicketNotificadoMail($ticket));
+                $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
+                'sessionId' => 'mi-sesion-12',
+                'to'        => '51923158511',
+                'message'   => 'Se te asigno un ticket OST #' . $ticket->osticket . ' - ' . $ticket->titulo . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['success'] && $data['status']) {
+                    Log::info("WhatsApp enviado: " . $data['message']);
+                } else {
+                    Log::warning("Fallo parcial en envío WhatsApp", $data);
+                }
+            } else {
+                Log::error("Error HTTP al enviar WhatsApp", [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+            }
 
                 TicketHistorial::create([
                     'ticket_id'    => $ticket->id,

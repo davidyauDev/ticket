@@ -10,7 +10,6 @@ use App\Models\Observacion;
 use App\Models\Ticket;
 use App\Models\TicketHistorial;
 use App\Models\TipoSoporte;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Services\TicketService;
 use Illuminate\Support\Facades\DB;
@@ -223,7 +222,7 @@ class TicketFormModal extends Component
                     Log::warning("Fallo parcial en envío WhatsApp", $data);
                 }
             } else {
-                Log::error("❌ Error HTTP al enviar WhatsApp", [
+                Log::error("Error HTTP al enviar WhatsApp", [
                     'status' => $response->status(),
                     'body'   => $response->body(),
                 ]);

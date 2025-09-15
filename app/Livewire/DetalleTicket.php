@@ -223,6 +223,26 @@ class DetalleTicket extends Component
 
 
                         Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
+                        $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
+                'sessionId' => 'mi-sesion-12',
+                'to'        => '51923158511',
+                'message'   => 'Se te asigno un ticket OST #' .  $this->ticket->osticket . ' - '  . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['success'] && $data['status']) {
+                    Log::info("WhatsApp enviado: " . $data['message']);
+                } else {
+                    Log::warning("Fallo parcial en envío WhatsApp", $data);
+                }
+            } else {
+                Log::error("Error HTTP al enviar WhatsApp", [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+            }
                         // Llamada a tu API de WhatsApp para enviar el mensaje
                         //             $response = Http::post('http://127.0.0.1:4000/api/send', [
                         //                 'sessionId' => 'mi-sesion-prueba1',
