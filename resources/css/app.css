@@ -318,6 +318,10 @@ layer(base);
   display: flex;
 }
 
+.bg-gray-400\/50 {
+    background-color: color-mix(in oklab, var(--color-gray-400) 50%, transparent);
+}
+
 .tableCheckbox:checked ~ span span {
   @apply opacity-100;
 }

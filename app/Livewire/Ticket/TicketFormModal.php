@@ -108,28 +108,28 @@ class TicketFormModal extends Component
                 return;
             }
             $this->responsables = DB::table('users as u')
-    ->leftJoin('responsables_modelo as rm', function ($join) use ($data) {
-        $join->on('rm.id_user', '=', 'u.id')
-             ->where('rm.id_modelo', '=', $data[0]['id_modelo']); 
-    })
-    ->select(
-        'u.id',
-        'u.name',
-        'rm.id_modelo',
-        'rm.prioridad',
-        'rm.fecha_asignacion'
-    )
-    ->orderBy('rm.prioridad', 'asc') // primero los que tienen prioridad, NULL quedará al final
-    ->get();
+                ->leftJoin('responsables_modelo as rm', function ($join) use ($data) {
+                    $join->on('rm.id_user', '=', 'u.id')
+                        ->where('rm.id_modelo', '=', $data[0]['id_modelo']);
+                })
+                ->select(
+                    'u.id',
+                    'u.name',
+                    'rm.id_modelo',
+                    'rm.prioridad',
+                    'rm.fecha_asignacion'
+                )
+                ->orderBy('rm.prioridad', 'asc') 
+                ->get();
 
             if ($this->responsables->isNotEmpty()) {
-               $derivado = $this->responsables
-    ->filter(fn ($r) => !is_null($r->prioridad))   // solo los responsables reales
-    ->sortBy('prioridad')                         // ordena por prioridad asc
-    ->first();  
-    if ($derivado) {
-    $this->usuario_derivacion = $derivado->id;
-} 
+                $derivado = $this->responsables
+                    ->filter(fn($r) => !is_null($r->prioridad))   
+                    ->sortBy('prioridad')                         
+                    ->first();
+                if ($derivado) {
+                    $this->usuario_derivacion = $derivado->id;
+                }
             }
 
             if (empty($data[0]['id_tecnico'])) {
@@ -140,11 +140,8 @@ class TicketFormModal extends Component
             $equipo = Equipo::where('id_equipo', $data[0]['id_equipo'])->first();
             if ($equipo) {
                 $ultimoTicket = Ticket::where('equipo_id', $equipo->id)
-                    ->orderBy('created_at', 'desc') // o 'id', 'desc'
+                    ->orderBy('created_at', 'desc') 
                     ->first();
-
-
-
                 if ($ultimoTicket->estado_id != 5) {
                     $this->ticketPendiente = true;
                     $this->ticketEnProceso = $ultimoTicket->id;
@@ -237,7 +234,7 @@ class TicketFormModal extends Component
         }
         $ticket->motivo_derivacion = $this->motivo_derivacion;
         $ticket->save();
-        $historial = TicketHistorial::create([
+        TicketHistorial::create([
             'ticket_id'    => $ticketID,
             'usuario_id'   => Auth::id(),
             'from_area_id' => Auth::user()->area_id,

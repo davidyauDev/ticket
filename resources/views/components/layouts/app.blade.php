@@ -30,7 +30,7 @@
   x-data="{ page: 'ecommerce', loaded: true, darkMode: false, stickyMenu: false, sidebarToggle: false, scrollTop: false }"
   x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
            $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-  :class="{ 'dark bg-gray-900': darkMode }">
+  :class="{ 'dark bg-gray-900': darkMode === true }">
 
 
   <div class="flex h-screen overflow-hidden">
@@ -38,7 +38,7 @@
 
     <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
       <x-layouts.overlay />
-      <x-layouts.app.header2 />
+      <x-layouts.app.header />
       <main>
         {{ $slot }}
       </main>

@@ -1,151 +1,108 @@
 <div>
-    <x-modal wire:model="showModal" class="w-full max-w-xl">
-        <div class="p-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-1">Crear Nuevo Usuario</h2>
-            <p class="text-sm text-gray-500 mb-4">Completa la información para registrar un nuevo usuario.</p>
-            <hr class="mb-6">
+    <x-app-modal wire:model="showModal" wire:ignore.self class="w-full max-w-xl">
+        <div class="p-6 space-y-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Crear Nuevo Usuario</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                Completa la información para registrar un nuevo usuario.
+            </p>
 
-            @if ($errors->any())
-                <div class="p-3 mb-4 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
-                    <ul class="list-disc list-inside">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <div class="space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombres</label>
-                        <input wire:model="nombres" type="text" placeholder="Ingresa los nombres"
-                            class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('nombres')
-                            <span class="text-sm text-red-600">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
-                        <input wire:model="apellidos" type="text" placeholder="Ingresa los apellidos"
-                            class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('apellidos')
-                            <span class="text-sm text-red-600">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email <span
-                            class="text-red-500">*</span></label>
-                    <input wire:model="email" type="email" placeholder="usuario@ejemplo.com"
-                        class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                    @error('email')
-                        <span class="text-sm text-red-600">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                    <input wire:model="password" type="password"
-                        class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                    @error('password')
-                        <span class="text-sm text-red-600">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Dirección <span
-                            class="text-gray-400 text-xs">(Opcional)</span></label>
-                    <input wire:model="direccion" type="text" placeholder="Ingresa la dirección"
-                        class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                    @error('direccion')
-                        <span class="text-sm text-red-600">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Número celular</label>
-                        <input wire:model="celular" type="text" placeholder="+51 999 999 999"
-                            class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('celular')
-                            <span class="text-sm text-red-600">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">DNI</label>
-                        <input wire:model="dni" type="text" placeholder="12345678"
-                            class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('dni')
-                            <span class="text-sm text-red-600">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Área</label>
-                        <select wire:model="areaSeleccionada" wire:change="actualizarSubareas"
-                            class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black">
-                            <option value="">Selecciona un área</option>
-                            @foreach ($areas as $area)
-                                <option value="{{ $area->id }}">{{ $area->nombre }}</option>
-                            @endforeach
-                        </select>
-                        @error('areaSeleccionada')
-                            <span class="text-sm text-red-600">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Sub área</label>
-                        <select wire:model="subareaSeleccionada"
-                            class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black">
-                            <option value="">Selecciona una sub área</option>
-                            @foreach ($subareas as $subarea)
-                                <option value="{{ $subarea->id }}">{{ $subarea->nombre }}</option>
-                            @endforeach
-                        </select>
-                        @error('subareaSeleccionada')
-                            <span class="text-sm text-red-600">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="flex items-center space-x-3">
-                    <!-- Switch -->
-                    <label for="toggle-supervisor" class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-supervisor" class="sr-only peer"
-                            wire:model="esSupervisor" />
-
-                        <!-- Fondo del switch -->
-                        <div class="w-11 h-6 bg-gray-400 rounded-full peer-checked:bg-blue-600 transition-colors">
-                        </div>
-
-                        <!-- Botón circular del switch -->
-                        <div
-                            class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-full">
-                        </div>
+            {{-- Grid con 2 columnas --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-1">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Nombres
                     </label>
-
-                    <!-- Texto que cambia de color según el estado del switch -->
-                    <span
-                        class="text-sm transition-colors peer-checked:text-green-600 text-gray-800 dark:text-white peer">
-                        Supervisor
-                    </span>
+                    <input type="text" wire:model.defer="nombres" placeholder="Musharof"
+                           class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent 
+                                  px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs 
+                                  placeholder:text-gray-400 
+                                  focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 
+                                  dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 
+                                  dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                    @error('nombres')
+                        <span class="text-sm text-red-600">{{ $message }}</span>
+                    @enderror
                 </div>
-                
-                <div class="flex justify-end gap-3 pt-4">
-                    <button wire:click="$set('showModal', false)"
-                        class="px-5 py-2.5 rounded-md bg-gray-100 text-gray-800 hover:bg-gray-200 transition">
-                        Cancelar
-                    </button>
-                    <button wire:click="crearUsuario" wire:loading.attr="disabled"
-                        class="px-5 py-2.5 rounded-md bg-black text-white hover:bg-gray-800 transition">
-                        Crear Usuario
-                    </button>
+
+                <div class="col-span-1">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Apellidos
+                    </label>
+                    <input type="text" wire:model.defer="apellidos" placeholder="Hossain"
+                           class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent 
+                                  px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs 
+                                  placeholder:text-gray-400 
+                                  focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 
+                                  dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 
+                                  dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                    @error('apellidos')
+                        <span class="text-sm text-red-600">{{ $message }}</span>
+                    @enderror
                 </div>
             </div>
+
+            {{-- Input email --}}
+            <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Email
+                </label>
+                <input type="email" wire:model.defer="email" placeholder="usuario@ejemplo.com"
+                       class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent 
+                              px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs 
+                              placeholder:text-gray-400 
+                              focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 
+                              dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 
+                              dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                @error('email')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Input contraseña --}}
+            <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Contraseña
+                </label>
+                <input type="password" wire:model.defer="password"
+                       class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent 
+                              px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs 
+                              placeholder:text-gray-400 
+                              focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 
+                              dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 
+                              dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                @error('password')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Input dirección (col-span 2) --}}
+            <div class="col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Dirección <span class="text-gray-400 text-xs">(Opcional)</span>
+                </label>
+                <input type="text" wire:model.defer="direccion" placeholder="Av. Siempre Viva 123"
+                       class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent 
+                              px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs 
+                              placeholder:text-gray-400 
+                              focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 
+                              dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 
+                              dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                @error('direccion')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Acciones --}}
+            <div class="flex justify-end gap-3 pt-4">
+                <button wire:click="$set('showModal', false)"
+                        class="px-5 py-2.5 rounded-md bg-gray-100 text-gray-800 hover:bg-gray-200 transition">
+                    Cancelar
+                </button>
+                <button wire:click="crearUsuario" wire:loading.attr="disabled"
+                        class="px-5 py-2.5 rounded-md bg-black text-white hover:bg-gray-800 transition">
+                    Crear Usuario
+                </button>
+            </div>
         </div>
-    </x-modal>
+    </x-app-modal>
 </div>
