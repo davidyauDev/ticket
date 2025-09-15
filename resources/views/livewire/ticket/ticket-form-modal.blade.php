@@ -56,18 +56,18 @@
                             @enderror
                         </div>
 
-                         @if ($ticketPendiente)
-                        <div class="bg-yellow-100 p-3 rounded-lg shadow text-sm text-yellow-800">
-                            <p> Hay un ticket de soporte en estatus pendiente ya registrado con este equipo
-                                <a href="{{ route('tickets.show', $ticketEnProceso) }}"
-                                    class="text-blue-500 hover:underline">
-                                    {{ $ticketEnProcesoOst }}
-                                </a>
+                        @if ($ticketPendiente)
+                            <div class="bg-yellow-100 p-3 rounded-lg shadow text-sm text-yellow-800">
+                                <p> Hay un ticket de soporte en estatus pendiente ya registrado con este equipo
+                                    <a href="{{ route('tickets.show', $ticketEnProceso) }}"
+                                        class="text-blue-500 hover:underline">
+                                        {{ $ticketEnProcesoOst }}
+                                    </a>
 
-                            </p>
+                                </p>
 
-                        </div>
-                    @endif
+                            </div>
+                        @endif
                     @endif
                     <!-- Datos del ticket -->
                     @if ($ticketData)
@@ -86,7 +86,7 @@
                         </div>
                     @endif
 
-                   
+
                 </div>
                 <!-- Columna 2 -->
                 <div class="bg-white border rounded-lg shadow p-4 space-y-4">
@@ -187,7 +187,7 @@
 
                     @if ($derivar)
                         <div>
-                          
+
                             <label class="block text-sm font-medium text-gray-700 mb-1">Motivo de derivación</label>
                             <select wire:model="motivo_derivacion"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
@@ -201,18 +201,18 @@
                             @enderror
 
                             <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Derivar a Usuario</label>
-        <select wire:model="usuario_derivacion"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
-            <option value="">Seleccione un usuario</option>
-            @foreach ($responsables as $resp)
-                <option value="{{ $resp->id }}">
-                    {{ $resp->name }} (Prioridad {{ $resp->prioridad }})
-                </option>
-            @endforeach
-        </select>
-        @error('usuario_derivacion')
-            <span class="text-red-600 text-sm">{{ $message }}</span>
-        @enderror
+                            <select wire:model="usuario_derivacion"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
+                                <option value="">Seleccione un usuario</option>
+                                @foreach ($responsables as $resp)
+                                    <option value="{{ $resp->id }}">
+                                        {{ $resp->name }} (Prioridad {{ $resp->prioridad }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('usuario_derivacion')
+                                <span class="text-red-600 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
                     @endif
 
@@ -232,9 +232,9 @@
                             @enderror
                         </div>
                         <div>
-                            
+
                         </div>
-                        
+
                     @endif
 
                     <!-- Comentario -->

@@ -122,16 +122,16 @@ class TicketFormModal extends Component
     ->orderBy('rm.prioridad', 'asc') // primero los que tienen prioridad, NULL quedará al final
     ->get();
 
-                
-
-            Log::info($data);
-            Log::info($this->responsables);
             if ($this->responsables->isNotEmpty()) {
-                Log::info('Responsables encontrados:', $this->responsables->toArray());
-                $this->usuario_derivacion = $this->responsables->sortBy('prioridad')->first()->id;
+               $derivado = $this->responsables
+    ->filter(fn ($r) => !is_null($r->prioridad))   // solo los responsables reales
+    ->sortBy('prioridad')                         // ordena por prioridad asc
+    ->first();  
+    if ($derivado) {
+    $this->usuario_derivacion = $derivado->id;
+} 
             }
 
-            Log::info($this->responsables);
             if (empty($data[0]['id_tecnico'])) {
                 $this->addError('ticketError', 'Ticket no asignado a un usuario');
                 return;
