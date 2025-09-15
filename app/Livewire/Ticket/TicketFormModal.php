@@ -107,20 +107,27 @@ class TicketFormModal extends Component
                 $this->addError('ticketError', 'No se encontraron datos para el ticket ingresado.');
                 return;
             }
-            $this->responsables = DB::table('responsables_modelo')
-                ->join('users', 'responsables_modelo.id_user', '=', 'users.id')
-                ->select(
-                    'responsables_modelo.prioridad',
-                    'users.id',
-                    'users.name'
-                )
-                ->where('responsables_modelo.id_modelo', $data[0]['id_modelo'])
-                ->orderBy('responsables_modelo.prioridad')
-                ->get();
+            $this->responsables = DB::table('users as u')
+    ->leftJoin('responsables_modelo as rm', function ($join) use ($data) {
+        $join->on('rm.id_user', '=', 'u.id')
+             ->where('rm.id_modelo', '=', $data[0]['id_modelo']); 
+    })
+    ->select(
+        'u.id',
+        'u.name',
+        'rm.id_modelo',
+        'rm.prioridad',
+        'rm.fecha_asignacion'
+    )
+    ->orderBy('rm.prioridad', 'asc') // primero los que tienen prioridad, NULL quedará al final
+    ->get();
+
+                
 
             Log::info($data);
             Log::info($this->responsables);
             if ($this->responsables->isNotEmpty()) {
+                Log::info('Responsables encontrados:', $this->responsables->toArray());
                 $this->usuario_derivacion = $this->responsables->sortBy('prioridad')->first()->id;
             }
 

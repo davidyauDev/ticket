@@ -184,7 +184,6 @@
             @endif
         </nav>
     </aside>
-    @fluxscripts
     <!-- Main Content -->
     <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
         <main>
