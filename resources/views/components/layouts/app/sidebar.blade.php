@@ -5,28 +5,20 @@
 >
 
         <!-- SIDEBAR HEADER -->
-<div
-    :class="sidebarToggle ? 'justify-center' : 'justify-between'"
-    class="flex items-center gap-2 pt-8 sidebar-header pb-7"
-  >
-    <a href="index.html">
-      <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
-        <img class="dark:hidden" src="./images/logo/logo.svg" alt="Logo" />
-        <img
-          class="hidden dark:block"
-          src="./images/logo/logo-dark.svg"
-          alt="Logo"
-        />
-      </span>
+ <div class="sidebar-header flex items-center gap-2 pb-7 pt-8"
+            :class="sidebarToggle ? 'justify-center' : 'justify-between'">
+            <a href="{{ route('dashboard') }}">
+                {{-- Logo completo (modo claro) --}}
+                <span class="logo" :class="sidebarToggle ? 'hidden' : 'block'">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Logo" class="block dark:hidden h-10 w-auto" />
+                    <img src="{{ asset('images/logo-dark.svg') }}" alt="Logo" class="hidden dark:block h-10 w-auto" />
+                </span>
 
-      <img
-        class="logo-icon"
-        :class="sidebarToggle ? 'lg:block' : 'hidden'"
-        src="./images/logo/logo-icon.svg"
-        alt="Logo"
-      />
-    </a>
-  </div>
+                {{-- Logo reducido (ícono) cuando sidebarToggle = true --}}
+                <img src="{{ asset('images/logo-icon.svg') }}" alt="Logo reducido" class="logo-icon h-10 w-auto"
+                    :class="sidebarToggle ? 'block' : 'hidden'" />
+            </a>
+        </div>
 
 
         <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
