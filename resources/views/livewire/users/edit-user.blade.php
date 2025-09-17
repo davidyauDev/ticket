@@ -99,11 +99,12 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Sub área</label>
-                        <select wire:model="subareaSeleccionada"
+
+                        <select wire:model="subareaSeleccionada" wire:key="subareas-{{ $areaSeleccionada }}"
                             class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black">
                             <option value="">Selecciona una sub área</option>
                             @foreach ($subareas as $subarea)
-                                <option value="{{ $subarea->id }}">{{ $subarea->nombre }}</option>
+                                <option value="{{ $subarea->id }}">{{ $subarea->nombre }} </option>
                             @endforeach
                         </select>
                         @error('subareaSeleccionada')

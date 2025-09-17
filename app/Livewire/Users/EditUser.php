@@ -16,7 +16,7 @@ class EditUser extends Component
     public $areas = [];
     public $subareas = [];
     public $areaSeleccionada = null;
-    public $subareaSeleccionada = null;
+    public $subareaSeleccionada ;
     public bool $esSupervisor = false;
 
     public function mount()

@@ -47,7 +47,7 @@ class CreateUser extends Component
             'role' => $this->esSupervisor ? 'Supervisor' : 'user',
         ]);
 
-        $this->reset();
+        $this->resetExcept(['areas', 'subareas']);
         $this->dispatch('user-saved');
     }
 

@@ -9,8 +9,10 @@ class Area extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+     protected $fillable = [
         'nombre',
+        'slug',
+        'parent_id',
     ];
 
     public function tickets()
@@ -41,5 +43,11 @@ class Area extends Model
     public function children()
     {
         return $this->hasMany(Area::class, 'parent_id');
+    }
+     public function getDisplayNameAttribute()
+    {
+        return $this->parent 
+            ? "{$this->parent->nombre} → {$this->nombre}"
+            : $this->nombre;
     }
 }
