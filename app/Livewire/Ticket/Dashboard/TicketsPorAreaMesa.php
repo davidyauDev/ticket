@@ -30,7 +30,7 @@ class TicketsPorAreaMesa extends Component
         $tickets = DB::table('tickets')
             ->where('id_modelo', $usuario->id_modelo);
 
-        // ⚠️ Si tu tabla tickets NO tiene estado_id, quita estos filtros
+        //  Si tu tabla tickets NO tiene estado_id, quita estos filtros
         $asignadosResueltos = (clone $tickets)->where('estado_id', 5)->count();
         $asignadosNoResueltos = (clone $tickets)->when(
             DB::getSchemaBuilder()->hasColumn('tickets', 'estado_id'),

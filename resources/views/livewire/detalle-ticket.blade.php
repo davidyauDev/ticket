@@ -1,11 +1,9 @@
-<div class="  rounded-xl  p-5">
+<div class="rounded-xl  p-5">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <!-- Volver + título + estado principal -->
-
         <!-- Leyenda y fechas -->
         <div class="flex items-center flex-wrap gap-4 text-sm text-gray-700">
             <!-- Fechas -->
-
             <div class="flex bg-white flex-wrap items-center gap-6 text-sm text-gray-600 border-2 p-4 rounded-xl">
                 <button onclick="window.location.href='{{ route('tickets.index') }}'"
                     class="flex items-center text-sm text-gray-700 hover:underline">
@@ -53,12 +51,10 @@
                 $ticketDerivado = $ticket->estado_id === 2;
                 $esMiArea = Auth::check() && Auth::user()->area_id === $ticket->area_id;
                 @endphp
-
                 @php
                 $yaAsignadoAMi = isset($ticket->assignedUser) && Auth::check() && $ticket->assignedUser->id ===
                 Auth::user()->id;
                 @endphp
-
                 @if ($ticketDerivado && !$yaAsignadoAMi)
                 <button wire:click="asignarme"
                     class="ml-4 inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-full shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
@@ -223,18 +219,23 @@
                         </div>
                         @if ($estado_id == 2)
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                         
-                            <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Derivar a Usuario</label>
-<select wire:model="usuario_derivacion"
-    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black">
-    <option value="">Seleccione un usuario</option>
-    @foreach ($responsables as $resp)
-        <option value="{{ $resp->id }}">
-            {{ $resp->name }} (Prioridad {{ $resp->prioridad }})
-        </option>
-    @endforeach
-</select>
+                            <div class="flex flex-col mt-4">
+                                <label for="usuario_derivacion" class="text-sm font-semibold text-gray-700 mb-2">
+                                    Derivar a Usuario
+                                </label>
+                                <select id="usuario_derivacion" wire:model="usuario_derivacion" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg shadow-sm 
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                   bg-white">
+                                    <option value="">Seleccione un usuario</option>
+                                    @foreach ($responsables as $resp)
+                                    <option value="{{ $resp->id }}">
+                                        {{ $resp->name }} — Prioridad {{ $resp->prioridad }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
+
                         @endif
                     </div>
 
@@ -276,7 +277,8 @@
                                     text: 'Por favor espera.', 
                                     allowOutsideClick: false, 
                                     didOpen: () => { Swal.showLoading() } 
-                                })" class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition">
+                                })"
+                            class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

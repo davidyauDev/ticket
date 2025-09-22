@@ -23,8 +23,14 @@ class ListModelPrioridad extends Component
         'asistente_2'  => null,
     ];
 
-    public function updatingSearch()   { $this->resetPage(); }
-    public function updatingPerPage() { $this->resetPage(); }
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
 
     public function edit($modelId)
     {
@@ -71,21 +77,24 @@ class ListModelPrioridad extends Component
         $query = DB::table('modelos')
             ->leftJoin('responsables_modelo', 'modelos.id', '=', 'responsables_modelo.id_modelo')
             ->leftJoin('users', 'responsables_modelo.id_user', '=', 'users.id')
-            ->when($this->search, fn($q) =>
+            ->when(
+                $this->search,
+                fn($q) =>
                 $q->where('modelos.descripcion', 'like', "%{$this->search}%")
             )
             ->select(
                 'modelos.id',
                 'modelos.descripcion as modelo',
-                DB::raw("MAX(CASE WHEN responsables_modelo.prioridad = 1 THEN users.name END) as ing_a_cargo"),
-                DB::raw("MAX(CASE WHEN responsables_modelo.prioridad = 2 THEN users.name END) as asistente_1"),
-                DB::raw("MAX(CASE WHEN responsables_modelo.prioridad = 3 THEN users.name END) as asistente_2")
+                DB::raw("MAX(CASE WHEN responsables_modelo.prioridad = 1 THEN CONCAT(users.name, ' ', users.lastname) END) as ing_a_cargo"),
+                DB::raw("MAX(CASE WHEN responsables_modelo.prioridad = 2 THEN CONCAT(users.name, ' ', users.lastname) END) as asistente_1"),
+                DB::raw("MAX(CASE WHEN responsables_modelo.prioridad = 3 THEN CONCAT(users.name, ' ', users.lastname) END) as asistente_2"),
+
             )
             ->groupBy('modelos.id', 'modelos.descripcion')
             ->orderBy('modelos.id');
 
         $rows  = $query->paginate($this->perPage);
-        $users = DB::table('users')->select('id','name','lastname')->orderBy('name')->get();
+        $users = DB::table('users')->select('id', 'name', 'lastname')->where('area_id', 2)->orderBy('name')->get();
 
         return view('livewire.modelos.list-model-prioridad', [
             'rows'  => $rows,

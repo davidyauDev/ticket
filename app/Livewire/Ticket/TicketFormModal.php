@@ -21,7 +21,6 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 
-
 class TicketFormModal extends Component
 {
     use WithPagination;
@@ -119,13 +118,14 @@ class TicketFormModal extends Component
                     'rm.prioridad',
                     'rm.fecha_asignacion'
                 )
-                ->orderBy('rm.prioridad', 'asc') 
+                ->where('u.area_id', 2)
+                ->orderBy('rm.prioridad', 'asc')
                 ->get();
 
             if ($this->responsables->isNotEmpty()) {
                 $derivado = $this->responsables
-                    ->filter(fn($r) => !is_null($r->prioridad))   
-                    ->sortBy('prioridad')                         
+                    ->filter(fn($r) => !is_null($r->prioridad))
+                    ->sortBy('prioridad')
                     ->first();
                 if ($derivado) {
                     $this->usuario_derivacion = $derivado->id;
@@ -140,7 +140,7 @@ class TicketFormModal extends Component
             $equipo = Equipo::where('id_equipo', $data[0]['id_equipo'])->first();
             if ($equipo) {
                 $ultimoTicket = Ticket::where('equipo_id', $equipo->id)
-                    ->orderBy('created_at', 'desc') 
+                    ->orderBy('created_at', 'desc')
                     ->first();
                 if ($ultimoTicket->estado_id != 5) {
                     $this->ticketPendiente = true;
@@ -210,11 +210,19 @@ class TicketFormModal extends Component
             $ticket->area_id = $AreaSelecionada;
             $ticket->estado_id = 2;
 
-            Mail::to('isaac.ramos@cechriza.com')->queue(new TicketNotificadoMail($ticket));
-            $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                'sessionId' => 'mi-sesion-12',
-                'to'        => '51923158511',
-                'message'   => 'Se te asigno un ticket OST #' . $ticket->osticket . ' - ' . $ticket->titulo . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
+            $userAsginado = DB::table('users')
+                ->where('id', $this->usuario_derivacion)
+                ->select('email', 'phone')
+                ->first();
+
+            Log::info($userAsginado->email);
+            Log::info($userAsginado->phone);
+
+            //Mail::to($userAsginado->email)->queue(new TicketNotificadoMail($ticket));
+            /*$response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
+                'sessionId' => 'mi-sesion-14',
+                'to'        => '51' . $userAsginado->phone,
+                'message'   => '(Mensaje de Prueba ignorar)Se te asignó un ticket OST #' . $ticket->osticket . ' - ' . $ticket->titulo . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
             ]);
 
             if ($response->successful()) {
@@ -230,7 +238,7 @@ class TicketFormModal extends Component
                     'status' => $response->status(),
                     'body'   => $response->body(),
                 ]);
-            }
+            }*/
         }
         $ticket->motivo_derivacion = $this->motivo_derivacion;
         $ticket->save();

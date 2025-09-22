@@ -52,6 +52,7 @@ class UserTicketResolutionTable extends Component
                 $q->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
             )
+            ->where('area_id',2)
             ->get();
 
         foreach ($usuarios as $usuario) {
