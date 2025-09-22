@@ -1,5 +1,5 @@
 <div>
-    <x-app-modal wire:model="showModal" wire:ignore.self class="w-full max-w-xl">
+    <x-modal wire:model="showModal" wire:ignore.self class="w-full max-w-xl">
         <div class="p-6 space-y-6">
             <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-1">Editar Usuario</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -138,5 +138,5 @@
                 </div>
             </div>
         </div>
-    </x-app-modal>
+    </x-modal>
 </div>

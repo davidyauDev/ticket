@@ -10,7 +10,7 @@ use Livewire\Component;
 class CreateUser extends Component
 {
     public $showModal = false;
-    public $nombres, $apellidos, $email, $password, $direccion, $celular, $dni;
+    public $nombres, $apellidos, $email, $password, $direccion, $celular, $dni , $phone;
     public $areas = [];
     public $subareas = [];
     public $areaSeleccionada;
@@ -33,6 +33,7 @@ class CreateUser extends Component
             'direccion' => 'nullable|string|max:255',
             'celular' => 'nullable|string|max:20',
             'dni' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:20',    
         ]);
 
         User::create([
@@ -41,7 +42,7 @@ class CreateUser extends Component
             'email' => $this->email,
             'password' => bcrypt($this->password),
             'direccion' => $this->direccion,
-            'phone' => $this->celular,
+            'phone' => $this->phone,
             'dni' => $this->dni,
             'area_id' => $this->subareaSeleccionada,
             'role' => $this->esSupervisor ? 'Supervisor' : 'user',

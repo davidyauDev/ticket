@@ -1,5 +1,5 @@
 <div>
-    <x-app-modal wire:model="showModal" wire:ignore.self class="w-full max-w-xl">
+    <x-modal wire:model="showModal" wire:ignore.self class="w-full max-w-xl">
         <div class="p-6 space-y-6">
             <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Crear Nuevo Usuario</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -91,6 +91,22 @@
                     <span class="text-sm text-red-600">{{ $message }}</span>
                 @enderror
             </div>
+
+            <div class="col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Numero Celular <span class="text-gray-400 text-xs">(Opcional)</span>
+                </label>
+                <input type="text" wire:model.defer="phone" placeholder="999 999 999"
+                    class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent 
+                              px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs 
+                              placeholder:text-gray-400 
+                              focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 
+                              dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 
+                              dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                @error('direccion')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+            </div>
            
 
             {{-- Select Área --}}
@@ -150,5 +166,5 @@
                 </button>
             </div>
         </div>
-    </x-app-modal>
+    </x-modal>
 </div>
