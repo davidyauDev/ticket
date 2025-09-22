@@ -44,7 +44,7 @@ class CreateUser extends Component
             'direccion' => $this->direccion,
             'phone' => $this->phone,
             'dni' => $this->dni,
-            'area_id' => $this->subareaSeleccionada,
+            'area_id' => $this->areaSeleccionada,
             'role' => $this->esSupervisor ? 'Supervisor' : 'user',
         ]);
 
@@ -55,7 +55,6 @@ class CreateUser extends Component
     public function mount()
     {
         $this->areas = Area::whereNull('parent_id')->get();
-        $this->subareas = Area::whereNotNull('parent_id')->get();
     }
 
     public function actualizarSubareas()

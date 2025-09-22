@@ -1,5 +1,5 @@
 <div>
-    <x-app-modal wire:model="showModal" maxWidth="max-w-5xl">
+    <x-modal wire:model="showModal" maxWidth="max-w-5xl">
         <div class="p-6">
             <!-- Encabezado -->
             <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2 mb-1">
@@ -292,5 +292,5 @@
                 </button>
             </div>
         </div>
-    </x-app-modal>
+    </x-modal>
 </div>

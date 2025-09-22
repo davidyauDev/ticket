@@ -70,6 +70,12 @@
                                                     DNI</p>
                                             </div>
                                         </th>
+                                         <th class="px-4 py-3 text-left border border-gray-100 dark:border-gray-800">
+                                            <div class="flex items-center justify-between w-full cursor-pointer">
+                                                <p class="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
+                                                    Celular</p>
+                                            </div>
+                                        </th>
                                         <th class="px-4 py-3 text-left border border-gray-100 dark:border-gray-800">
                                             <div class="flex items-center justify-between w-full cursor-pointer">
                                                 <p class="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
@@ -79,7 +85,7 @@
                                         <th class="px-4 py-3 text-left border border-gray-100 dark:border-gray-800">
                                             <div class="flex items-center justify-between w-full cursor-pointer">
                                                 <p class="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
-                                                    Área / Subárea</p>
+                                                    Área</p>
                                             </div>
                                         </th>
                                         <th class="px-4 py-3 text-left border border-gray-100 dark:border-gray-800">
@@ -113,6 +119,13 @@
                                             <td class="px-4 py-3 border border-gray-100 dark:border-gray-800">
                                                 <div class="flex gap-3">
                                                     <div>
+                                                        {{ $user->phone ?? 'Por definir' }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-3 border border-gray-100 dark:border-gray-800">
+                                                <div class="flex gap-3">
+                                                    <div>
                                                         {{ $user->created_at }}</p>
                                                     </div>
                                                 </div>
@@ -120,10 +133,6 @@
                                             <td class="px-4 py-3 border border-gray-100 dark:border-gray-800">
                                                 <div class="flex gap-3">
                                                     <div>
-                                                        <span
-                                                            class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
-                                                            {{ $user->area->parent->nombre ?? 'Por definir' }}</span>
-                                                        </span> -
                                                         <span
                                                             class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
                                                             {{ $user->area->nombre ?? 'Por definir' }}</span>

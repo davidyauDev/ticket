@@ -85,7 +85,7 @@ class ListModelPrioridad extends Component
             ->orderBy('modelos.id');
 
         $rows  = $query->paginate($this->perPage);
-        $users = DB::table('users')->select('id','name')->orderBy('name')->get();
+        $users = DB::table('users')->select('id','name','lastname')->orderBy('name')->get();
 
         return view('livewire.modelos.list-model-prioridad', [
             'rows'  => $rows,

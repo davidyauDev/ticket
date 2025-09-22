@@ -135,7 +135,7 @@
         <select wire:model.defer="form.ing_a_cargo" class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
           <option value="">Seleccione</option>
           @foreach ($users as $u)
-            <option value="{{ $u->id }}">{{ $u->name }}</option>
+            <option value="{{ $u->id }}">{{ $u->name }}{{$u->lastname}}</option>
           @endforeach
         </select>
       </div>
@@ -145,7 +145,7 @@
         <select wire:model.defer="form.asistente_1" class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
           <option value="">Seleccione</option>
           @foreach ($users as $u)
-            <option value="{{ $u->id }}">{{ $u->name }}</option>
+            <option value="{{ $u->id }}">{{ $u->name }} {{$u->lastname}}</option>
           @endforeach
         </select>
       </div>
@@ -155,7 +155,7 @@
         <select wire:model.defer="form.asistente_2" class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
           <option value="">Seleccione</option>
           @foreach ($users as $u)
-            <option value="{{ $u->id }}">{{ $u->name }}</option>
+            <option value="{{ $u->id }}">{{ $u->name }}{{$u->lastname}}</option>
           @endforeach
         </select>
       </div>

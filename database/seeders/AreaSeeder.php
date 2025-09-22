@@ -16,13 +16,11 @@ class AreaSeeder extends Seeder
         $areas = [
             'Mesa de Ayuda',
             'Ingeniería',
+            'Taller',
+            'Operaciones'
         ];
 
-        $subareas = [
-            'CIMA',
-            'MONEDAS',
-            'MAQUINAS CHICAS',
-        ];
+    
 
         foreach ($areas as $nombre) {
             // Insertar área principal
@@ -33,16 +31,7 @@ class AreaSeeder extends Seeder
                 'updated_at' => now(),  
             ]);
 
-            // Insertar subáreas específicas para cada área
-            foreach ($subareas as $subNombre) {
-                DB::table('areas')->insert([
-                    'nombre' => $subNombre,
-                    'slug' => Str::slug($subNombre . ' ' . $nombre),
-                    'parent_id' => $parentId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
+            
         }
     }
 }

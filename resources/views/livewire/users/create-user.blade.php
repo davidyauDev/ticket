@@ -96,7 +96,7 @@
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                     Numero Celular <span class="text-gray-400 text-xs">(Opcional)</span>
                 </label>
-                <input type="text" wire:model.defer="phone" placeholder="999 999 999"
+                <input type="text" wire:model.defer="phone" placeholder="999999999"
                     class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent 
                               px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs 
                               placeholder:text-gray-400 
@@ -133,7 +133,7 @@
             </div>
 
             {{-- Select Subárea --}}
-             <div>
+             {{-- <div>
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                     Subárea
                 </label>
@@ -151,7 +151,7 @@
                 @error('subareaSeleccionada')
                     <span class="text-sm text-red-600">{{ $message }}</span>
                 @enderror
-            </div> 
+            </div>  --}}
 
 
             {{-- Acciones --}}
