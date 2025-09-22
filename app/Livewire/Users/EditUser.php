@@ -12,7 +12,7 @@ class EditUser extends Component
 {
     public $showModal = false;
     public $userId;
-    public $nombres, $apellidos, $email, $password, $direccion, $celular, $dni;
+    public $nombres, $apellidos, $email, $password, $direccion, $phone, $dni;
     public $areas = [];
     public $subareas = [];
     public $areaSeleccionada = null;
@@ -37,7 +37,7 @@ class EditUser extends Component
         $this->email = $user->email;
         $this->dni = $user->dni;
         $this->direccion = $user->direccion;
-        $this->celular = $user->celular;
+        $this->phone = $user->phone;
         $this->subareaSeleccionada = $user->area_id;
         $this->esSupervisor = $user->role === 'Supervisor';
 
@@ -64,7 +64,7 @@ class EditUser extends Component
             'email' => 'required|email|unique:users,email,' . $this->userId,
             'dni' => 'required|digits:8|unique:users,dni,' . $this->userId,
             'direccion' => 'nullable|string|max:255',
-            'celular' => 'nullable|string|max:15',
+            'phone' => 'nullable|string|max:15',
         ]);
 
         $user = User::findOrFail($this->userId);
@@ -75,7 +75,7 @@ class EditUser extends Component
             'email' => $this->email,
             'dni' => $this->dni,
             'direccion' => $this->direccion,
-            'celular' => $this->celular,
+            'phone' => $this->phone,
             'area_id' => $this->subareaSeleccionada,
             'role' => $this->esSupervisor ? 'Supervisor' : 'user',
         ]);

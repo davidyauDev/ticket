@@ -117,7 +117,7 @@
             </div>
 
             {{-- Select Subárea --}}
-            <div>
+            {{-- <div>
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                     Subárea
                 </label>
@@ -135,7 +135,7 @@
                 @error('subareaSeleccionada')
                     <span class="text-sm text-red-600">{{ $message }}</span>
                 @enderror
-            </div>
+            </div> --}}
 
 
             {{-- Acciones --}}

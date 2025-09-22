@@ -66,9 +66,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Número celular</label>
-                        <input wire:model.defer="celular" type="text" placeholder="+51 999 999 999"
+                        <input wire:model.defer="phone" type="text" placeholder="+51 999 999 999"
                             class="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-                        @error('celular')
+                        @error('phone')
                         <span class="text-sm text-red-600">{{ $message }}</span>
                         @enderror
                     </div>
