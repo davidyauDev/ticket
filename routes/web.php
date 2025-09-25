@@ -15,9 +15,7 @@ use App\Livewire\Ticket\TicketManager;
 use App\Livewire\Users\Index as UsersIndex;
 
 Route::redirect('/', '/login')->name('home');
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+
 
 Route::get('/users', UsersIndex::class)->middleware('auth')->name('users.index');
 Route::get('/tickets', TicketManager::class)->middleware('auth')->name('tickets.index');

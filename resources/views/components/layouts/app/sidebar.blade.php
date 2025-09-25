@@ -7,7 +7,7 @@
         <!-- SIDEBAR HEADER -->
  <div class="sidebar-header flex items-center gap-2 pb-7 pt-8"
             :class="sidebarToggle ? 'justify-center' : 'justify-between'">
-            <a href="{{ route('dashboard') }}">
+            <a href="{{ route('tickets.index') }}">
                 {{-- Logo completo (modo claro) --}}
                 <span class="logo" :class="sidebarToggle ? 'hidden' : 'block'">
                     <img src="{{ asset('images/logo.svg') }}" alt="Logo" class="block dark:hidden h-10 w-auto" />
