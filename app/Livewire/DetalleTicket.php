@@ -224,7 +224,7 @@ class DetalleTicket extends Component
 
                         Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
                         $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                'sessionId' => 'mi-sesion-12',
+                'sessionId' => 'mi-sesion-14',
                 'to'        => '51923158511',
                 'message'   => 'Se te asigno un ticket OST #' .  $this->ticket->osticket . ' - '  . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
             ]);
