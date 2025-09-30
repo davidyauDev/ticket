@@ -21,26 +21,24 @@ class ReassignUnresolvedTickets extends Command
     {
         $tickets = Ticket::where('estado_id', 2)
             ->whereNotNull('assigned_to')
-            ->with('equipo.modelo') 
+            ->with('equipo.modelo')
             ->get();
 
-  
+
 
         foreach ($tickets as $ticket) {
-             Log::info('Reasignando tickets sin resolver', [
-            'count' => $ticket->equipo->modelo_id,
-            'timestamp' => now(),
-        ]);
+            Log::info('Reasignando tickets sin resolver', [
+                'count' => $ticket->equipo->modelo_id,
+                'timestamp' => now(),
+            ]);
             if (!$ticket->equipo || !$ticket->equipo->modelo_id) {
                 continue; // si no hay modelo, no se reasigna
             }
 
             $modeloId = $ticket->equipo->modelo_id;
 
-            // Usuarios que ya atendieron este ticket
             $usuariosPrevios = TicketHistorial::where('ticket_id', $ticket->id)->pluck('asignado_a')->toArray();
 
-            // Buscar responsables por modelo ordenados por prioridad (usando Query Builder)
             $responsables = DB::table('responsables_modelo')
                 ->where('id_modelo', $modeloId)
                 ->orderBy('prioridad', 'asc')
@@ -53,39 +51,36 @@ class ReassignUnresolvedTickets extends Command
                     continue;
                 }
 
-                // Evitar asignar al mismo o a alguien que ya lo tuvo
                 if (in_array($usuario->id, $usuariosPrevios) || $usuario->id == $ticket->assigned_to) {
                     continue;
                 }
 
-                // ✅ Encontramos el nuevo responsable
                 $ticket->update([
                     'assigned_to' => $usuario->id,
                     'assigned_at' => now(),
                     'estado_id'   => 2,
                 ]);
-
-                Mail::to("isaac.ramos@cechriza.com")->queue(new TicketNotificadoMail($ticket));
+                Mail::to($usuario->email)->queue(new TicketNotificadoMail($ticket));
                 $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                'sessionId' => 'mi-sesion-14',
-                'to'        => '51923158511',
-                'message'   => 'Se te asigno un ticket OST #' . $ticket->osticket . ' - ' . $ticket->titulo . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
-            ]);
-
-            if ($response->successful()) {
-                $data = $response->json();
-
-                if ($data['success'] && $data['status']) {
-                    Log::info("WhatsApp enviado: " . $data['message']);
-                } else {
-                    Log::warning("Fallo parcial en envío WhatsApp", $data);
-                }
-            } else {
-                Log::error("Error HTTP al enviar WhatsApp", [
-                    'status' => $response->status(),
-                    'body'   => $response->body(),
+                    'sessionId' => 'mi-sesion-14',
+                    'to'        => '51' . $usuario->phone,
+                    'message'   => 'Se te asigno un ticket OST #' . $ticket->osticket . ' - ' . $ticket->titulo . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
                 ]);
-            }
+
+                if ($response->successful()) {
+                    $data = $response->json();
+
+                    if ($data['success'] && $data['status']) {
+                        Log::info("WhatsApp enviado: " . $data['message']);
+                    } else {
+                        Log::warning("Fallo parcial en envío WhatsApp", $data);
+                    }
+                } else {
+                    Log::error("Error HTTP al enviar WhatsApp", [
+                        'status' => $response->status(),
+                        'body'   => $response->body(),
+                    ]);
+                }
 
                 TicketHistorial::create([
                     'ticket_id'    => $ticket->id,
