@@ -8,4 +8,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-Schedule::command('tickets:reassign')->everyTwoMinutes();
+Schedule::command('tickets:reassign')
+    ->everyFifteenMinutes()
+    ->withoutOverlapping()     
+    ->onOneServer()            
+    ->runInBackground();    
