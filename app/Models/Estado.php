@@ -11,6 +11,11 @@ class Estado extends Model
 
     protected $table = 'estados';
 
+    public const PENDIENTE = 1;
+    public const DERIVADO  = 2;
+    public const CERRADO   = 5;
+    public const PAUSADO   = 6;
+
     protected $fillable = ['nombre', 'descripcion'];
     public function ticketHistorials()
     {

@@ -235,10 +235,8 @@
                                 </select>
                             </div>
                         </div>
-
                         @endif
                     </div>
-
                     <!-- Comentario -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>

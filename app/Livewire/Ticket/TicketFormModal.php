@@ -149,7 +149,9 @@ class TicketFormModal extends Component
                     return;
                 }
             }
+
             $this->ticketData = count($data) ? $data[0] : null;
+            
         } catch (\Exception $e) {
             $this->addError('ErrorConsulta', 'Error al obtener datos del ticket');
         }

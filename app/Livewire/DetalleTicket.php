@@ -35,6 +35,7 @@ class DetalleTicket extends Component
     public bool $reasignarAOrigen = false;
     public $responsables;
     public $usuario_derivacion;
+    public $userAsignado;
 
     public function mount($ticket)
     {
@@ -43,7 +44,7 @@ class DetalleTicket extends Component
             ->select('tickets.*', 'equipos.modelo_id')
             ->where('tickets.id', $ticket)
             ->firstOrFail();
-        Log::info($this->ticket);
+
         $this->estados = Estado::all();
 
         $this->responsables = DB::table('responsables_modelo')
@@ -118,61 +119,42 @@ class DetalleTicket extends Component
     {
         DB::beginTransaction();
         try {
-            if ($this->ticket->assigned_to != Auth::id()) {
-                abort(403, 'No tienes permiso para actualizar este ticket.');
-            }
-            $accionHistorial = 'Actualizado';
-            $comentarioHistorial = $this->comentario; // por defecto
-            $usuariosDestino = collect(); // Inicializado vacío por si no se usa
-            if ($this->reasignarAOrigen) {
-                $historialActual = TicketHistorial::where('ticket_id', $this->ticket->id)
-                    ->where('accion', 'Derivado')
-                    ->orderByDesc('created_at')
-                    ->first();
-                if ($historialActual && $historialActual->usuario_id) {
-                    $this->ticket->assigned_to = $historialActual->usuario_id;
-                    $this->estado_id = 1; // Pendiente
-                    $accionHistorial = 'Reasignado';
-                }
-            } elseif ($this->estado_id == 2) { // Derivado
+            if ($this->estado_id == Estado::DERIVADO) {
                 $this->ticket->area_id = $this->selectedSubarea;
-                $this->ticket->assigned_to = null;
-                $comentarioHistorial = $comentarioHistorial;
-                $accionHistorial = 'Derivado';
-                if ($usuariosDestino->isEmpty()) {
-                    $usuariosDestino = collect([
-                        (object)['email' => 'isaac.ramos@cechriza.com'],
-                    ]);
-                }
+                $comentarioHistorial = $this->comentario;
+                $accionHistorial = TicketHistorial::ACCION_DERIVADO;
+                $this->userAsignado = User::find($this->usuario_derivacion);
                 if ($this->usuario_derivacion) {
                     $this->ticket->assigned_to = $this->usuario_derivacion;
-                } else {
-                    $this->ticket->assigned_to = null;
                 }
-            } elseif ($this->estado_id == 5) { // Cerrado
-                $comentarioHistorial = $comentarioHistorial;
-                $accionHistorial = 'Cerrado';
-            } elseif ($this->estado_id == 6) { // Pausado
-                $comentarioHistorial = $comentarioHistorial;
-                $accionHistorial = 'Pausado';
+            } elseif ($this->estado_id == Estado::CERRADO) {
+                $comentarioHistorial = $this->comentario;
+                $accionHistorial = TicketHistorial::ACCION_CERRADO;
+            } elseif ($this->estado_id == Estado::PAUSADO) {
+                $comentarioHistorial = $this->comentario;
+                $accionHistorial = TicketHistorial::ACCION_PAUSADO;
                 DB::commit();
                 $this->pausarTicket();
                 return;
             } else {
                 $this->ticket->assigned_to = Auth::id();
                 $this->ticket->area_id = Auth::user()->area_id;
-                $this->estado_id = 1; // Pendiente
+                $this->estado_id = Estado::PENDIENTE;
+                $comentarioHistorial = $this->comentario;
+                $accionHistorial = TicketHistorial::ACCION_ACTUALIZADO;
             }
 
             $this->ticket->estado_id = $this->estado_id;
             $this->ticket->save();
+
             TicketHistorial::where('ticket_id', $this->ticket->id)
                 ->where('is_current', true)
                 ->update([
                     'ended_at' => now(),
                     'is_current' => false,
                 ]);
-            $isCerrado = $this->estado_id == 5;
+
+            $isCerrado = $this->estado_id == Estado::CERRADO;
             $historial = TicketHistorial::create([
                 'ticket_id'    => $this->ticket->id,
                 'usuario_id'   => Auth::id(),
@@ -196,58 +178,47 @@ class DetalleTicket extends Component
             }
             DB::commit();
             if ($accionHistorial === 'Derivado') {
-                Log::info($accionHistorial);
-                foreach ($usuariosDestino as $usuario) {
-                    try {
-                        Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
-                        $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                            'sessionId' => 'mi-sesion-14',
-                            'to'        => '51923158511',
-                            'message'   => 'Se te asigno un ticket OST #' .  $this->ticket->osticket . ' - '  . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
-                        ]);
-
-                        if ($response->successful()) {
-                            $data = $response->json();
-
-                            if ($data['success'] && $data['status']) {
-                                Log::info("WhatsApp enviado: " . $data['message']);
-                            } else {
-                                Log::warning("Fallo parcial en envío WhatsApp", $data);
-                            }
-                        } else {
-                            Log::error("Error HTTP al enviar WhatsApp", [
-                                'status' => $response->status(),
-                                'body'   => $response->body(),
-                            ]);
-                        }
-                        // Llamada a tu API de WhatsApp para enviar el mensaje
-                        //             $response = Http::post('http://127.0.0.1:4000/api/send', [
-                        //                 'sessionId' => 'mi-sesion-prueba1',
-                        //                 'to' => '51923158511', // Mismo número que enviaste en Postman
-                        //                 'message' => '¡Hola! 😊 Este es un mensaje de prueba.
-                        // Se te ha asignado un ticket 🎫, por favor revísalo y resuélvelo cuando puedas 💪. ¡Gracias! 🙌'
-                        //             ]);
-
-                        //             // Verificar si la respuesta fue exitosa
-                        //             if (!$response->ok() || !$response->json('success')) {
-                        //                 Log::error('Error al enviar WhatsApp: ' . $response->body());
-                        //             } else {
-                        //                 Log::info('Mensaje de WhatsApp enviado correctamente a ' . $usuario->email);
-                        //             }
-
-                    } catch (\Exception $e) {
-                        Log::error("Error al enviar WhatsApp a {$usuario->email}: " . $e->getMessage());
-                    }
-                }
+                $this->notifyDerivacion();
             }
             $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
             $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
+
         } catch (\Exception $e) {
+
             DB::rollBack();
             Log::error('Error al asignar ticket: ' . $e->getMessage());
             $this->addError('asignacion', 'Ocurrió un error al asignar el ticket.');
         }
     }
+
+    private function notifyDerivacion()
+    {
+        try {
+         // Mail::to($this->userAsignado->email)->queue(new TicketNotificadoMail($this->ticket));
+            Log::info("Enviando notificación de derivación a {$this->userAsignado->phone}");
+            Log::info("Enviando notificación de derivación a {$this->userAsignado->email}");
+            $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
+                'sessionId' => 'mi-sesion-14',
+                'to'        => '51' . $this->userAsignado->phone,
+                'message'   => "Se te asignó un ticket OST #{$this->ticket->osticket}.",
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $data['success'] && $data['status']
+                    ? Log::info("WhatsApp enviado: " . $data['message'])
+                    : Log::warning("Fallo parcial en envío WhatsApp", $data);
+            } else {
+                Log::error("Error HTTP al enviar WhatsApp", [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error("Error al enviar notificación de derivación: " . $e->getMessage());
+        }
+    }
+
 
     public function pausarTicket()
     {

@@ -9,6 +9,11 @@ class TicketHistorial extends Model
 {
     use HasFactory;
 
+    public const ACCION_DERIVADO   = 'Derivado';
+    public const ACCION_CERRADO    = 'Cerrado';
+    public const ACCION_PAUSADO    = 'Pausado';
+    public const ACCION_ACTUALIZADO= 'Actualizado';
+
     protected $table = 'ticket_historial';
 
     protected $fillable = [
