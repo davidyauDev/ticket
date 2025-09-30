@@ -177,13 +177,15 @@
                         </div>
                     @endif
                     <!-- Derivar -->
-                    <div class="flex items-center mt-4 space-x-2">
-                        <input type="checkbox" id="derivar" wire:model.live="derivar"
-                            class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
-                        <label for="derivar" class="text-sm text-gray-700">
-                            Derivar este ticket
-                        </label>
-                    </div>
+                   <div class="flex items-center mt-4 space-x-2">
+    <input type="checkbox" id="derivar" wire:model.live="derivar"
+        class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+        @disabled(!$ticketData) />
+    <label for="derivar" class="text-sm text-gray-700">
+        Derivar este ticket
+    </label>
+</div>
+
 
                     @if ($derivar)
                         <div>

@@ -38,28 +38,28 @@ class DetalleTicket extends Component
 
     public function mount($ticket)
     {
-       $this->ticket = Ticket::query()
-    ->join('equipos', 'tickets.equipo_id', '=', 'equipos.id')
-    ->select('tickets.*', 'equipos.modelo_id') 
-    ->where('tickets.id', $ticket)
-    ->firstOrFail();
+        $this->ticket = Ticket::query()
+            ->join('equipos', 'tickets.equipo_id', '=', 'equipos.id')
+            ->select('tickets.*', 'equipos.modelo_id')
+            ->where('tickets.id', $ticket)
+            ->firstOrFail();
         Log::info($this->ticket);
-    $this->estados = Estado::all();
+        $this->estados = Estado::all();
 
         $this->responsables = DB::table('responsables_modelo')
-        ->join('users', 'responsables_modelo.id_user', '=', 'users.id')
-        ->select(
-            'responsables_modelo.prioridad',
-            'users.id',
-            'users.name'
-        )
-        ->where('responsables_modelo.id_modelo', $this->ticket->modelo_id) 
-        ->orderBy('responsables_modelo.prioridad')
-        ->get();
+            ->join('users', 'responsables_modelo.id_user', '=', 'users.id')
+            ->select(
+                'responsables_modelo.prioridad',
+                'users.id',
+                'users.name'
+            )
+            ->where('responsables_modelo.id_modelo', $this->ticket->modelo_id)
+            ->orderBy('responsables_modelo.prioridad')
+            ->get();
 
-    if ($this->responsables->isNotEmpty()) {
-        $this->usuario_derivacion = $this->responsables->first()->id;
-    }
+        if ($this->responsables->isNotEmpty()) {
+            $this->usuario_derivacion = $this->responsables->first()->id;
+        }
     }
 
     public function getFechaInicioProperty()
@@ -135,36 +135,15 @@ class DetalleTicket extends Component
                     $accionHistorial = 'Reasignado';
                 }
             } elseif ($this->estado_id == 2) { // Derivado
-                // if (!$this->selectedArea || !$this->selectedSubarea) {
-                //     throw new \Exception('Debe seleccionar un área y subárea al derivar el ticket.');
-                // }
                 $this->ticket->area_id = $this->selectedSubarea;
                 $this->ticket->assigned_to = null;
                 $comentarioHistorial = $comentarioHistorial;
                 $accionHistorial = 'Derivado';
-                //$usuariosDestino = User::where('area_id', $this->selectedSubarea)->get();
-                // Correos por defecto si no hay usuarios destino
                 if ($usuariosDestino->isEmpty()) {
                     $usuariosDestino = collect([
                         (object)['email' => 'isaac.ramos@cechriza.com'],
                     ]);
                 }
-
-                // $usuarioAsignado = null;
-                // $prioridades = User::where('area_id', $this->selectedSubarea)
-                //     ->where('available', true)
-                //     ->orderBy('priority')
-                //     ->pluck('priority')
-                //     ->unique();
-                // foreach ($prioridades as $prioridad) {
-                //     $usuarioAsignado = User::where('area_id', $this->selectedSubarea)
-                //         ->where('available', true)
-                //         ->where('priority', $prioridad)
-                //         ->first();
-                //     if ($usuarioAsignado) {
-                //         break;
-                //     }
-                // }
                 if ($this->usuario_derivacion) {
                     $this->ticket->assigned_to = $this->usuario_derivacion;
                 } else {
@@ -220,29 +199,27 @@ class DetalleTicket extends Component
                 Log::info($accionHistorial);
                 foreach ($usuariosDestino as $usuario) {
                     try {
-
-
                         Mail::to($usuario->email)->send(new TicketNotificadoMail($this->ticket));
                         $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                'sessionId' => 'mi-sesion-14',
-                'to'        => '51923158511',
-                'message'   => 'Se te asigno un ticket OST #' .  $this->ticket->osticket . ' - '  . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
-            ]);
+                            'sessionId' => 'mi-sesion-14',
+                            'to'        => '51923158511',
+                            'message'   => 'Se te asigno un ticket OST #' .  $this->ticket->osticket . ' - '  . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
+                        ]);
 
-            if ($response->successful()) {
-                $data = $response->json();
+                        if ($response->successful()) {
+                            $data = $response->json();
 
-                if ($data['success'] && $data['status']) {
-                    Log::info("WhatsApp enviado: " . $data['message']);
-                } else {
-                    Log::warning("Fallo parcial en envío WhatsApp", $data);
-                }
-            } else {
-                Log::error("Error HTTP al enviar WhatsApp", [
-                    'status' => $response->status(),
-                    'body'   => $response->body(),
-                ]);
-            }
+                            if ($data['success'] && $data['status']) {
+                                Log::info("WhatsApp enviado: " . $data['message']);
+                            } else {
+                                Log::warning("Fallo parcial en envío WhatsApp", $data);
+                            }
+                        } else {
+                            Log::error("Error HTTP al enviar WhatsApp", [
+                                'status' => $response->status(),
+                                'body'   => $response->body(),
+                            ]);
+                        }
                         // Llamada a tu API de WhatsApp para enviar el mensaje
                         //             $response = Http::post('http://127.0.0.1:4000/api/send', [
                         //                 'sessionId' => 'mi-sesion-prueba1',
@@ -346,7 +323,7 @@ class DetalleTicket extends Component
 
     public function asignarme()
     {
-        if ($this->ticket->estado_id !== 2 ) {
+        if ($this->ticket->estado_id !== 2) {
             $this->dispatch('notifyActu', type: 'error', message: 'No puedes asignarte este ticket.');
             return;
         }
