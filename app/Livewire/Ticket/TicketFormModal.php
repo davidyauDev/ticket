@@ -224,7 +224,7 @@ class TicketFormModal extends Component
             $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
                 'sessionId' => 'mi-sesion-14',
                 'to'        => '51' . $userAsginado->phone,
-                'message'   => '(Mensaje de Prueba ignorar)Se te asignó un ticket OST #' . $ticket->osticket . ' - ' . $ticket->titulo . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
+                'message'   => 'Se te asignó un ticket OST #' . $ticket->osticket . ' - ' . $ticket->titulo . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
             ]);
 
             if ($response->successful()) {
