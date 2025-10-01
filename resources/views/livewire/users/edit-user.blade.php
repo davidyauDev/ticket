@@ -101,13 +101,21 @@
                 </div>
 
                 {{-- Switch Supervisor --}}
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-6">
                     <label for="toggle-supervisor-edit" class="relative inline-flex items-center cursor-pointer select-none">
                         <input type="checkbox" id="toggle-supervisor-edit" class="sr-only peer" wire:model="esSupervisor" />
                         <div class="w-11 h-6 rounded-full bg-gray-400 transition-colors peer-checked:bg-blue-600"></div>
                         <div class="absolute left-0.5 top-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-200 ease-in-out peer-checked:translate-x-full"></div>
                         <span class="ml-3 text-sm text-gray-800 dark:text-white transition-colors peer-checked:text-green-600">
                             Supervisor
+                        </span>
+                    </label>
+                    <label for="toggle-available-edit" class="relative inline-flex items-center cursor-pointer select-none">
+                        <input type="checkbox" id="toggle-available-edit" class="sr-only peer" wire:model="available" />
+                        <div class="w-11 h-6 rounded-full bg-gray-400 transition-colors peer-checked:bg-green-600"></div>
+                        <div class="absolute left-0.5 top-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-200 ease-in-out peer-checked:translate-x-full"></div>
+                        <span class="ml-3 text-sm text-gray-800 dark:text-white transition-colors peer-checked:text-green-600">
+                            Disponible
                         </span>
                     </label>
                 </div>

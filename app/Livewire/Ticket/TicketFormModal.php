@@ -120,6 +120,7 @@ class TicketFormModal extends Component
                 )
                 ->where('u.area_id', 2)
                 ->orderBy('rm.prioridad', 'asc')
+                ->where('u.available', true)
                 ->get();
 
             if ($this->responsables->isNotEmpty()) {

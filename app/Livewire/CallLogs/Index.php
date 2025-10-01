@@ -5,6 +5,7 @@ namespace App\Livewire\CallLogs;
 use Livewire\Component;
 use App\Models\CallLog;
 use App\Models\Option;
+use App\Models\Tecnico;
 use App\Models\User;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
@@ -35,12 +36,12 @@ class Index extends Component
         'form.option_id' => 'required|exists:options,id',
         'form.user_id' => 'nullable|exists:users,id',
         'form.description' => 'required|string|min:5',
-        'form.tecnico_id' => 'nullable|exists:users,id',
+        'form.tecnico_id' => 'nullable|exists:tecnicos,id',
     ];
 
     public function updatedSearchTecnico()
     {
-        $this->tecnicoList = User::where(function ($query) {
+        $this->tecnicoList = Tecnico::where(function ($query) {
         $query->where('firstname', 'like', '%' . $this->searchTecnico . '%')
               ->orWhere('lastname', 'like', '%' . $this->searchTecnico . '%');
     })
@@ -51,7 +52,7 @@ class Index extends Component
 
     public function selectTecnico($id)
     {
-        $tecnico = User::find($id);
+        $tecnico = Tecnico::find($id);
 
         if ($tecnico) {
             $this->form['tecnico_id'] = $tecnico->id;
@@ -64,15 +65,14 @@ class Index extends Component
 
     public function render()
     {
-        $callLogs = CallLog::with('user')
+        $callLogs = CallLog::with('tecnico')
             ->when($this->search, function ($q) {
                 $search = $this->search;
-                $q->whereHas('user', function ($query) use ($search) {
+                $q->whereHas('tecnico', function ($query) use ($search) {
                     $query->where('firstname', 'like', '%' . $search . '%')
                         ->orWhere('lastname', 'like', '%' . $search . '%');
                 });
             })
-            // ->when($this->typeFilter, fn($q) => $q->where('type', $this->typeFilter))
             ->latest()
             ->paginate($this->perPage);
 
@@ -86,9 +86,7 @@ class Index extends Component
 
         return view('livewire.call-logs.index', [
             'callLogs' => $callLogs,
-            'tecnicos' => User::whereNull('area_id')
-                ->where('role', '!=', 'admin')
-                ->get(),
+            'tecnicos' => Tecnico::all(),
             'seguimientoOpciones' => $this->suboptions,
         ]);
     }

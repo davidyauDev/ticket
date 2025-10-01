@@ -25,7 +25,7 @@ class CallLog extends Model
 
     public function tecnico()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Tecnico::class);
     }
 
     public function option()

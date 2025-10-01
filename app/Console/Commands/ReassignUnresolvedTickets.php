@@ -45,7 +45,7 @@ class ReassignUnresolvedTickets extends Command
                 ->get();
 
             foreach ($responsables as $responsable) {
-                $usuario = User::find($responsable->id_user);
+                $usuario = User::where('id', $responsable->id_user)->where('available', true)->first();
 
                 if (!$usuario) {
                     continue;

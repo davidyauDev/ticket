@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable , HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -56,9 +56,9 @@ class User extends Authenticatable
     }
 
     public function area()
-{
-    return $this->belongsTo(Area::class, 'area_id');
-}
+    {
+        return $this->belongsTo(Area::class, 'area_id');
+    }
 
 
     public function ticketsAsignados()
@@ -72,9 +72,9 @@ class User extends Authenticatable
     }
 
     public function historiales()
-    
+
     {
-    return $this->hasMany(TicketHistorial::class, 'usuario_id');
+        return $this->hasMany(TicketHistorial::class, 'usuario_id');
     }
 
 

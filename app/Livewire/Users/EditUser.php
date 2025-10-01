@@ -16,6 +16,7 @@ class EditUser extends Component
     public $subareas = [];
     public $areaSeleccionada = null;
     public bool $esSupervisor = false;
+    public bool $available = true;
 
     public function mount()
     {
@@ -36,6 +37,7 @@ class EditUser extends Component
         $this->phone = $user->phone;
         $this->esSupervisor = $user->role === 'Supervisor';
         $this->areaSeleccionada = $user->area_id;
+        $this->available = (bool) $user->available;
         $this->showModal = true;
     }
 
@@ -61,6 +63,7 @@ class EditUser extends Component
             'phone' => $this->phone,
             'area_id' => $this->areaSeleccionada,
             'role' => $this->esSupervisor ? 'Supervisor' : 'user',
+            'available' => $this->available,
         ]);
 
         $this->reset();
