@@ -154,7 +154,6 @@ class TicketFormModal extends Component
             }
 
             $this->ticketData = count($data) ? $data[0] : null;
-            
         } catch (\Exception $e) {
             $this->addError('ErrorConsulta', 'Error al obtener datos del ticket');
         }
@@ -220,15 +219,17 @@ class TicketFormModal extends Component
                 ->select('email', 'phone')
                 ->first();
 
-            Log::info($userAsginado->email);
-            Log::info($userAsginado->phone);
-
             //Mail::to($userAsginado->email)->queue(new TicketNotificadoMail($ticket));
-            $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
+             $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
                 'sessionId' => 'mi-sesion-14',
                 'to'        => '51' . $userAsginado->phone,
-                'message'   => 'Se te asignó un ticket OST #' . $ticket->osticket . ' - ' . $ticket->titulo . '. Por favor, revisa el sistema MESA DE AYUDA para más detalles. Gracias.',
+                'message'   => "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
+                    "Agencia: {$ticket->agencia->nombre}\n" .
+                    "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
+                    "*Por favor, revisa el sistema MESA DE AYUDA para más detalles.*\n" .
+                    "Gracias.",
             ]);
+
 
             if ($response->successful()) {
                 $data = $response->json();

@@ -182,7 +182,6 @@ class DetalleTicket extends Component
             }
             $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
             $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
-
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -194,14 +193,20 @@ class DetalleTicket extends Component
     private function notifyDerivacion()
     {
         try {
-         // Mail::to($this->userAsignado->email)->queue(new TicketNotificadoMail($this->ticket));
+            // Mail::to($this->userAsignado->email)->queue(new TicketNotificadoMail($this->ticket));
             Log::info("Enviando notificación de derivación a {$this->userAsignado->phone}");
             Log::info("Enviando notificación de derivación a {$this->userAsignado->email}");
+
             $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
                 'sessionId' => 'mi-sesion-14',
                 'to'        => '51' . $this->userAsignado->phone,
-                'message'   => "Se te asignó un ticket OST #{$this->ticket->osticket}.",
+                'message'   => "*Ticket asignado OST #{$this->ticket->osticket} - {$this->ticket->motivo_derivacion}*\n" .
+                    "Agencia: {$this->ticket->agencia->nombre}\n" .
+                    "Técnico: {$this->ticket->tecnico_nombres} {$this->ticket->tecnico_apellidos}\n\n" .
+                    "*Por favor, revisa el sistema MESA DE AYUDA para más detalles.*\n" .
+                    "Gracias.",
             ]);
+
 
             if ($response->successful()) {
                 $data = $response->json();

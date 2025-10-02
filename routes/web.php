@@ -13,8 +13,14 @@ use App\Livewire\Modelos\ListModelPrioridad;
 use App\Livewire\Settings\SettingsMainComponent;
 use App\Livewire\Ticket\TicketManager;
 use App\Livewire\Users\Index as UsersIndex;
+use Illuminate\Support\Facades\Auth;
 
-Route::redirect('/', '/login')->name('home');
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('dashboard'); // usuario autenticado
+    }
+    return redirect()->route('login'); // usuario no autenticado
+})->name('home');
 
 
 Route::get('/users', UsersIndex::class)->middleware('auth')->name('users.index');
