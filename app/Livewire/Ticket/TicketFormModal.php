@@ -59,6 +59,7 @@ class TicketFormModal extends Component
         'Billete falso o adulterado',
         'Técnico no logró resolver en esta instancia',
         'Derivado por complejidad del caso',
+        'Soporte de Repuestos',
         'Software',
         'Otros',
     ];
