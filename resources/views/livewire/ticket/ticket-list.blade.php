@@ -64,7 +64,7 @@
                                         wire:click="$set('filterType', 'pending')"
                                         class="text-theme-sm h-10 rounded-md px-3 py-2 font-medium transition-colors"
                                         style="@if($filterType==='pending')background-color:#3b82f6;color:white;@else background-color:white;color:#6b7280;@endif"
-                                    >Pendientes</button>
+                                    >En Proceso</button>
                                         <button
                                             wire:click="$set('filterType', 'paused')"
                                             class="text-theme-sm h-10 rounded-md px-3 py-2 font-medium transition-colors"
