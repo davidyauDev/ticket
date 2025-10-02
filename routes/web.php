@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard'); // usuario autenticado
+        return redirect()->route('tickets'); // usuario autenticado
     }
     return redirect()->route('login'); // usuario no autenticado
 })->name('home');
