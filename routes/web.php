@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('tickets'); // usuario autenticado
+        return redirect()->route('tickets.index'); // usuario autenticado
     }
     return redirect()->route('login'); // usuario no autenticado
 })->name('home');
@@ -40,7 +40,7 @@ Route::get('/tickets', TicketManager::class)->middleware('auth')->name('tickets.
 Route::get('/areas/{slug}', Areaticket::class)->name('areas.show');
 Route::prefix('settings')->name('settings.')->middleware('auth')->group(function () {
     //Route::redirect('/', '/settings/profile');
-   Route::get('/profile', Profile::class)->name('profile');
+    Route::get('/profile', Profile::class)->name('profile');
     Route::get('/password', Password::class)->name('password');
     Route::get('/appearance', Appearance::class)->name('appearance');
     Route::get('/', SettingsMainComponent::class)->name('index'); 
