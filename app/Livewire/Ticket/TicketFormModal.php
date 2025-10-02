@@ -114,6 +114,7 @@ class TicketFormModal extends Component
                 ->select(
                     'u.id',
                     'u.name',
+                    'u.lastname',
                     'rm.id_modelo',
                     'rm.prioridad',
                     'rm.fecha_asignacion'

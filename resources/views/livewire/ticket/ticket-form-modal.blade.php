@@ -208,7 +208,7 @@
                                 <option value="">Seleccione un usuario</option>
                                 @foreach ($responsables as $resp)
                                     <option value="{{ $resp->id }}">
-                                        {{ $resp->name }} (Prioridad {{ $resp->prioridad }})
+                                        {{ $resp->name }} {{ $resp->lastname }} (Prioridad {{ $resp->prioridad }})
                                     </option>
                                 @endforeach
                             </select>
