@@ -12,6 +12,7 @@ use Livewire\WithPagination;
 class TicketList extends Component
 {
     use WithPagination;
+    public int $perPage = 8;
     public string $search = '';
     public string $tipo = 'todos';
     public string $filterType = ''; // Filtro por tipo o estado
@@ -63,7 +64,7 @@ class TicketList extends Component
                 ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
         }
 
-        $tickets = $tickets->latest()->paginate(8);
+        $tickets = $tickets->latest()->paginate($this->perPage);
 
         return view('livewire.ticket.ticket-list', compact('tickets'));
     }

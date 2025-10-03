@@ -5,8 +5,7 @@
                 <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
                     Gestión de Registros de llamadas de Ticket
                 </h3>
-
-                @if (auth()->user()?->area_id == 1)
+                @if (auth()->user()?->area_id == 1 || auth()->user()->role == 'admin')
                 <button wire:click="$dispatch('abrirModalCreacionTicket')"
                     class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white shadow-theme-xs hover:bg-brand-600">
                     Nuevo ticket por llamada
