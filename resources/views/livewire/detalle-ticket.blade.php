@@ -462,7 +462,7 @@
 
                         @if ($item->comentario)
                         <div x-data="{ verMas: false }">
-                            <p class="text-xs text-gray-500 italic mt-1">
+                            <p class="text-base text-gray-500 italic mt-1">
                                 <template x-if="verMas">
                                     <span>{{ $item->comentario }}</span>
                                 </template>

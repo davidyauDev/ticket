@@ -32,7 +32,7 @@ class TicketList extends Component
 
         $tickets = Ticket::query();
 
-        if ($user->role === 'admin' || $user->area_id === 1) {
+        if ($user->role === 'admin' || $user->area_id === 1 || $user->area_id === 2) {
             // Admin puede ver todos los tickets con filtros globales
             $tickets->when($this->search, fn($q) => $q->where(function ($q2) {
                 $q2->where('codigo', 'like', "%{$this->search}%")
