@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Ticket;
 
+use App\Jobs\ReassignTicketJob;
 use App\Mail\TicketNotificadoMail;
 use App\Models\Area;
 use App\Models\Equipo;
@@ -10,6 +11,7 @@ use App\Models\Observacion;
 use App\Models\Ticket;
 use App\Models\TicketHistorial;
 use App\Models\TipoSoporte;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Services\TicketService;
 use Illuminate\Support\Facades\DB;
@@ -124,6 +126,8 @@ class TicketFormModal extends Component
                 ->orderBy('rm.prioridad', 'asc')
                 ->where('u.available', true)
                 ->get();
+            
+            Log::info($this->responsables);
 
             if ($this->responsables->isNotEmpty()) {
                 $derivado = $this->responsables
@@ -140,12 +144,19 @@ class TicketFormModal extends Component
                 return;
             }
 
-            $equipo = Equipo::where('id_equipo', $data[0]['id_equipo'])->first();
+            $idEquipo = $data[0]['id_equipo'] ?? null;
+            if (!$idEquipo) {
+                $this->addError('ticketError', 'El ticket no tiene equipo asignado.');
+                return;
+            }
+
+            $equipo = Equipo::where('id_equipo', $idEquipo)->first();
             if ($equipo) {
                 $ultimoTicket = Ticket::where('equipo_id', $equipo->id)
                     ->orderBy('created_at', 'desc')
                     ->first();
-                if ($ultimoTicket->estado_id != 5) {
+
+                if ($ultimoTicket && $ultimoTicket->estado_id != 5) {
                     $this->ticketPendiente = true;
                     $this->ticketEnProceso = $ultimoTicket->id;
                     $this->ticketEnProcesoOst = $ultimoTicket->osticket;
@@ -153,8 +164,10 @@ class TicketFormModal extends Component
                 }
             }
 
+
             $this->ticketData = count($data) ? $data[0] : null;
         } catch (\Exception $e) {
+            Log::info('Error al obtener datos del ticket: ' . $e->getMessage());
             $this->addError('ErrorConsulta', 'Error al obtener datos del ticket');
         }
     }
@@ -187,6 +200,7 @@ class TicketFormModal extends Component
             ]);
             if ($this->derivar) {
                 $this->asignarDerivacion($ticket->id);
+                dispatch(new ReassignTicketJob($ticket->id, $ticket->assigned_to))->delay(now()->addMinutes(3));
             }
 
             $this->resetForm();
@@ -220,34 +234,39 @@ class TicketFormModal extends Component
                 ->first();
 
             //Mail::to($userAsginado->email)->queue(new TicketNotificadoMail($ticket));
-             $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                'sessionId' => 'mi-sesion-14',
-                'to'        => '51' . $userAsginado->phone,
-                'message'   => "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
-                    "Agencia: {$ticket->agencia->nombre}\n" .
-                    "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
-                    "*Por favor, revisa el sistema MESA DE AYUDA para más detalles.*\n" .
-                    "Gracias.",
-            ]);
+              $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
+                 'sessionId' => 'mi-sesion-14',
+                 //'to'        => '51' . $userAsginado->phone,
+                    'to'        => '51915141721',
+                 'message'   => "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
+                     "Agencia: {$ticket->agencia->nombre}\n" .
+                     "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
+                     "*Por favor, revisa el sistema MESA DE AYUDA para más detalles.*\n" .
+                     "Gracias.",
+             ]);
 
 
-            if ($response->successful()) {
-                $data = $response->json();
+             if ($response->successful()) {
+                 $data = $response->json();
 
-                if ($data['success'] && $data['status']) {
-                    Log::info("WhatsApp enviado: " . $data['message']);
-                } else {
-                    Log::warning("Fallo parcial en envío WhatsApp", $data);
-                }
-            } else {
-                Log::error("Error HTTP al enviar WhatsApp", [
-                    'status' => $response->status(),
-                    'body'   => $response->body(),
-                ]);
-            }
+                 if ($data['success'] && $data['status']) {
+                     Log::info("WhatsApp enviado: " . $data['message']);
+                 } else {
+                     Log::warning("Fallo parcial en envío WhatsApp", $data);
+                 }
+             } else {
+                 Log::error("Error HTTP al enviar WhatsApp", [
+                     'status' => $response->status(),
+                     'body'   => $response->body(),
+                 ]);
+             }
         }
         $ticket->motivo_derivacion = $this->motivo_derivacion;
         $ticket->save();
+
+        $nextAssignee = User::find($this->usuario_derivacion);
+
+
         TicketHistorial::create([
             'ticket_id'    => $ticketID,
             'usuario_id'   => Auth::id(),
@@ -255,8 +274,8 @@ class TicketFormModal extends Component
             'to_area_id'   => $AreaSelecionada,
             'asignado_a'   => $this->usuario_derivacion,
             'estado_id'    => 2,
-            'accion'       => 'Derivado',
-            'comentario'   => 'Derivado',
+            'accion'       => "Ticket asignado {$nextAssignee->name} a Eduardo Lopez según prioridad del modelo.",
+            'comentario'   => "Ticket asignado automáticamente {$nextAssignee->name} a Eduardo Lopez según prioridad del modelo.",
             'started_at'   => now(),
             'ended_at'     => null,
             'is_current'   => false,

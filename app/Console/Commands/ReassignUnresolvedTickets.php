@@ -62,13 +62,13 @@ class ReassignUnresolvedTickets extends Command
                 ]);
                 //Mail::to($usuario->email)->queue(new TicketNotificadoMail($ticket));
                 $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                'sessionId' => 'mi-sesion-14',
-                'to'        => '51' . $usuario->phone,
-                'message'   => "Se te asignó un ticket OST #{$ticket->osticket} - {$ticket->motivo_derivacion}\n" .
-                    "Agencia: {$ticket->agencia->nombre}\n" .
-                    "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
-                    "Por favor, revisa el sistema MESA DE AYUDA para más detalles.\n" .
-                    "Gracias.",
+                    'sessionId' => 'mi-sesion-14',
+                    'to'        => '51' . $usuario->phone,
+                    'message'   => "Se te asignó un ticket OST #{$ticket->osticket} - {$ticket->motivo_derivacion}\n" .
+                        "Agencia: {$ticket->agencia->nombre}\n" .
+                        "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
+                        "Por favor, revisa el sistema MESA DE AYUDA para más detalles.\n" .
+                        "Gracias.",
                 ]);
 
                 if ($response->successful()) {

@@ -199,7 +199,8 @@ class DetalleTicket extends Component
 
             $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
                 'sessionId' => 'mi-sesion-14',
-                'to'        => '51' . $this->userAsignado->phone,
+                //'to'        => '51' . $this->userAsignado->phone,
+                'to'        => '51915141721',
                 'message'   => "*Ticket asignado OST #{$this->ticket->osticket} - {$this->ticket->motivo_derivacion}*\n" .
                     "Agencia: {$this->ticket->agencia->nombre}\n" .
                     "Técnico: {$this->ticket->tecnico_nombres} {$this->ticket->tecnico_apellidos}\n\n" .
@@ -333,19 +334,21 @@ class DetalleTicket extends Component
     public function render()
     {
         $historiales = TicketHistorial::with([
-            'usuario',
-            'estado',
-            'fromArea',
-            'toArea.parent',
-            'asignadoA',
-            'archivos'
-        ])
-            ->where('ticket_id', $this->ticket->id)
-            ->orderBy('created_at', 'desc')
-            ->when($this->searchComentario, function ($query) {
-                $query->where('comentario', 'like', '%' . $this->searchComentario . '%');
-            })
-            ->get();
+        'usuario',
+        'estado',
+        'fromArea',
+        'toArea.parent',
+        'asignadoA',
+        'archivos'
+    ])
+    ->where('ticket_id', $this->ticket->id)
+    ->when($this->searchComentario, function ($query) {
+        $query->where('comentario', 'like', '%' . $this->searchComentario . '%');
+    })
+    ->orderBy('created_at', 'desc')
+    ->orderBy('id', 'desc') // <-- segundo criterio
+    ->get();
+
         return view('livewire.detalle-ticket', [
             'ticket' => $this->ticket,
             'historiales' => $historiales,
