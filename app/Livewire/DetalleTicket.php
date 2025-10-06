@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Jobs\ReassignTicketJob;
 use App\Mail\TicketNotificadoMail;
 use App\Models\Area;
 use App\Models\Estado;
@@ -179,6 +180,7 @@ class DetalleTicket extends Component
             DB::commit();
             if ($accionHistorial === 'Derivado') {
                 $this->notifyDerivacion();
+                dispatch(new ReassignTicketJob($this->ticket->id, $this->ticket->assigned_to))->delay(now()->addMinutes(15));
             }
             $this->dispatch('notifyActu', type: 'success', message: 'Ticket actualizado exitosamente');
             $this->reset(['observacion', 'comentario', 'archivo', 'archivoNombre', 'selectedArea', 'selectedSubarea']);
@@ -198,9 +200,7 @@ class DetalleTicket extends Component
             Log::info("Enviando notificación de derivación a {$this->userAsignado->email}");
 
             $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                'sessionId' => 'mi-sesion-14',
-                //'to'        => '51' . $this->userAsignado->phone,
-                'to'        => '51915141721',
+                'to'        => '51' . $this->userAsignado->phone,
                 'message'   => "*Ticket asignado OST #{$this->ticket->osticket} - {$this->ticket->motivo_derivacion}*\n" .
                     "Agencia: {$this->ticket->agencia->nombre}\n" .
                     "Técnico: {$this->ticket->tecnico_nombres} {$this->ticket->tecnico_apellidos}\n\n" .

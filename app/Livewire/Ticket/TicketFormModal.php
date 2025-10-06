@@ -200,7 +200,7 @@ class TicketFormModal extends Component
             ]);
             if ($this->derivar) {
                 $this->asignarDerivacion($ticket->id);
-                dispatch(new ReassignTicketJob($ticket->id, $ticket->assigned_to))->delay(now()->addMinutes(3));
+                dispatch(new ReassignTicketJob($ticket->id, $ticket->assigned_to))->delay(now()->addMinutes(15));
             }
 
             $this->resetForm();
@@ -236,8 +236,7 @@ class TicketFormModal extends Component
             //Mail::to($userAsginado->email)->queue(new TicketNotificadoMail($ticket));
               $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
                  'sessionId' => 'mi-sesion-14',
-                 //'to'        => '51' . $userAsginado->phone,
-                    'to'        => '51915141721',
+                 'to'        => '51' . $userAsginado->phone,
                  'message'   => "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
                      "Agencia: {$ticket->agencia->nombre}\n" .
                      "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
