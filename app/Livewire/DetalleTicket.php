@@ -48,16 +48,22 @@ class DetalleTicket extends Component
 
         $this->estados = Estado::all();
 
-        $this->responsables = DB::table('responsables_modelo')
-            ->join('users', 'responsables_modelo.id_user', '=', 'users.id')
-            ->select(
-                'responsables_modelo.prioridad',
-                'users.id',
-                'users.name'
-            )
-            ->where('responsables_modelo.id_modelo', $this->ticket->modelo_id)
-            ->orderBy('responsables_modelo.prioridad')
-            ->get();
+        $this->responsables = DB::table('users as u')
+    ->leftJoin('responsables_modelo as rm', function ($join) {
+        $join->on('rm.id_user', '=', 'u.id')
+             ->where('rm.id_modelo', '=', $this->ticket->modelo_id);
+    })
+    ->select(
+        'u.id',
+        'u.name',
+        'u.lastname',
+        'rm.prioridad'
+    )
+    ->where('u.area_id', 2)
+    ->where('u.available', true)
+    ->orderBy('rm.prioridad', 'asc')
+    ->get();
+
 
         if ($this->responsables->isNotEmpty()) {
             $this->usuario_derivacion = $this->responsables->first()->id;
