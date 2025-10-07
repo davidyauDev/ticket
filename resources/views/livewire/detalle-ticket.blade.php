@@ -235,13 +235,104 @@
     {{-- ✏️ Formulario de actualización --}}
     <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
         <!-- Título -->
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M16.862 4.487A4.5 4.5 0 019 19.5H6a2 2 0 01-2-2V7a2 2 0 012-2h7.5a4.5 4.5 0 013.362-.513z" />
-            </svg>
-            <h3 class="text-lg font-semibold text-gray-800">Actualizar Ticket</h3>
-        </div>
+       
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
+                <!-- Título -->
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16.862 4.487A4.5 4.5 0 019 19.5H6a2 2 0 01-2-2V7a2 2 0 012-2h7.5a4.5 4.5 0 013.362-.513z" />
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-800">Actualizar Ticket</h3>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    @if (!$this->estaPausado)
+                    <!-- Estado y Subárea -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                            <flux:select wire:model.live="estado_id" class="text-sm" placeholder="Estado">
+                                @foreach ($estados as $estado)
+                                <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}
+                                </flux:select.option>
+                                @endforeach
+                            </flux:select>
+                        </div>
+                        @if ($estado_id == 2)
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="flex flex-col mt-4">
+                                <label for="usuario_derivacion" class="text-sm font-semibold text-gray-700 mb-2">
+                                    Derivar a Usuario
+                                </label>
+                                <select id="usuario_derivacion" wire:model="usuario_derivacion" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg shadow-sm 
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                   bg-white">
+                                    <option value="">Seleccione un usuario</option>
+                                    @foreach ($responsables as $resp)
+                                    <option value="{{ $resp->id }}">
+                                        {{ $resp->name }} — Prioridad {{ $resp->prioridad }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                    <!-- Comentario -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
+                        <textarea wire:model="comentario"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            rows="3" placeholder="Detalles adicionales..."></textarea>
+                    </div>
+                    <!-- Archivo -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Archivo adjunto</label>
+                        <label for="archivo"
+                            class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-md bg-gray-50 hover:bg-gray-100 cursor-pointer transition text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-400 mb-1" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656l-8.486 8.486a6 6 0 108.486 8.486l7.07-7.07" />
+                            </svg>
+                            <span class="text-sm text-blue-600 font-medium">Seleccionar archivo</span>
+                            <span class="text-xs text-gray-400">
+                                {{ $archivoNombre ?: 'Ningún archivo seleccionado' }}
+                            </span>
+                            <input id="archivo" type="file" wire:model="archivo" class="hidden" />
+                        </label>
+                        @error('archivo')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                        <div wire:loading wire:target="archivo" class="text-sm text-gray-500 mt-1">Subiendo
+                            archivo...
+                        </div>
+                    </div>
+                    <!-- Botón -->
+                    <div class="flex justify-end mt-4">
+                        <button wire:click="ActualizarTicket" wire:loading.attr="disabled"
+                            wire:target="ActualizarTicket" x-data x-on:click="Swal.fire({ 
+                                    title: 'Actualizando...', 
+                                    text: 'Por favor espera.', 
+                                    allowOutsideClick: false, 
+                                    didOpen: () => { Swal.showLoading() } 
+                                })"
+                            class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            Actualizar Ticket
+                        </button>
+
+                    </div>
+                    @else
+                    @endif
+                </div>
+            </div>
+        
     </div>
 @endif
 
