@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -76,25 +78,24 @@ class Ticket extends Model
     }
 
     public function getCodigoFormateadoAttribute(): string
-{
-    return 'TCK-' . str_pad($this->id, 11, '0', STR_PAD_LEFT);
-}
+    {
+        return 'TCK-' . str_pad($this->id, 11, '0', STR_PAD_LEFT);
+    }
 
     public function ultimoHistorial()
-{
-    return $this->hasOne(TicketHistorial::class)->latestOfMany();
-}
+    {
+        return $this->hasOne(TicketHistorial::class)->latestOfMany();
+    }
     public function tecnico()
     {
         return $this->belongsTo(Tecnico::class, 'staff_id', 'staff_id');
     }
 
 
-public function ultimoResuelto()
-{
-    return $this->hasOne(TicketHistorial::class)
-        ->where('estado_id', 5)
-        ->latest('created_at');
-}
-
+    public function ultimoResuelto()
+    {
+        return $this->hasOne(TicketHistorial::class)
+            ->where('estado_id', 5)
+            ->latest('created_at');
+    }
 }

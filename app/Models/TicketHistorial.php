@@ -13,6 +13,7 @@ class TicketHistorial extends Model
     public const ACCION_CERRADO    = 'Cerrado';
     public const ACCION_PAUSADO    = 'Pausado';
     public const ACCION_ACTUALIZADO= 'Actualizado';
+    public const ACCION_ANULADO =  'Anulado';
 
     protected $table = 'ticket_historial';
 
