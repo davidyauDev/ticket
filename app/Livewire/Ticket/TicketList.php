@@ -58,7 +58,7 @@ class TicketList extends Component
 
         if ($ticket) {
             $ticket->assigned_to = Auth::id();
-            $ticket->area_id = Auth::id();
+            $ticket->area_id = Auth::user()->area_id;
             $ticket->estado_id = 4;
             $ticket->comentario = $comentario;
             $ticket->save();
