@@ -4,8 +4,8 @@
     <!-- ENCABEZADO -->
     <div class="flex items-center justify-between mb-5">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
-            <span class="inline-block w-1.5 h-6 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-full"></span>
-            Top Clientes
+            <span class="inline-block w-1.5 h-6 bg-gradient-to-b from-indigo-500 to-blue-400 rounded-full"></span>
+            Top Modelos
         </h3>
 
         <!-- Selector de Mes -->
@@ -31,16 +31,16 @@
     <!-- SEPARADOR -->
     <div class="border-t border-gray-200 dark:border-gray-800 mb-5"></div>
 
-    <!-- LISTADO DE CLIENTES -->
+    <!-- LISTADO DE AGENCIAS -->
     <div class="space-y-3">
-        @forelse ($topClients as $index => $caller)
+        @forelse ($topModelos as $index => $modelo)
             @php
-                // Paleta armónica (moderna y coherente)
+                // Paleta visual moderna (coherente y armónica)
                 $palettes = [
                     ['bg' => 'bg-blue-100 text-blue-700', 'dot' => 'bg-blue-500'],
-                    ['bg' => 'bg-slate-100 text-slate-700', 'dot' => 'bg-slate-500'],
-                    ['bg' => 'bg-cyan-100 text-cyan-700', 'dot' => 'bg-cyan-500'],
+                    ['bg' => 'bg-sky-100 text-sky-700', 'dot' => 'bg-sky-500'],
                     ['bg' => 'bg-indigo-100 text-indigo-700', 'dot' => 'bg-indigo-500'],
+                    ['bg' => 'bg-teal-100 text-teal-700', 'dot' => 'bg-teal-500'],
                     ['bg' => 'bg-emerald-100 text-emerald-700', 'dot' => 'bg-emerald-500'],
                     ['bg' => 'bg-fuchsia-100 text-fuchsia-700', 'dot' => 'bg-fuchsia-500'],
                 ];
@@ -50,20 +50,20 @@
             <div
                 class="flex items-center justify-between p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 group shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-3">
-                    <!-- Indicador circular de color -->
+                    <!-- Indicador circular -->
                     <div class="w-2.5 h-2.5 rounded-full {{ $color['dot'] }}"></div>
 
-                    <!-- Nombre -->
+                    <!-- Nombre del modelo -->
                     <span class="text-gray-800 dark:text-gray-200 font-medium truncate max-w-[170px]"
-                        title="{{ $caller['name'] }}">
-                        {{ $caller['name'] }}
+                        title="{{ $modelo['name'] }}">
+                        {{ $modelo['name'] }}
                     </span>
                 </div>
 
-                <!-- Número de tickets -->
+                <!-- Cantidad de tickets -->
                 <span
                     class="px-3 py-1.5 rounded-lg text-sm font-semibold {{ $color['bg'] }} dark:opacity-90">
-                    {{ $caller['total_tickets'] }}
+                    {{ $modelo['total_tickets'] }}
                 </span>
             </div>
         @empty

@@ -3,7 +3,6 @@
 namespace App\Livewire\Ticket;
 
 use App\Jobs\ReassignTicketJob;
-use App\Mail\TicketNotificadoMail;
 use App\Models\Area;
 use App\Models\Equipo;
 use App\Models\Estado;
@@ -17,7 +16,6 @@ use App\Services\TicketService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -175,6 +173,7 @@ class TicketFormModal extends Component
     public function registrarTicket(TicketService $service)
     {
         $this->validate([
+            'tipoSoporte' => 'required',
             'observacion' => 'nullable',
             'comentario' => 'required|string'
         ]);

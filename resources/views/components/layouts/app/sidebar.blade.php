@@ -3,7 +3,6 @@
   :class="sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'"
   class="sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0"
 >
-
         <!-- SIDEBAR HEADER -->
  <div class="sidebar-header flex items-center gap-2 pb-7 pt-8"
             :class="sidebarToggle ? 'justify-center' : 'justify-between'">
@@ -19,10 +18,7 @@
                     :class="sidebarToggle ? 'block' : 'hidden'" />
             </a>
         </div>
-
-
         <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-
         </div>
         <!-- Sidebar Menu -->
         <nav class="flex-1 overflow-y-auto">

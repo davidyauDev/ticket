@@ -18,6 +18,7 @@ class UserTicketResolutionTable extends Component
     public ?string $fecha_inicio = null;
     public ?string $fecha_fin = null;
     public string $search = '';
+    public ?string $selectedUserName = null;
 
     public bool $showModal = false;
     public ?int $selectedUserId = null;
@@ -153,6 +154,9 @@ class UserTicketResolutionTable extends Component
     public function openModal(int $userId): void
     {
         $this->selectedUserId = $userId;
+         $usuario = collect($this->users)->firstWhere('id', $userId);
+
+        $this->selectedUserName = $usuario['name'] ?? 'Ingeniero';
         $this->showModal = true;
     }
 

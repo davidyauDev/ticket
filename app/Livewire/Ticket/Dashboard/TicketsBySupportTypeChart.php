@@ -30,7 +30,9 @@ class TicketsBySupportTypeChart extends Component
         $series = [];
 
         foreach ($tiposSoporte as $tipo) {
-            $categories[] = $tipo->nombre;
+            $nombreLimpio = preg_replace('/^(Soporte\s+para\s+)/i', '', trim($tipo->nombre));
+            $nombreLimpio = ucfirst($nombreLimpio);
+            $categories[] = $nombreLimpio;
             $totalTickets = Ticket::where('tipo_soporte_id', $tipo->id)
                 ->whereYear('created_at', now()->year)
                 ->when($this->selectedMonth, function ($query) {
@@ -39,11 +41,13 @@ class TicketsBySupportTypeChart extends Component
                 ->count();
             $series[] = $totalTickets;
         }
+
         $this->chartData = [
             'series' => $series,
             'categories' => $categories
         ];
     }
+
 
 
     public function render()

@@ -93,12 +93,6 @@
                     <p class="text-sm font-semibold text-gray-600">Detalles del Ticket</p>
                     <!-- Estado -->
                     <div>
-                        {{-- <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                        <flux:select wire:model.live="estado_id" placeholder="Seleccionar estado">
-                            @foreach ($estados as $estado)
-                            <flux:select.option value="{{ $estado->id }}">{{ $estado->nombre }}</flux:select.option>
-                            @endforeach
-                        </flux:select> --}}
                         @error('estado_id')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
@@ -135,36 +129,6 @@
                     @endif
                     <!-- Observación -->
                     @if ($tipoTicket == 'ticket')
-                        {{-- <div x-data="{
-                        open: false,
-                        search: '',
-                        filtered() {
-                            return @js($observaciones).filter(obs =>
-                                obs.descripcion.toLowerCase().includes(this.search.toLowerCase())
-                            );
-                        },
-                        select(obs) {
-                            this.search = obs.descripcion;
-                            this.open = false;
-                            $wire.set('observacion', obs.id);
-                        }
-                    }" class="relative">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-
-                        <input type="text" x-model="search" @focus="open = true" @click.away="open = false"
-                            placeholder="Buscar observación..."
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black" />
-                        <!-- Lista de sugerencias -->
-                        <div x-show="open && filtered().length > 0"
-                            class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                            <template x-for="obs in filtered()" :key="obs.id">
-                                <div @click="select(obs)" class="cursor-pointer px-4 py-2 hover:bg-gray-100">
-                                    <span x-text="obs.descripcion"></span>
-                                </div>
-                            </template>
-                        </div>
-                        @error('observacion') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                    </div> --}}
                     @else
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
@@ -177,14 +141,14 @@
                         </div>
                     @endif
                     <!-- Derivar -->
-                   <div class="flex items-center mt-4 space-x-2">
-    <input type="checkbox" id="derivar" wire:model.live="derivar"
-        class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-        @disabled(!$ticketData) />
-    <label for="derivar" class="text-sm text-gray-700">
-        Derivar este ticket
-    </label>
-</div>
+                    <div class="flex items-center mt-4 space-x-2">
+                        <input type="checkbox" id="derivar" wire:model.live="derivar"
+                            class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                            @disabled(!$ticketData) />
+                        <label for="derivar" class="text-sm text-gray-700">
+                            Derivar este ticket
+                        </label>
+                    </div>
 
 
                     @if ($derivar)

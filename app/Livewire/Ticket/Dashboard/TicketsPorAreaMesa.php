@@ -2,76 +2,192 @@
 
 namespace App\Livewire\Ticket\Dashboard;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Models\Ticket;
+use App\Models\TicketHistorial;
+use Carbon\Carbon;
 use Livewire\Component;
 
 class TicketsPorAreaMesa extends Component
 {
-    public array $chartData = [];
+    public array $topTechnicians = [];
+    public array $technicianCalls = [];
+    public array $modelChartData = [];
 
-    public function mount()
+    public int $selectedMonth;
+    public bool $showModal = false;
+    public ?int $selectedTechnicianId = null;
+
+    public function mount(): void
     {
-        $this->loadChartData();
+        $this->selectedMonth = 0;
+        $this->loadTopTechnicians();
     }
 
-  public function loadChartData(): void
+    public function updatedSelectedMonth(): void
+    {
+        $this->loadTopTechnicians();
+    }
+
+    private function loadTopTechnicians(): void
+    {
+
+        $query = Ticket::select('assigned_to')
+            ->selectRaw('COUNT(*) as total_tickets')
+            ->where('estado_id', 5)
+            ->whereNotNull('assigned_to')
+            ->whereYear('created_at', now()->year);
+
+        if ($this->selectedMonth > 0) {
+            $query->whereMonth('created_at', $this->selectedMonth);
+        }
+
+        $this->topTechnicians = $query->groupBy('assigned_to')
+            ->orderByDesc('total_tickets')
+            ->with([
+                'assignedUser' => function ($q) {
+                    $q->select('id', 'firstname', 'lastname');
+                }
+            ])
+            ->take(5)
+            ->get()
+            ->map(function ($ticket) {
+                $user = $ticket->assignedUser;
+
+                return [
+                    'id' => $ticket->assigned_to, // ¡Añadimos el ID aquí para poder seleccionarlo!
+                    'name' => $user
+                        ? $user->firstname . ' ' . $user->lastname
+                        : 'Sin Nombre Asignado',
+                    'total_tickets' => $ticket->total_tickets
+                ];
+            })
+            ->toArray();
+    }
+    public function showTechnicianDetails(int $technicianId): void
+    {
+        $this->selectedTechnicianId = $technicianId;
+        $this->loadTechnicianDetails();
+        $this->showModal = true;
+    }
+
+    private function loadTechnicianDetails(): void
+    {
+        // Si no hay técnico seleccionado, salimos
+        if (is_null($this->selectedTechnicianId)) {
+            return;
+        }
+
+        // 1. Cargar el listado de tickets (Modal Tab 1)
+        $this->loadTechnicianCalls();
+
+        // 2. Cargar los datos para el gráfico de modelos (Modal Tab 2)
+        $this->loadModelChartData();
+    }
+
+    public function showModal2(): void
+    {
+        $this->loadTechnicianCalls();
+        $this->showModal = true;
+    }
+  private function loadTechnicianCalls(): void
 {
-    // Obtenemos los usuarios con prioridad 1 y su modelo asignado
-    $usuarios = DB::table('responsables_modelo as rm')
-        ->join('users as u', 'rm.id_user', '=', 'u.id')
-        ->where('rm.prioridad', 1)
-        ->select('u.id', 'u.name', 'rm.id_modelo')
-        ->distinct()
+    $query = Ticket::query()
+        ->whereNotNull('assigned_to')
+        ->whereYear('created_at', now()->year);
+
+    if ($this->selectedMonth > 0) {
+        $query->whereMonth('created_at', $this->selectedMonth);
+    }
+
+    $calls = $query->with([
+        'assignedUser:id,firstname,lastname',
+        'equipo.modelo:id,descripcion'
+    ])
+        ->orderByDesc('created_at')
         ->get();
 
-    $estadisticas = $usuarios->map(function ($usuario) {
-        // Tickets relacionados al modelo del usuario con prioridad 1
-        $tickets = DB::table('tickets')
-            ->where('id_modelo', $usuario->id_modelo);
+    $grouped = [];
 
-        //  Si tu tabla tickets NO tiene estado_id, quita estos filtros
-        $asignadosResueltos = (clone $tickets)->where('estado_id', 5)->count();
-        $asignadosNoResueltos = (clone $tickets)->when(
-            DB::getSchemaBuilder()->hasColumn('tickets', 'estado_id'),
-            fn($q) => $q->where('estado_id', '!=', 5),
-            fn($q) => $q // si no existe estado_id, cuenta todos
-        )->count();
+    foreach ($calls as $ticket) {
+        $user = $ticket->assignedUser;
 
-        // Tickets sin asignación (del mismo modelo)
-        $noAsignados = DB::table('tickets')
-            ->where('id_modelo', $usuario->id_modelo)
-            ->whereNull('assigned_to')
-            ->count();
+        $userName = 'Sin Nombre Asignado';
+        if ($user) {
+            $userName = trim(($user->firstname ?? '') . ' ' . ($user->lastname ?? ''));
+        }
 
-        return [
-            'usuario' => $usuario->name,
-            'asignados_resueltos' => $asignadosResueltos,
-            'asignados_no_resueltos' => $asignadosNoResueltos,
-            'no_asignados' => $noAsignados,
+        $technicianName = $userName ?: 'Sin Nombre Asignado';
+
+        if (!isset($grouped[$technicianName])) {
+            $grouped[$technicianName] = [
+                'total' => 0,
+                'calls' => []
+            ];
+        }
+
+        $fechaInicio = $ticket->created_at;
+        $historialCierre = TicketHistorial::where('ticket_id', $ticket->id)
+            ->whereHas('estado', fn($q) => $q->where('nombre', 'cerrado'))
+            ->orderByDesc('created_at')
+            ->first();
+
+        $fechaCierre = $historialCierre?->created_at;
+        $tiempoEfectivo = null;
+
+        if ($fechaInicio && $fechaCierre) {
+            $duracionTotal = $fechaInicio->diffInSeconds($fechaCierre);
+
+            $pausas = TicketHistorial::where('ticket_id', $ticket->id)
+                ->where('estado_id', 6)
+                ->whereNotNull('started_at')
+                ->whereNotNull('ended_at')
+                ->get();
+
+            $segundosEnPausa = $pausas->reduce(function ($carry, $pausa) {
+                $startedAt = Carbon::parse($pausa->started_at);
+                $endedAt = Carbon::parse($pausa->ended_at);
+                return $carry + $startedAt->diffInSeconds($endedAt);
+            }, 0);
+
+            $tiempoEfectivo = $duracionTotal - $segundosEnPausa;
+
+            $tiempoEfectivo = Carbon::now()
+                ->addSeconds($tiempoEfectivo)
+                ->diffForHumans(Carbon::now(), [
+                    'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
+                    'parts' => 3,
+                ]);
+        }
+
+        $modelo = $ticket->equipo?->modelo;
+
+        $grouped[$technicianName]['total']++;
+        $grouped[$technicianName]['calls'][] = [
+            'id'            => $ticket->id,
+            'date'          => $ticket->created_at->format('d/m/Y H:i'),
+            'motivo'    => $ticket->motivo_derivacion ?? 'Sin comentario',
+            'type'          => $ticket->tipo ?? 'Sin tipo',
+            'modelo'        => $modelo,
+            'tiempo_total'  => $tiempoEfectivo ?? 'En progreso',
         ];
-    });
+    }
 
-    $this->chartData = [
-        'categories' => $estadisticas->pluck('usuario')->toArray(),
-        'series' => [
-            [
-                'name' => 'Resueltos',
-                'data' => $estadisticas->pluck('asignados_resueltos')->toArray(),
-            ],
-            [
-                'name' => 'No Resueltos',
-                'data' => $estadisticas->pluck('asignados_no_resueltos')->toArray(),
-            ],
-            [
-                'name' => 'No Asignados',
-                'data' => $estadisticas->pluck('no_asignados')->toArray(),
-            ],
-        ],
-    ];
+    // Ordenar de mayor a menor por total de tickets
+    uasort($grouped, fn($a, $b) => $b['total'] <=> $a['total']);
+
+    $this->technicianCalls = $grouped;
 }
 
 
+    /**
+     * Cierra el modal.
+     *
+     * @return void
+     */
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+    }
 
     public function render()
     {

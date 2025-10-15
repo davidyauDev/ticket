@@ -1,39 +1,82 @@
-<div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+<div
+    class="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/70 p-6 shadow-sm hover:shadow-md transition-all duration-300 ease-in-out">
 
-    <!-- Título y Filtro en la misma fila -->
-    <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Top Agencias</h3>
+    <!-- ENCABEZADO -->
+    <div class="flex items-center justify-between mb-5">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+            <span class="inline-block w-1.5 h-6 bg-gradient-to-b from-indigo-500 to-blue-400 rounded-full"></span>
+            Top Agencias
+        </h3>
+
         <!-- Selector de Mes -->
-        <select wire:model.live="selectedMonth" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="0">Todos los Meses</option>
-            @for ($month = 1; $month <= 12; $month++)
-                <option value="{{ $month }}">{{ \Carbon\Carbon::create()->month($month)->translatedFormat('F') }}</option>
-            @endfor
-        </select>
-    </div>
-    <!-- Tabla de Personas -->
-    <div class="my-6">
-        <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800">
-            <span class="text-gray-400 text-theme-xs"> Agencia </span>
-            <span class="text-right text-gray-400 text-theme-xs"> Tickets </span>
+        <div
+            class="relative flex items-center rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 hover:border-blue-500 transition-all duration-200">
+            <select wire:model.live="selectedMonth"
+                class="appearance-none bg-transparent px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-0 pr-8 cursor-pointer">
+                <option value="0">Todos los meses</option>
+                @for ($month = 1; $month <= 12; $month++)
+                    <option value="{{ $month }}">
+                        {{ \Carbon\Carbon::create()->month($month)->translatedFormat('F') }}
+                    </option>
+                @endfor
+            </select>
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="absolute right-2 w-4 h-4 text-gray-400 pointer-events-none" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+            </svg>
         </div>
-        @forelse ($topAgencias as $agencia)
-            <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-800">
-                <span class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $agencia['name'] }}</span>
-                <span class="text-right text-gray-500 text-theme-sm dark:text-gray-400">{{ $agencia['total_tickets'] }}</span>
+    </div>
+
+    <!-- SEPARADOR -->
+    <div class="border-t border-gray-200 dark:border-gray-800 mb-5"></div>
+
+    <!-- LISTADO DE AGENCIAS -->
+    <div class="space-y-3">
+        @forelse ($topAgencias as $index => $agencia)
+            @php
+                // Paleta visual moderna (coherente y armónica)
+                $palettes = [
+                    ['bg' => 'bg-blue-100 text-blue-700', 'dot' => 'bg-blue-500'],
+                    ['bg' => 'bg-sky-100 text-sky-700', 'dot' => 'bg-sky-500'],
+                    ['bg' => 'bg-indigo-100 text-indigo-700', 'dot' => 'bg-indigo-500'],
+                    ['bg' => 'bg-teal-100 text-teal-700', 'dot' => 'bg-teal-500'],
+                    ['bg' => 'bg-emerald-100 text-emerald-700', 'dot' => 'bg-emerald-500'],
+                    ['bg' => 'bg-fuchsia-100 text-fuchsia-700', 'dot' => 'bg-fuchsia-500'],
+                ];
+                $color = $palettes[$index % count($palettes)];
+            @endphp
+
+            <div
+                class="flex items-center justify-between p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 group shadow-sm hover:shadow-md">
+                <div class="flex items-center gap-3">
+                    <!-- Indicador circular -->
+                    <div class="w-2.5 h-2.5 rounded-full {{ $color['dot'] }}"></div>
+
+                    <!-- Nombre de la agencia -->
+                    <span class="text-gray-800 dark:text-gray-200 font-medium truncate max-w-[170px]"
+                        title="{{ $agencia['name'] }}">
+                        {{ $agencia['name'] }}
+                    </span>
+                </div>
+
+                <!-- Cantidad de tickets -->
+                <span
+                    class="px-3 py-1.5 rounded-lg text-sm font-semibold {{ $color['bg'] }} dark:opacity-90">
+                    {{ $agencia['total_tickets'] }}
+                </span>
             </div>
         @empty
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">No hay datos disponibles.</p>
+            <p class="text-gray-500 text-sm dark:text-gray-400 text-center py-4">
+                No hay datos disponibles.
+            </p>
         @endforelse
     </div>
 
-    <!-- Botón de Reporte -->
-    {{-- <a href="#" class="flex justify-center gap-2 rounded-lg border border-gray-300 bg-white p-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-        Ver Reporte Completo
-        <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                d="M17.4175 9.9986C17.4178 10.1909 17.3446 10.3832 17.198 10.53L12.2013 15.5301C11.9085 15.8231 11.4337 15.8233 11.1407 15.5305C10.8477 15.2377 10.8475 14.7629 11.1403 14.4699L14.8604 10.7472L3.33301 10.7472C2.91879 10.7472 2.58301 10.4114 2.58301 9.99715C2.58301 9.58294 2.91879 9.24715 3.33301 9.24715L14.8549 9.24715L11.1403 5.53016C10.8475 5.23717 10.8477 4.7623 11.1407 4.4695C11.4336 4.1767 11.9085 4.17685 12.2013 4.46984L17.1588 9.43049C17.3173 9.568 17.4175 9.77087 17.4175 9.99715C17.4175 9.99763 17.4175 9.99812 17.4175 9.9986Z"
-                fill=""></path>
-        </svg>
-    </a> --}}
+    <!-- FOOTER -->
+    <div class="flex justify-end mt-5">
+        <p class="text-xs text-gray-500 dark:text-gray-400 italic">
+            Actualizado al {{ now()->format('d/m/Y H:i') }}
+        </p>
+    </div>
 </div>
