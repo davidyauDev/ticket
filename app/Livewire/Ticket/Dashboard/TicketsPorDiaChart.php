@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Log;
 
 class TicketsPorDiaChart extends Component
 {
-   
+
 
     public $chartData = [
-    'categories' => ['01/10','02/10','03/10','04/10','05/10'],
-    'series' => [5, 8, 6, 10, 7],
-];
+        'categories' => ['01/10', '02/10', '03/10', '04/10', '05/10'],
+        'series' => [5, 8, 6, 10, 7],
+    ];
 
 
     public int $selectedMonth = 0;
@@ -29,26 +29,31 @@ class TicketsPorDiaChart extends Component
     }
 
     private function loadChartData(): void
-    {
-        $query = DB::table('tickets')
-            ->selectRaw('DATE(created_at) as fecha, COUNT(id) as total')
-            ->whereYear('created_at', now()->year);
+{
+    $query = DB::table('tickets')
+        ->join('tecnicos', 'tickets.staff_id', '=', 'tecnicos.staff_id')
+        ->leftJoin('equipos', 'tickets.equipo_id', '=', 'equipos.id')
+        ->leftJoin('modelos', 'equipos.modelo_id', '=', 'modelos.id')
+        ->selectRaw('DATE(tickets.created_at) as fecha, COUNT(tickets.id) as total')
+        ->whereYear('tickets.created_at', now()->year);
 
-        if ($this->selectedMonth > 0) {
-            $query->whereMonth('created_at', $this->selectedMonth);
-        }
-
-        $data = $query
-            ->groupBy('fecha')
-            ->orderBy('fecha')
-            ->get();
-
-        $this->chartData = [
-            'categories' => $data->pluck('fecha')->map(fn($f) => date('d/m', strtotime($f)))->toArray(),
-            'series' => $data->pluck('total')->toArray(),
-        ];
-        Log::info('Chart Data Loaded: ', $this->chartData);
+    if ($this->selectedMonth > 0) {
+        $query->whereMonth('tickets.created_at', $this->selectedMonth);
     }
+
+    $data = $query
+        ->groupBy('fecha')
+        ->orderBy('fecha')
+        ->get();
+
+    $this->chartData = [
+        'categories' => $data->pluck('fecha')->map(fn($f) => date('d/m', strtotime($f)))->toArray(),
+        'series' => $data->pluck('total')->toArray(),
+    ];
+
+    Log::info('Chart Data Loaded: ', $this->chartData);
+}
+
 
     public function render()
     {

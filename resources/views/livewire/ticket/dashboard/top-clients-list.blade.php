@@ -1,18 +1,19 @@
+<!-- CONTENEDOR -->
 <div
-    class="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/70 p-6 shadow-sm hover:shadow-md transition-all duration-300 ease-in-out">
+    class="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
 
     <!-- ENCABEZADO -->
-    <div class="flex items-center justify-between mb-5">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <span class="inline-block w-1.5 h-6 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-full"></span>
-            Top Clientes
+            Clientes con mas tickets
         </h3>
 
         <!-- Selector de Mes -->
         <div
-            class="relative flex items-center rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 hover:border-blue-500 transition-all duration-200">
+            class="relative flex items-center rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 hover:border-blue-500 transition-all">
             <select wire:model.live="selectedMonth"
-                class="appearance-none bg-transparent px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-0 pr-8 cursor-pointer">
+                class="appearance-none bg-transparent px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer focus:outline-none">
                 <option value="0">Todos los meses</option>
                 @for ($month = 1; $month <= 12; $month++)
                     <option value="{{ $month }}">
@@ -20,63 +21,118 @@
                     </option>
                 @endfor
             </select>
-            <svg xmlns="http://www.w3.org/2000/svg"
-                class="absolute right-2 w-4 h-4 text-gray-400 pointer-events-none" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class="absolute right-2 w-4 h-4 text-gray-400 pointer-events-none" fill="none"
+                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
             </svg>
         </div>
     </div>
 
     <!-- SEPARADOR -->
-    <div class="border-t border-gray-200 dark:border-gray-800 mb-5"></div>
+    <div class="border-t border-gray-200 dark:border-gray-700 mb-4"></div>
 
-    <!-- LISTADO DE CLIENTES -->
-    <div class="space-y-3">
-        @forelse ($topClients as $index => $caller)
-            @php
-                // Paleta armónica (moderna y coherente)
-                $palettes = [
-                    ['bg' => 'bg-blue-100 text-blue-700', 'dot' => 'bg-blue-500'],
-                    ['bg' => 'bg-slate-100 text-slate-700', 'dot' => 'bg-slate-500'],
-                    ['bg' => 'bg-cyan-100 text-cyan-700', 'dot' => 'bg-cyan-500'],
-                    ['bg' => 'bg-indigo-100 text-indigo-700', 'dot' => 'bg-indigo-500'],
-                    ['bg' => 'bg-emerald-100 text-emerald-700', 'dot' => 'bg-emerald-500'],
-                    ['bg' => 'bg-fuchsia-100 text-fuchsia-700', 'dot' => 'bg-fuchsia-500'],
-                ];
-                $color = $palettes[$index % count($palettes)];
-            @endphp
-
-            <div
-                class="flex items-center justify-between p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 group shadow-sm hover:shadow-md">
-                <div class="flex items-center gap-3">
-                    <!-- Indicador circular de color -->
-                    <div class="w-2.5 h-2.5 rounded-full {{ $color['dot'] }}"></div>
-
-                    <!-- Nombre -->
-                    <span class="text-gray-800 dark:text-gray-200 font-medium truncate max-w-[170px]"
-                        title="{{ $caller['name'] }}">
-                        {{ $caller['name'] }}
-                    </span>
-                </div>
-
-                <!-- Número de tickets -->
-                <span
-                    class="px-3 py-1.5 rounded-lg text-sm font-semibold {{ $color['bg'] }} dark:opacity-90">
-                    {{ $caller['total_tickets'] }}
-                </span>
-            </div>
-        @empty
-            <p class="text-gray-500 text-sm dark:text-gray-400 text-center py-4">
-                No hay datos disponibles.
-            </p>
-        @endforelse
+    <!-- GRÁFICO -->
+    <div x-data="graficoTopClientes(@entangle('chartData'))" x-init="initChart()" wire:ignore>
+        <div id="grafico-top-clientes" class="w-full h-[320px]"></div>
     </div>
 
     <!-- FOOTER -->
-    <div class="flex justify-end mt-5">
+    <div class="flex justify-end mt-4">
         <p class="text-xs text-gray-500 dark:text-gray-400 italic">
             Actualizado al {{ now()->format('d/m/Y H:i') }}
         </p>
     </div>
 </div>
+
+<script>
+function graficoTopClientes(chartData) {
+    return {
+        chart: null,
+        chartData,
+        initChart() {
+            const el = document.querySelector('#grafico-top-clientes');
+            this.chart = new ApexCharts(el, {
+                chart: {
+                    type: 'donut',
+                    height: 320,
+                    fontFamily: 'Inter, sans-serif',
+                    animations: { enabled: true, easing: 'easeinout', speed: 900 },
+                    toolbar: { show: false },
+                },
+                series: this.chartData.series,
+                labels: this.chartData.labels,
+                colors: [
+                    '#3B82F6', // Blue
+                    '#6366F1', // Indigo
+                    '#0EA5E9', // Sky
+                    '#10B981', // Emerald
+                    '#F59E0B'  // Amber
+                ],
+                legend: {
+                    show: true,
+                    position: 'bottom',
+                    horizontalAlign: 'center',
+                    fontSize: '13px',
+                    markers: { width: 12, height: 12, radius: 12 },
+                    itemMargin: { horizontal: 12, vertical: 4 },
+                    labels: {
+                        colors: document.documentElement.classList.contains('dark') ? '#E5E7EB' : '#4B5563',
+                    }
+                },
+                dataLabels: { enabled: false },
+                tooltip: {
+    enabled: true,
+    fillSeriesColor: false,
+    style: { fontSize: '14px', fontWeight: 500 },
+    y: {
+        formatter: (value, { seriesIndex, w }) => {
+            const label = w.globals.labels[seriesIndex];
+            const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+            const percent = ((value / total) * 100).toFixed(1);
+            return `${label}: ${value} tickets (${percent}%)`;
+        }
+    },
+    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+},
+                plotOptions: {
+                    pie: {
+                        expandOnClick: true,
+                        donut: {
+                            size: '75%',
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'TOP 5 CLIENTES',
+                                    fontSize: '14px',
+                                    color: document.documentElement.classList.contains('dark') ? '#D1D5DB' : '#4B5563',
+                                    formatter: (w) => w.globals.seriesTotals.reduce((a, b) => a + b, 0)
+                                },
+                                value: {
+                                    show: true,
+                                    fontSize: '26px',
+                                    fontWeight: 700,
+                                    color: document.documentElement.classList.contains('dark') ? '#F9FAFB' : '#1F2937'
+                                }
+                            }
+                        }
+                    }
+                },
+                stroke: {
+                    colors: [document.documentElement.classList.contains('dark') ? '#111827' : '#FFFFFF'],
+                    width: 3
+                }
+            });
+
+            this.chart.render();
+
+            this.$watch('chartData', (newData) => {
+                this.chart.updateOptions({
+                    labels: newData.labels,
+                    series: newData.series
+                });
+            });
+        }
+    }
+}
+</script>

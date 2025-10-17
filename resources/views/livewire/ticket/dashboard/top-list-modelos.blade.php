@@ -5,7 +5,7 @@
     <div class="flex items-center justify-between mb-5">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
             <span class="inline-block w-1.5 h-6 bg-gradient-to-b from-indigo-500 to-blue-400 rounded-full"></span>
-            Top Modelos
+            Modelos con mas tickets
         </h3>
 
         <!-- Selector de Mes -->

@@ -8,6 +8,7 @@ use Livewire\Component;
 class TopAgenciaslist extends Component
 {
     public array $topAgencias = [];
+    public array $chartData = []; // 🔹 Para el gráfico
     public int $selectedMonth = 0;
 
     public function mount(): void
@@ -24,7 +25,7 @@ class TopAgenciaslist extends Component
     {
         $query = DB::table('tickets')
             ->join('agencias', 'tickets.agencia_id', '=', 'agencias.id')
-            ->select('agencias.id as agencia_id', 'agencias.nombre')
+            ->select('agencias.nombre')
             ->selectRaw('COUNT(tickets.id) as total_tickets')
             ->whereYear('tickets.created_at', now()->year);
 
@@ -32,17 +33,22 @@ class TopAgenciaslist extends Component
             $query->whereMonth('tickets.created_at', $this->selectedMonth);
         }
 
-        $this->topAgencias = $query->groupBy('agencias.id', 'agencias.nombre')
+        $this->topAgencias = $query
+            ->groupBy('agencias.nombre')
             ->orderByDesc('total_tickets')
             ->limit(5)
             ->get()
-            ->map(function ($item) {
-                return [
-                    'name' => $item->nombre ?? 'Sin Nombre',
-                    'total_tickets' => (int) $item->total_tickets
-                ];
-            })
+            ->map(fn($item) => [
+                'name' => $item->nombre ?? 'Sin Nombre',
+                'total_tickets' => (int) $item->total_tickets
+            ])
             ->toArray();
+
+        // 🔹 Preparar datos para el gráfico
+        $this->chartData = [
+            'labels' => array_column($this->topAgencias, 'name'),
+            'series' => array_column($this->topAgencias, 'total_tickets'),
+        ];
     }
 
     public function render()

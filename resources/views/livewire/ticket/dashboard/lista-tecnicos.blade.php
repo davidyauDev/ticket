@@ -4,7 +4,7 @@
     <!-- Título y Filtro -->
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white tracking-tight">
-            Llamadas
+            Técnicos con más tickets
         </h3>
 
         <div class="flex items-center gap-3">
@@ -174,7 +174,7 @@
                                 <div
                                     class="grid grid-cols-12 gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800/60 rounded-lg text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     <div class="col-span-2 text-left">Código</div>
-                                    <div class="col-span-2 text-center">Fecha</div>
+                                    <div class="col-span-2 text-center">Fecha de Creación</div>
                                     <div class="col-span-2 text-center">Modelo</div>
                                     <div class="col-span-6 text-left">Tipo de Soporte / Derivación</div>
                                 </div>

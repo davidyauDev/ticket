@@ -5,7 +5,7 @@
     <div class="flex items-center justify-between mb-5">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
             <span class="inline-block w-1.5 h-6 bg-gradient-to-b from-indigo-500 to-blue-400 rounded-full"></span>
-            Top Agencias
+                Agencias con mas tickets
         </h3>
 
         <!-- Selector de Mes -->
@@ -31,47 +31,10 @@
     <!-- SEPARADOR -->
     <div class="border-t border-gray-200 dark:border-gray-800 mb-5"></div>
 
-    <!-- LISTADO DE AGENCIAS -->
-    <div class="space-y-3">
-        @forelse ($topAgencias as $index => $agencia)
-            @php
-                // Paleta visual moderna (coherente y armónica)
-                $palettes = [
-                    ['bg' => 'bg-blue-100 text-blue-700', 'dot' => 'bg-blue-500'],
-                    ['bg' => 'bg-sky-100 text-sky-700', 'dot' => 'bg-sky-500'],
-                    ['bg' => 'bg-indigo-100 text-indigo-700', 'dot' => 'bg-indigo-500'],
-                    ['bg' => 'bg-teal-100 text-teal-700', 'dot' => 'bg-teal-500'],
-                    ['bg' => 'bg-emerald-100 text-emerald-700', 'dot' => 'bg-emerald-500'],
-                    ['bg' => 'bg-fuchsia-100 text-fuchsia-700', 'dot' => 'bg-fuchsia-500'],
-                ];
-                $color = $palettes[$index % count($palettes)];
-            @endphp
-
-            <div
-                class="flex items-center justify-between p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 group shadow-sm hover:shadow-md">
-                <div class="flex items-center gap-3">
-                    <!-- Indicador circular -->
-                    <div class="w-2.5 h-2.5 rounded-full {{ $color['dot'] }}"></div>
-
-                    <!-- Nombre de la agencia -->
-                    <span class="text-gray-800 dark:text-gray-200 font-medium truncate max-w-[170px]"
-                        title="{{ $agencia['name'] }}">
-                        {{ $agencia['name'] }}
-                    </span>
-                </div>
-
-                <!-- Cantidad de tickets -->
-                <span
-                    class="px-3 py-1.5 rounded-lg text-sm font-semibold {{ $color['bg'] }} dark:opacity-90">
-                    {{ $agencia['total_tickets'] }}
-                </span>
-            </div>
-        @empty
-            <p class="text-gray-500 text-sm dark:text-gray-400 text-center py-4">
-                No hay datos disponibles.
-            </p>
-        @endforelse
-    </div>
+    <!-- GRÁFICO DONUT -->
+   <div x-data="graficoTopAgencias(@entangle('chartData'))" x-init="initChart()" class="my-4" wire:ignore>
+    <div id="grafico-top-agencias" class="w-full h-[320px]"></div>
+</div>
 
     <!-- FOOTER -->
     <div class="flex justify-end mt-5">
@@ -80,3 +43,105 @@
         </p>
     </div>
 </div>
+
+<script>
+function graficoTopAgencias(chartData) {
+    return {
+        chart: null,
+        chartData,
+        initChart() {
+            const el = document.querySelector('#grafico-top-agencias');
+            this.chart = new ApexCharts(el, {
+                chart: {
+                    type: 'donut',
+                    height: 320,
+                    fontFamily: 'Inter, sans-serif',
+                    animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 1200
+                    },
+                    toolbar: { show: false },
+                },
+                series: this.chartData.series,
+                labels: this.chartData.labels,
+                colors: ['#3b82f6', '#6366f1', '#0ea5e9', '#10b981', '#f59e0b'],
+                legend: {
+                    show: true,
+                    position: 'bottom',
+                    fontSize: '13px',
+                    markers: { width: 12, height: 12, radius: 6 },
+                    itemMargin: { horizontal: 10, vertical: 3 },
+                    labels: { colors: document.documentElement.classList.contains('dark') ? '#d1d5db' : '#374151' },
+                },
+                tooltip: {
+                    enabled: true,
+                    followCursor: true,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Inter, sans-serif',
+                    },
+                    y: {
+                        formatter: (val) => `${val} tickets`
+                    },
+                    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+                },
+                dataLabels: {
+                    enabled: false, // 🔹 Eliminamos el texto flotante para mejorar claridad
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '75%',
+                            labels: {
+                                show: true,
+                                name: {
+                                    show: true,
+                                    offsetY: 16,
+                                    fontSize: '14px',
+                                    fontWeight: 500,
+                                    color: document.documentElement.classList.contains('dark') ? '#e2e8f0' : '#475569'
+                                },
+                                value: {
+                                    show: true,
+                                    fontSize: '26px',
+                                    fontWeight: 800,
+                                    offsetY: -10,
+                                    color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#1e293b',
+                                    formatter: (val) => val
+                                },
+                                total: {
+                                    show: true,
+                                    label: 'Total',
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    color: document.documentElement.classList.contains('dark') ? '#9ca3af' : '#64748b',
+                                    formatter: (w) => w.globals.seriesTotals.reduce((a, b) => a + b, 0)
+                                }
+                            }
+                        }
+                    }
+                },
+                stroke: {
+                    width: 4,
+                    colors: [document.documentElement.classList.contains('dark') ? '#111827' : '#ffffff']
+                },
+                states: {
+                    hover: {
+                        filter: { type: 'lighten', value: 0.1 }
+                    }
+                }
+            });
+
+            this.chart.render();
+
+            this.$watch('chartData', (newData) => {
+                this.chart.updateOptions({
+                    labels: newData.labels,
+                    series: newData.series
+                });
+            });
+        }
+    }
+}
+</script>

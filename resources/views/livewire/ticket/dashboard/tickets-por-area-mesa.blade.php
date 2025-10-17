@@ -4,7 +4,7 @@
     <!-- Título y Filtro -->
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white tracking-tight">
-            Tickets Resueltos
+            Usuarios con más tickets resueltos
         </h3>
 
         <select wire:model.live="selectedMonth"
