@@ -1,13 +1,13 @@
-name: Test Runner Windows
+name: Test Runner Self-Hosted
 
 on: [push]
 
 jobs:
   test:
-    runs-on: self-hosted  # Esto asegura que se usa tu runner
+    runs-on: self-hosted  # 🔴 Esto indica que usará tu runner privado
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Probar comando
-        run: echo "✅ El runner privado está funcionando en Windows"
+      - name: Mostrar mensaje
+        run: echo "✅ Workflow ejecutado en mi runner privado de Windows"
