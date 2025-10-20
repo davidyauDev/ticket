@@ -34,6 +34,16 @@ class TicketsDetalleDiaTable extends Component
             ->whereDate('tickets.created_at', $this->fecha)
             ->orderByDesc('tickets.created_at')
             ->get();
+
+        // Calcular totales por estado
+        $totales = [
+            'total' => $tickets->count(),
+            'pendientes' => $tickets->where('estado_nombre', 'Pendiente')->count(),
+            'derivados' => $tickets->where('estado_nombre', 'Derivado')->count(),
+            'cerrados' => $tickets->where('estado_nombre', 'Cerrado')->count(),
+            'pausados' => $tickets->where('estado_nombre', 'Pausado')->count(),
+            'anulados' => $tickets->where('estado_nombre', 'Anulado')->count(),
+        ];
         $historiales = DB::table('ticket_historial')
             ->leftJoin('users as usuarios', 'ticket_historial.usuario_id', '=', 'usuarios.id')
             ->leftJoin('areas as from_area', 'ticket_historial.from_area_id', '=', 'from_area.id')
@@ -60,7 +70,8 @@ class TicketsDetalleDiaTable extends Component
 
         return view('livewire.ticket.dashboard.tickets-detalle-dia-table', [
             'tickets' => $tickets,
-            'historiales' => $historiales
+            'historiales' => $historiales,
+            'totales' => $totales
         ]);
     }
 }

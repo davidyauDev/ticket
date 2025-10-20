@@ -19,10 +19,10 @@
 
     </div>
     <div x-data="{ showModal: false, tipoExport: null, mes: '' }" class="flex justify-end gap-3 mb-6">
-        <button @click="showModal = true; tipoExport = 'pdf'"
+        {{-- <button @click="showModal = true; tipoExport = 'pdf'"
             class="px-5 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-all duration-200">
             Generar PDF
-        </button>
+        </button> --}}
 
         <button @click="showModal = true; tipoExport = 'excel'"
             class="px-5 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-all duration-200">
@@ -95,12 +95,12 @@
         </div>
 
         <div class="col-span-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-fr">
-        @livewire('ticket.dashboard.top-clients-list', key('top-clients'))
-        @livewire('ticket.dashboard.top-agenciaslist', key('top-agencias'))
-        @livewire('ticket.dashboard.top-list-modelos', key('top-modelos'))
-    </div>
-</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-fr">
+                @livewire('ticket.dashboard.top-clients-list', key('top-clients'))
+                @livewire('ticket.dashboard.top-agenciaslist', key('top-agencias'))
+                @livewire('ticket.dashboard.top-list-modelos', key('top-modelos'))
+            </div>
+        </div>
 
 
         <div class="col-span-12">
@@ -113,7 +113,7 @@
         class="grid grid-cols-12 gap-6" x-on:transitionend.window="$dispatch('resize')" wire:key="tab-grafica-dia">
 
         <div class="col-span-12">
-             @livewire('ticket.dashboard.tickets-derivados-chart', key('derivados-dia')) 
+            {{-- @livewire('ticket.dashboard.tickets-derivados-chart', key('derivados-dia')) --}}
             <div class="mt-6">
                 @livewire('ticket.dashboard.tickets-detalle-dia-table', key('detalle-dia'))
             </div>

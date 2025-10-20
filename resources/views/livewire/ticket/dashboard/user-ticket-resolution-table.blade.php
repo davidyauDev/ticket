@@ -43,7 +43,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($users as $user)
+                @forelse($this->users as $user)
                     <tr
                         class="hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-colors duration-150 border-t border-gray-100 dark:border-gray-800">
                         <td class="px-6 py-3 font-medium text-gray-600 dark:text-gray-300">
@@ -78,11 +78,16 @@
         </table>
     </div>
 
+    <!-- Paginación para la tabla principal -->
+    <div class="mt-6">
+        {{ $this->users->links() }}
+    </div>
+
     @if ($showModal)
         <x-modal wire:model="showModal" class="w-full max-w-4xl">
             <div class=" dark:bg-gray-900 rounded-2xl  p-3 space-y-6">
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                   
+
                     Detalle de Tickets —
                     <span class="text-blue-600 dark:text-blue-400 font-bold">
                         {{ $selectedUserName }}
@@ -125,10 +130,11 @@
                                     <td class="px-4 py-2">
                                         @if ($ticket['resuelto_por'] === 'Sí')
                                             <span class="text-green-600 font-semibold">Sí</span>
-                                        @elseif($ticket['resuelto_por'] === 'Otro')
-                                            <span class="text-yellow-600 font-semibold">Otro</span>
-                                        @else
+                                        @elseif($ticket['resuelto_por'] === 'Pendiente por Resolver')
                                             <span class="text-gray-400 italic">Pendiente</span>
+                                        @else
+                                            <span
+                                                class="text-yellow-600 font-semibold">{{ $ticket['resuelto_por'] }}</span>
                                         @endif
                                     </td>
                                 </tr>

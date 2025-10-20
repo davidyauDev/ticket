@@ -21,8 +21,8 @@
                     </option>
                 @endfor
             </select>
-            <svg class="absolute right-2 w-4 h-4 text-gray-400 pointer-events-none" fill="none"
-                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="absolute right-2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor"
+                stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
             </svg>
         </div>
@@ -45,94 +45,122 @@
 </div>
 
 <script>
-function graficoTopClientes(chartData) {
-    return {
-        chart: null,
-        chartData,
-        initChart() {
-            const el = document.querySelector('#grafico-top-clientes');
-            this.chart = new ApexCharts(el, {
-                chart: {
-                    type: 'donut',
-                    height: 320,
-                    fontFamily: 'Inter, sans-serif',
-                    animations: { enabled: true, easing: 'easeinout', speed: 900 },
-                    toolbar: { show: false },
-                },
-                series: this.chartData.series,
-                labels: this.chartData.labels,
-                colors: [
-                    '#3B82F6', // Blue
-                    '#6366F1', // Indigo
-                    '#0EA5E9', // Sky
-                    '#10B981', // Emerald
-                    '#F59E0B'  // Amber
-                ],
-                legend: {
-                    show: true,
-                    position: 'bottom',
-                    horizontalAlign: 'center',
-                    fontSize: '13px',
-                    markers: { width: 12, height: 12, radius: 12 },
-                    itemMargin: { horizontal: 12, vertical: 4 },
-                    labels: {
-                        colors: document.documentElement.classList.contains('dark') ? '#E5E7EB' : '#4B5563',
-                    }
-                },
-                dataLabels: { enabled: false },
-                tooltip: {
-    enabled: true,
-    fillSeriesColor: false,
-    style: { fontSize: '14px', fontWeight: 500 },
-    y: {
-        formatter: (value, { seriesIndex, w }) => {
-            const label = w.globals.labels[seriesIndex];
-            const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-            const percent = ((value / total) * 100).toFixed(1);
-            return `${label}: ${value} tickets (${percent}%)`;
-        }
-    },
-    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
-},
-                plotOptions: {
-                    pie: {
-                        expandOnClick: true,
-                        donut: {
-                            size: '75%',
-                            labels: {
-                                show: true,
-                                total: {
+    function graficoTopClientes(chartData) {
+        return {
+            chart: null,
+            chartData,
+            initChart() {
+                const el = document.querySelector('#grafico-top-clientes');
+                this.chart = new ApexCharts(el, {
+                    chart: {
+                        type: 'donut',
+                        height: 320,
+                        fontFamily: 'Inter, sans-serif',
+                        animations: {
+                            enabled: true,
+                            easing: 'easeinout',
+                            speed: 900
+                        },
+                        toolbar: {
+                            show: false
+                        },
+                    },
+                    series: this.chartData.series,
+                    labels: this.chartData.labels,
+                    colors: [
+                        '#3B82F6', // Blue
+                        '#6366F1', // Indigo
+                        '#0EA5E9', // Sky
+                        '#10B981', // Emerald
+                        '#F59E0B' // Amber
+                    ],
+                    legend: {
+                        show: true,
+                        position: 'bottom',
+                        horizontalAlign: 'center',
+                        fontSize: '13px',
+                        markers: {
+                            width: 12,
+                            height: 12,
+                            radius: 12
+                        },
+                        itemMargin: {
+                            horizontal: 12,
+                            vertical: 4
+                        },
+                        labels: {
+                            colors: document.documentElement.classList.contains('dark') ? '#E5E7EB' : '#4B5563',
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        fillSeriesColor: false,
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 500
+                        },
+                        y: {
+                            formatter: (value, {
+                                seriesIndex,
+                                w
+                            }) => {
+                                const label = w.globals.labels[seriesIndex];
+                                const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                const percent = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} tickets (${percent}%)`;
+                            }
+                        },
+                        theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+                    },
+                    plotOptions: {
+                        pie: {
+                            expandOnClick: true,
+                            donut: {
+                                size: '75%',
+                                labels: {
                                     show: true,
-                                    label: 'TOP 5 CLIENTES',
-                                    fontSize: '14px',
-                                    color: document.documentElement.classList.contains('dark') ? '#D1D5DB' : '#4B5563',
-                                    formatter: (w) => w.globals.seriesTotals.reduce((a, b) => a + b, 0)
-                                },
-                                value: {
-                                    show: true,
-                                    fontSize: '26px',
-                                    fontWeight: 700,
-                                    color: document.documentElement.classList.contains('dark') ? '#F9FAFB' : '#1F2937'
+                                    name: {
+                                        show: true,
+                                        fontSize: '14px',
+                                        fontWeight: 500,
+                                        color: document.documentElement.classList.contains('dark') ? '#D1D5DB' :
+                                            '#6B7280',
+                                        offsetY: -10
+                                    },
+                                    value: {
+                                        show: true,
+                                        fontSize: '24px',
+                                        fontWeight: 700,
+                                        color: document.documentElement.classList.contains('dark') ? '#F9FAFB' :
+                                            '#1F2937',
+                                        offsetY: 10,
+                                        formatter: (val) => val + ' tickets'
+                                    },
+                                    total: {
+                                        show: false
+                                    }
                                 }
                             }
                         }
+                    },
+                    stroke: {
+                        colors: [document.documentElement.classList.contains('dark') ? '#111827' : '#FFFFFF'],
+                        width: 3
                     }
-                },
-                stroke: {
-                    colors: [document.documentElement.classList.contains('dark') ? '#111827' : '#FFFFFF'],
-                    width: 3
-                }
-            });
-
-            this.chart.render();
-
-            this.$watch('chartData', (newData) => {
-                this.chart.updateOptions({
-                    labels: newData.labels,
-                    series: newData.series
                 });
-            });
+
+                this.chart.render();
+
+                this.$watch('chartData', (newData) => {
+                    this.chart.updateOptions({
+                        labels: newData.labels,
+                        series: newData.series
+                    });
+                });
+            }
         }
     }
-}
 </script>

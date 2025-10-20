@@ -14,7 +14,6 @@ use Livewire\WithPagination;
 class UserTicketResolutionTable extends Component
 {
     use WithPagination;
-    public array $users = [];
     public ?string $fecha_inicio = null;
     public ?string $fecha_fin = null;
     public string $search = '';
@@ -25,27 +24,25 @@ class UserTicketResolutionTable extends Component
 
     public function mount(): void
     {
-        $this->loadUsers();
+        // Ya no necesitamos cargar usuarios aquí
     }
 
     public function updatedFechaInicio(): void
     {
-        $this->loadUsers();
+        $this->resetPage('usersPage');
     }
 
     public function updatedFechaFin(): void
     {
-        $this->loadUsers();
+        $this->resetPage('usersPage');
     }
-     public function updatedSearch(): void
+    public function updatedSearch(): void
     {
-        $this->loadUsers();
+        $this->resetPage('usersPage');
     }
 
-    public function loadUsers(): void
+    public function getUsersProperty()
     {
-        $this->users = [];
-
         $usuarios = User::query()
             ->when(
                 $this->search,
@@ -53,10 +50,10 @@ class UserTicketResolutionTable extends Component
                 $q->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
             )
-            ->where('area_id',2)
-            ->get();
+            ->where('area_id', 2)
+            ->paginate(8, ['*'], 'usersPage');
 
-        foreach ($usuarios as $usuario) {
+        return $usuarios->through(function ($usuario) {
             $subquery = DB::table('ticket_historial')
                 ->select('ticket_id', DB::raw('MAX(created_at) as ultima_fecha'))
                 ->where('asignado_a', $usuario->id)
@@ -91,7 +88,7 @@ class UserTicketResolutionTable extends Component
                     ->first()
             )->updated_at?->format('Y-m-d H:i');
 
-            $this->users[] = [
+            return [
                 'id' => $usuario->id,
                 'name' => $usuario->name,
                 'email' => $usuario->email,
@@ -100,7 +97,13 @@ class UserTicketResolutionTable extends Component
                 'resueltos_count' => $resueltosCount,
                 'ultima_fecha_resuelto' => $ultimaFechaResuelto,
             ];
-        }
+        });
+    }
+
+    public function loadUsers(): void
+    {
+        // Método mantenido para compatibilidad, pero ahora los datos se cargan en la propiedad computed
+        $this->resetPage('usersPage');
     }
 
     protected function queryHistorial(int $userId)
@@ -122,7 +125,7 @@ class UserTicketResolutionTable extends Component
     public function getUnresolvedTicketsProperty()
     {
         if (!$this->selectedUserId) {
-            return Ticket::where('id', null)->paginate();
+            return Ticket::where('id', null)->paginate(5, ['*'], 'ticketsPage');
         }
 
         $paginator = Ticket::whereHas('historiales', function ($query) {
@@ -132,7 +135,7 @@ class UserTicketResolutionTable extends Component
                 'historiales' => fn($q) => $q->where('asignado_a', $this->selectedUserId)->orderByDesc('created_at'),
                 'estado'
             ])
-            ->paginate(5);
+            ->paginate(5, ['*'], 'ticketsPage');
 
         return $paginator->through(function ($ticket) {
             $resueltoPor = TicketHistorial::where('ticket_id', $ticket->id)
@@ -140,13 +143,24 @@ class UserTicketResolutionTable extends Component
                 ->latest('created_at')
                 ->first();
 
+            $resueltoTexto = 'Pendiente por Resolver';
+            if ($resueltoPor) {
+                $usuarioQueResolvio = $resueltoPor->asignado_a ?? $resueltoPor->usuario_id;
+                if ($usuarioQueResolvio === $this->selectedUserId) {
+                    $resueltoTexto = 'Sí';
+                } else {
+                    $usuario = User::find($usuarioQueResolvio);
+                    $resueltoTexto = $usuario ? $usuario->name : 'Usuario desconocido';
+                }
+            }
+
             return [
                 'id' => $ticket->id,
                 'codigo' => $ticket->codigo ?? '—',
                 'cliente' => $ticket->cliente->nombre ?? '—',
                 'fecha_asignacion' => optional($ticket->historiales->first())->created_at?->format('Y-m-d H:i'),
                 'estado' => $ticket->estado->nombre ?? '—',
-                'resuelto_por' => ($resueltoPor?->asignado_a ?? $resueltoPor?->usuario_id) === $this->selectedUserId ? 'Sí' : ($resueltoPor ? 'Otro' : 'Pendiente por Resolver'),
+                'resuelto_por' => $resueltoTexto,
             ];
         });
     }
@@ -154,15 +168,16 @@ class UserTicketResolutionTable extends Component
     public function openModal(int $userId): void
     {
         $this->selectedUserId = $userId;
-         $usuario = collect($this->users)->firstWhere('id', $userId);
-
-        $this->selectedUserName = $usuario['name'] ?? 'Ingeniero';
+        $usuario = User::find($userId);
+        $this->selectedUserName = $usuario?->name ?? 'Ingeniero';
+        $this->resetPage('ticketsPage'); // Resetear la página del modal
         $this->showModal = true;
     }
 
     public function closeModal(): void
     {
-        $this->reset(['showModal', 'selectedUserId']);
+        $this->reset(['showModal', 'selectedUserId', 'selectedUserName']);
+        $this->resetPage('ticketsPage');
     }
 
     public function render()

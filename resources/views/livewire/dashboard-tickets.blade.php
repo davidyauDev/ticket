@@ -110,25 +110,28 @@
         <span class="text-sm font-medium text-gray-700">📅 Filtros:</span>
         <div class="flex items-center gap-2">
             <label class="text-sm text-gray-600">Desde:</label>
-            <input type="date" wire:model.live="fechaInicio" class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
+            <input type="date" wire:model.live="fechaInicio"
+                class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
         </div>
         <div class="flex items-center gap-2">
             <label class="text-sm text-gray-600">Hasta:</label>
-            <input type="date" wire:model.live="fechaFin" class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
+            <input type="date" wire:model.live="fechaFin"
+                class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
         </div>
         @auth
-    @if($esAdmin)
-    <div class="flex items-center gap-2">
-        <label class="text-sm text-gray-600">Usuario:</label>
-        <select wire:model.live="usuarioSeleccionado" class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
-            <option value="">Todos</option>
-            @foreach($usuarios as $usuario)
-                <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
-            @endforeach
-        </select>
-    </div>
-    @endif
-@endauth
+            @if ($esAdmin)
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Usuario:</label>
+                    <select wire:model.live="usuarioSeleccionado"
+                        class="border border-gray-300 rounded px-3 py-1.5 shadow-sm">
+                        <option value="">Todos</option>
+                        @foreach ($usuarios as $usuario)
+                            <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
+        @endauth
 
     </div>
 
@@ -142,8 +145,8 @@
         </div>
 
         {{-- Gráfico por área --}}
-        <div x-data="graficoPorArea(@js(array_values($ticketsPorArea)), @js(array_keys($ticketsPorArea)))"
-            x-init="initChart()" class="bg-white p-6 rounded-xl shadow border border-gray-100" wire:ignore>
+        <div x-data="graficoPorArea(@js(array_values($ticketsPorArea)), @js(array_keys($ticketsPorArea)))" x-init="initChart()"
+            class="bg-white p-6 rounded-xl shadow border border-gray-100" wire:ignore>
             <h2 class="text-base font-semibold text-gray-700 mb-4">Tickets por Área</h2>
             <div id="grafico-area" class="w-full h-[500px]"></div>
         </div>
@@ -151,133 +154,146 @@
 </div>
 
 @push('scripts')
-<script>
-    function graficoTickets(data) {
-        return {
-            datos: data,
-            chart: null,
-            initChart() {
-                const el = document.querySelector('#grafico-tickets');
+    <script>
+        function graficoTickets(data) {
+            return {
+                datos: data,
+                chart: null,
+                initChart() {
+                    const el = document.querySelector('#grafico-tickets');
 
-                this.chart = new ApexCharts(el, {
-                    chart: {
-                        type: 'bar',
-                        height: 300,
-                        toolbar: { show: false }
-                    },
-                    series: [{
-                        name: 'Tickets',
-                        data: this.datos,
-                    }],
-                    xaxis: {
-                        categories: ['Pendientes', 'Cerrados', 'Derivados' , 'Pausados'],
-                    },
-                    colors: ['#3b82f6'], // Azul de Tailwind
-                    noData: {
-                        text: "No hay datos",
-                        align: 'center',
-                        verticalAlign: 'middle',
-                        style: {
-                            color: '#64748b',
-                            fontSize: '14px'
-                        }
-                    }
-                });
-
-                this.chart.render();
-
-                this.$watch('datos', (nuevoValor) => {
-                    this.chart.destroy();
                     this.chart = new ApexCharts(el, {
                         chart: {
                             type: 'bar',
                             height: 300,
-                            toolbar: { show: false }
-                        },
-                        series: [{
-                            name: 'Tickets',
-                            data: nuevoValor,
-                        }],
-                        xaxis: {
-                            categories: ['Pendientes', 'Cerrados', 'Derivados'],
-                        },
-                        colors: ['#3b82f6'],
-                        noData: {
-                            text: "No hay datos",
-                            style: { color: '#64748b' }
-                        }
-                    });
-
-                    this.chart.render();
-                });
-
-                this.$watch('$wire.usuarioSeleccionado', () => {
-                    this.chart.destroy();
-                    this.chart = new ApexCharts(el, {
-                        chart: {
-                            type: 'bar',
-                            height: 300,
-                            toolbar: { show: false }
+                            toolbar: {
+                                show: false
+                            }
                         },
                         series: [{
                             name: 'Tickets',
                             data: this.datos,
                         }],
                         xaxis: {
-                            categories: ['Pendientes', 'Cerrados', 'Derivados'],
+                            categories: ['Pendientes', 'Cerrados', 'Derivados', 'Pausados'],
                         },
-                        colors: ['#3b82f6'],
+                        colors: ['#3b82f6'], // Azul de Tailwind
                         noData: {
                             text: "No hay datos",
-                            style: { color: '#64748b' }
+                            align: 'center',
+                            verticalAlign: 'middle',
+                            style: {
+                                color: '#64748b',
+                                fontSize: '14px'
+                            }
                         }
                     });
 
                     this.chart.render();
-                });
+
+                    this.$watch('datos', (nuevoValor) => {
+                        this.chart.destroy();
+                        this.chart = new ApexCharts(el, {
+                            chart: {
+                                type: 'bar',
+                                height: 300,
+                                toolbar: {
+                                    show: false
+                                }
+                            },
+                            series: [{
+                                name: 'Tickets',
+                                data: nuevoValor,
+                            }],
+                            xaxis: {
+                                categories: ['Pendientes', 'Cerrados', 'Derivados'],
+                            },
+                            colors: ['#3b82f6'],
+                            noData: {
+                                text: "No hay datos",
+                                style: {
+                                    color: '#64748b'
+                                }
+                            }
+                        });
+
+                        this.chart.render();
+                    });
+
+                    this.$watch('$wire.usuarioSeleccionado', () => {
+                        this.chart.destroy();
+                        this.chart = new ApexCharts(el, {
+                            chart: {
+                                type: 'bar',
+                                height: 300,
+                                toolbar: {
+                                    show: false
+                                }
+                            },
+                            series: [{
+                                name: 'Tickets',
+                                data: this.datos,
+                            }],
+                            xaxis: {
+                                categories: ['Pendientes', 'Cerrados', 'Derivados'],
+                            },
+                            colors: ['#3b82f6'],
+                            noData: {
+                                text: "No hay datos",
+                                style: {
+                                    color: '#64748b'
+                                }
+                            }
+                        });
+
+                        this.chart.render();
+                    });
+                }
             }
         }
-    }
-</script>
+    </script>
 
-<script>
-    function graficoPorArea(data, labels) {
-        return {
-            initChart() {
-                const chart = new ApexCharts(document.querySelector('#grafico-area'), {
-                    chart: {
-                        type: 'bar',
-                        height: 500,
-                        toolbar: { show: false }
-                    },
-                    series: [{
-                        name: 'Tickets',
-                        data: data,
-                    }],
-                    xaxis: {
-                        categories: labels,
-                    },
-                    plotOptions: {
-                        bar: {
-                            horizontal: true,
-                            borderRadius: 4,
-                            barHeight: '70%',
+    <script>
+        function graficoPorArea(data, labels) {
+            return {
+                initChart() {
+                    const chart = new ApexCharts(document.querySelector('#grafico-area'), {
+                        chart: {
+                            type: 'bar',
+                            height: 500,
+                            toolbar: {
+                                show: false
+                            }
+                        },
+                        series: [{
+                            name: 'Tickets',
+                            data: data,
+                        }],
+                        xaxis: {
+                            categories: labels,
+                        },
+                        plotOptions: {
+                            bar: {
+                                horizontal: true,
+                                borderRadius: 4,
+                                barHeight: '70%',
+                            }
+                        },
+                        colors: ['#10b981'], // Tailwind green
+                        dataLabels: {
+                            enabled: true
+                        },
+                        noData: {
+                            text: "No hay datos",
+                            style: {
+                                color: '#64748b'
+                            }
                         }
-                    },
-                    colors: ['#10b981'], // Tailwind green
-                    dataLabels: {
-                        enabled: true
-                    },
-                    noData: {
-                        text: "No hay datos",
-                        style: { color: '#64748b' }
-                    }
-                });
+                    });
 
-                chart.render();
+                    chart.render();
+                }
             }
         }
-    }
-</script>
-
+    </script>
 @endpush
