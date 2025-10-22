@@ -173,7 +173,7 @@ class TicketFormModal extends Component
     public function registrarTicket(TicketService $service)
     {
         $this->validate([
-            'tipoSoporte' => 'required',
+            'tipoSoporte' => 'nullable',
             'observacion' => 'nullable',
             'comentario' => 'required|string'
         ]);
