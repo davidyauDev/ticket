@@ -10,7 +10,11 @@ class ReporteTicketsExport implements WithMultipleSheets
 
     public function __construct($mes = null)
     {
-        $this->mes = $mes;
+        if ($mes === '' || $mes === 'null' || $mes === null) {
+            $this->mes = null;
+        } else {
+            $this->mes = (int) $mes;
+        }
     }
 
     public function sheets(): array
