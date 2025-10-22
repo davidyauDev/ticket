@@ -42,7 +42,8 @@ class DetalleTicket extends Component
     {
         $this->ticket = Ticket::query()
             ->join('equipos', 'tickets.equipo_id', '=', 'equipos.id')
-            ->select('tickets.*', 'equipos.modelo_id')
+            ->join('modelos', 'equipos.modelo_id', '=', 'modelos.id')
+            ->select('tickets.*', 'equipos.modelo_id', 'modelos.descripcion as modelo_descripcion')
             ->where('tickets.id', $ticket)
             ->firstOrFail();
 

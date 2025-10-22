@@ -166,6 +166,26 @@
                                 {{ $ticket->codigo_formateado }}
                             </span>
                         @endif
+                        @if ($ticket->modelo_descripcion)
+                            <span
+                                class="bg-emerald-50 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200 shadow-sm flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-cpu">
+                                    <rect width="16" height="16" x="4" y="4" rx="2"/>
+                                    <rect width="6" height="6" x="9" y="9" rx="1"/>
+                                    <path d="M15 2v2"/>
+                                    <path d="M15 20v2"/>
+                                    <path d="M2 15h2"/>
+                                    <path d="M2 9h2"/>
+                                    <path d="M20 15h2"/>
+                                    <path d="M20 9h2"/>
+                                    <path d="M9 2v2"/>
+                                    <path d="M9 20v2"/>
+                                </svg>
+                                {{ $ticket->modelo_descripcion }}
+                            </span>
+                        @endif
                     </div>
                 </div>
                 <!-- Cuerpo -->
@@ -189,6 +209,11 @@
                     <div>
                         <label class="block text-gray-500 font-medium mb-1">Agencia</label>
                         <input readonly type="text" value="{{ $ticket->agencia->nombre ?? 'Sin agencia' }}"
+                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 font-medium mb-1">Modelo del Equipo</label>
+                        <input readonly type="text" value="{{ $ticket->modelo_descripcion ?? 'Sin modelo' }}"
                             class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-800 text-sm" />
                     </div>
                     <div>

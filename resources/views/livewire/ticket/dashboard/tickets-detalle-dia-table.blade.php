@@ -141,6 +141,7 @@
                     <th class="px-4 py-3 font-medium">Cliente</th>
                     <th class="px-4 py-3 font-medium">Modelo</th>
                     <th class="px-4 py-3 font-medium">Técnico</th>
+                    <th class="px-4 py-3 font-medium">Asignado a</th>
                     <th class="px-4 py-3 font-medium">Estado</th>
                     <th class="px-4 py-3 font-medium">Fecha</th>
                     <th class="px-4 py-3 font-medium text-center">Historial</th>
@@ -153,6 +154,13 @@
                         <td class="px-4 py-3">{{ $ticket->agencia_nombre }}</td>
                         <td class="px-4 py-3">{{ $ticket->modelo_nombre }}</td>
                         <td class="px-4 py-3">{{ $ticket->tecnico_nombres }}</td>
+                        <td class="px-4 py-3">
+                            @if($ticket->usuario_asignado_nombre)
+                                <span class="font-medium text-gray-800 dark:text-gray-200">{{ $ticket->usuario_asignado_nombre }}</span>
+                            @else
+                                <span class="text-gray-400 italic">Sin asignar</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3">
                             <span @class([
                                 'inline-block px-2 py-1 text-xs font-semibold rounded-full',
@@ -195,7 +203,7 @@
 
                     @if (!empty($showHistorial[$ticket->id]))
                         <tr>
-                            <td colspan="7"
+                            <td colspan="8"
                                 class="p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-600 text-sm">
                                 <ul class="space-y-2">
                                     @foreach ($historiales[$ticket->id] as $h)

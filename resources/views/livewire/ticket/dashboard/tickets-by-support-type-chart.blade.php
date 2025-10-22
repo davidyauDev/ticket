@@ -78,7 +78,7 @@
                         bar: {
                             horizontal: true,
                             borderRadius: 8,
-                            barHeight: '55%',
+                            barHeight: '45%',
                             distributed: true,
                         },
                     },
@@ -99,11 +99,31 @@
                     yaxis: {
                         labels: {
                             align: 'left',
+                            maxWidth: 200,
+                            offsetX: -10,
                             style: {
                                 colors: '#475569',
-                                fontSize: '13px',
+                                fontSize: '12px',
                                 fontWeight: 500,
-                                whiteSpace: 'normal',
+                            },
+                            formatter: function(val) {
+                                // Dividir texto largo en múltiples líneas
+                                if (val.length > 20) {
+                                    const words = val.split(' ');
+                                    let line1 = '';
+                                    let line2 = '';
+                                    
+                                    for (let i = 0; i < words.length; i++) {
+                                        if (line1.length + words[i].length < 20) {
+                                            line1 += (line1 ? ' ' : '') + words[i];
+                                        } else {
+                                            line2 += (line2 ? ' ' : '') + words[i];
+                                        }
+                                    }
+                                    
+                                    return line2 ? [line1, line2] : line1;
+                                }
+                                return val;
                             },
                         },
                     },
@@ -112,7 +132,7 @@
                         strokeDashArray: 3,
                         xaxis: { lines: { show: true } },
                         yaxis: { lines: { show: false } },
-                        padding: { left: 15, right: 15 },
+                        padding: { left: 40, right: 15, top: 15, bottom: 15 },
                     },
                     dataLabels: {
                         enabled: true,

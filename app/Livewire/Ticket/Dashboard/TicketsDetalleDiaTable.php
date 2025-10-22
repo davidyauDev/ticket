@@ -23,13 +23,16 @@ class TicketsDetalleDiaTable extends Component
             ->leftJoin('modelos', 'equipos.modelo_id', '=', 'modelos.id')
             ->leftJoin('estados', 'tickets.estado_id', '=', 'estados.id')
             ->leftJoin('agencias', 'tickets.agencia_id', '=', 'agencias.id')
+            ->leftJoin('users as usuario_asignado', 'tickets.assigned_to', '=', 'usuario_asignado.id')
             ->select([
                 'tickets.id',
                 'tickets.created_at',
+                'tickets.assigned_to',
                 DB::raw("CONCAT(tickets.tecnico_nombres, ' ', tickets.tecnico_apellidos) as tecnico_nombres"),
                 'agencias.nombre as agencia_nombre',
                 'estados.nombre as estado_nombre',
                 'modelos.descripcion as modelo_nombre',
+                'usuario_asignado.name as usuario_asignado_nombre',
             ])
             ->whereDate('tickets.created_at', $this->fecha)
             ->orderByDesc('tickets.created_at')
