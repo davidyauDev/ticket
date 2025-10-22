@@ -100,6 +100,7 @@
                         <thead class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 uppercase text-xs">
                             <tr>
                                 <th class="px-4 py-2">Código</th>
+                                <th class="px-4 py-2">Modelo</th>
                                 <th class="px-4 py-2">Fecha Asignación</th>
                                 <th class="px-4 py-2">Estado</th>
                                 <th class="px-4 py-2">¿Resuelto por él?</th>
@@ -114,6 +115,9 @@
                                             class="text-blue-600 hover:underline font-medium">
                                             TCK-{{ str_pad($ticket['id'], 6, '0', STR_PAD_LEFT) }}
                                         </a>
+                                    </td>
+                                    <td class="px-4 py-2 text-gray-600 dark:text-gray-400">
+                                        {{ $ticket['modelo'] }}
                                     </td>
                                     <td class="px-4 py-2 text-gray-600 dark:text-gray-400">
                                         {{ $ticket['fecha_asignacion'] }}

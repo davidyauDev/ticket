@@ -133,7 +133,9 @@ class UserTicketResolutionTable extends Component
         })
             ->with([
                 'historiales' => fn($q) => $q->where('asignado_a', $this->selectedUserId)->orderByDesc('created_at'),
-                'estado'
+                'estado',
+                'equipo',
+                'equipo.modelo',
             ])
             ->paginate(5, ['*'], 'ticketsPage');
 
@@ -157,9 +159,9 @@ class UserTicketResolutionTable extends Component
             return [
                 'id' => $ticket->id,
                 'codigo' => $ticket->codigo ?? '—',
-                'cliente' => $ticket->cliente->nombre ?? '—',
+                'modelo' => $ticket->equipo->modelo,
                 'fecha_asignacion' => optional($ticket->historiales->first())->created_at?->format('Y-m-d H:i'),
-                'estado' => $ticket->estado->nombre ?? '—',
+                'estado' => $ticket->estado ? $ticket->estado->nombre : '—',
                 'resuelto_por' => $resueltoTexto,
             ];
         });
