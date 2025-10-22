@@ -198,8 +198,16 @@ class TicketFormModal extends Component
                 'motivo_derivacion' => $this->motivo_derivacion ?? null
             ]);
             if ($this->derivar) {
-                $this->asignarDerivacion($ticket->id);
-                dispatch(new ReassignTicketJob($ticket->id, $ticket->assigned_to))->delay(now()->addMinutes(15));
+                try {
+                    $this->asignarDerivacion($ticket->id);
+                    dispatch(new ReassignTicketJob($ticket->id, $ticket->assigned_to))->delay(now()->addMinutes(15));
+                } catch (\Exception $e) {
+                    // Si falla la derivación (incluido WhatsApp), eliminar el ticket creado
+                    $ticket->delete();
+                    Log::error('Error en derivación: ' . $e->getMessage());
+                    $this->addError('derivacionError', 'Error al enviar notificación WhatsApp. El proceso ha sido cancelado.');
+                    return;
+                }
             }
 
             $this->resetForm();
@@ -234,7 +242,7 @@ class TicketFormModal extends Component
 
             //Mail::to($userAsginado->email)->queue(new TicketNotificadoMail($ticket));
               $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                 'sessionId' => 'mi-sesion-14',
+                 'sessionId' => 'mi-sesion-23',
                  'to'        => '51' . $userAsginado->phone,
                  'message'   => "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
                      "Agencia: {$ticket->agencia->nombre}\n" .
@@ -247,16 +255,18 @@ class TicketFormModal extends Component
              if ($response->successful()) {
                  $data = $response->json();
 
-                 if ($data['success'] && $data['status']) {
-                     Log::info("WhatsApp enviado: " . $data['message']);
+                 if ($data['status'] === true) {
+                     Log::info("WhatsApp enviado correctamente: " . $data['message']);
                  } else {
-                     Log::warning("Fallo parcial en envío WhatsApp", $data);
+                     Log::warning("Error al enviar WhatsApp", $data);
+                     throw new \Exception('Error al enviar WhatsApp: ' . ($data['message'] ?? 'Dispositivo no inicializado o error en el servicio'));
                  }
              } else {
                  Log::error("Error HTTP al enviar WhatsApp", [
                      'status' => $response->status(),
                      'body'   => $response->body(),
                  ]);
+                 throw new \Exception('Error HTTP al enviar WhatsApp. Status: ' . $response->status());
              }
         }
         $ticket->motivo_derivacion = $this->motivo_derivacion;
