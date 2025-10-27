@@ -17,7 +17,6 @@ class TopListModelos extends Component
         $this->loadTopModelos();
     }
 
-
     public function updatedSelectedMonth(): void
     {
         $this->loadTopModelos();
