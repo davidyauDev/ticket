@@ -49,7 +49,7 @@
                         <td class="px-6 py-3 font-medium text-gray-600 dark:text-gray-300">
                             #{{ $user['id'] }}
                         </td>
-                        <td class="px-6 py-3 font-medium">{{ $user['name'] }}</td>
+                        <td class="px-6 py-3 font-medium">{{ $user['name'] }} {{ $user['lastname'] }}</td>
                         <td class="px-6 py-3 text-gray-500">{{ $user['email'] }}</td>
                         <td class="px-6 py-3 text-center font-semibold text-blue-600">
                             {{ $user['asignados_count'] }}
@@ -125,7 +125,7 @@
                                     <td class="px-4 py-2">
                                         <span
                                             class="px-2 py-1 rounded-md text-xs font-medium
-                                            @if ($ticket['estado'] === 'Cerrado') bg-green-100 text-green-700
+                                            @if ($ticket['estado'] === 'Cerrado') bg-green-100 ++text-green-700
                                             @elseif($ticket['estado'] === 'Pendiente') bg-yellow-100 text-yellow-700
                                             @else bg-gray-100 text-gray-600 @endif">
                                             {{ $ticket['estado'] }}

@@ -13,7 +13,6 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class TicketsTecnicosSheet implements FromArray, WithTitle, WithStyles, WithColumnWidths
 {
     protected $mes;
-
     public function __construct($mes = null)
     {
         $this->mes = $mes;
@@ -25,6 +24,7 @@ class TicketsTecnicosSheet implements FromArray, WithTitle, WithStyles, WithColu
             ->join('tecnicos', 'tickets.staff_id', '=', 'tecnicos.staff_id')
             ->leftJoin('equipos', 'tickets.equipo_id', '=', 'equipos.id')
             ->leftJoin('modelos', 'equipos.modelo_id', '=', 'modelos.id')
+            ->leftJoin('agencias', 'tickets.agencia_id', '=', 'agencias.id')
             ->leftJoin('tipos_soporte', 'tickets.tipo_soporte_id', '=', 'tipos_soporte.id')
             ->select(
                 'tickets.id',
@@ -34,7 +34,8 @@ class TicketsTecnicosSheet implements FromArray, WithTitle, WithStyles, WithColu
                 'modelos.descripcion as modelo',
                 'tipos_soporte.nombre as tipo_soporte',
                 'tickets.motivo_derivacion',
-                'tickets.comentario'
+                'tickets.comentario',
+                'agencias.nombre as agencia'
             )
             ->whereNotNull('tickets.staff_id')
             ->whereYear('tickets.created_at', now()->year);
@@ -57,6 +58,7 @@ class TicketsTecnicosSheet implements FromArray, WithTitle, WithStyles, WithColu
                 'Fecha' => Carbon::parse($call->created_at)->format('d/m/Y H:i'),
                 'Modelo' => $call->modelo ?? 'Sin modelo',
                 'Soporte / Derivación' => $call->tipo_soporte ?? $call->motivo_derivacion ?? $call->comentario ?? '',
+                'Agencia' => $call->agencia ?? 'Sin agencia',
             ];
         }
 
@@ -67,14 +69,15 @@ class TicketsTecnicosSheet implements FromArray, WithTitle, WithStyles, WithColu
 
         foreach ($grouped as $technician => $tickets) {
             $excelData[] = ["Técnico: {$technician}", "Total llamadas: " . count($tickets)];
-            $excelData[] = ['Código', 'Fecha', 'Modelo', 'Tipo de Soporte / Derivación'];
+            $excelData[] = ['Código', 'Fecha', 'Modelo', 'Tipo de Soporte / Derivación' , 'Agencia'];
 
             foreach ($tickets as $ticket) {
                 $excelData[] = [
                     $ticket['Código'],
                     $ticket['Fecha'],
                     $ticket['Modelo'],
-                    $ticket['Soporte / Derivación']
+                    $ticket['Soporte / Derivación'],
+                    $ticket['Agencia']
                 ];
             }
 

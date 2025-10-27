@@ -91,6 +91,7 @@ class UserTicketResolutionTable extends Component
             return [
                 'id' => $usuario->id,
                 'name' => $usuario->name,
+                'lastname' => $usuario->lastname,
                 'email' => $usuario->email,
                 'initials' => $usuario->initials(),
                 'asignados_count' => $asignadosCount,
