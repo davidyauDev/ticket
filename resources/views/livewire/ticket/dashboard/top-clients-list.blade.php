@@ -93,7 +93,23 @@
                         }
                     },
                     dataLabels: {
-                        enabled: false
+                        enabled: true,
+                        style: {
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            colors: ['#ffffff']
+                        },
+                        formatter: function(val, opts) {
+                            const label = opts.w.globals.labels[opts.seriesIndex];
+                            const value = opts.w.globals.series[opts.seriesIndex];
+                            return value + '\n(' + Math.round(val) + '%)';
+                        },
+                        dropShadow: {
+                            enabled: true,
+                            color: '#000000',
+                            blur: 1,
+                            opacity: 0.5
+                        }
                     },
                     tooltip: {
                         enabled: true,

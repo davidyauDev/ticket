@@ -15,6 +15,7 @@ class ListaTecnicos extends Component
 
     public int $selectedMonth;
     public bool $showModal = false;
+    public string $searchUser = '';
 
     public int $totalCalls = 0;
 
@@ -28,6 +29,16 @@ class ListaTecnicos extends Component
     public function updatedSelectedMonth(): void
     {
         $this->loadTopTechnicians();
+        if ($this->showModal) {
+            $this->loadTechnicianCalls();
+        }
+    }
+
+    public function updatedSearchUser(): void
+    {
+        if ($this->showModal) {
+            $this->loadTechnicianCalls();
+        }
     }
 
     private function loadTopTechnicians(): void
@@ -59,6 +70,7 @@ class ListaTecnicos extends Component
 
     public function showModal2(): void
     {
+        $this->searchUser = ''; // Limpiar búsqueda al abrir modal
         $this->loadTechnicianCalls();
         $this->showModal = true;
     }
@@ -89,7 +101,7 @@ class ListaTecnicos extends Component
 
         $calls = $query->orderByDesc('tickets.created_at')->get();
 
-        // 🔹 Calcular total general
+        // 🔹 Calcular total general antes del filtro de búsqueda
         $this->totalCalls = $calls->count();
 
         $grouped = [];
@@ -111,6 +123,14 @@ class ListaTecnicos extends Component
                 'comentario' => $call->tipo_soporte ?? $call->motivo_derivacion ?? $call->comentario,
                 'modelo' => $call->modelo ?? 'Sin modelo',
             ];
+        }
+
+        // 🔹 Aplicar filtro de búsqueda de usuario
+        if (!empty($this->searchUser)) {
+            $searchTerm = strtolower($this->searchUser);
+            $grouped = array_filter($grouped, function ($data, $technicianName) use ($searchTerm) {
+                return str_contains(strtolower($technicianName), $searchTerm);
+            }, ARRAY_FILTER_USE_BOTH);
         }
 
         uasort($grouped, fn($a, $b) => $b['total'] <=> $a['total']);
@@ -184,6 +204,7 @@ class ListaTecnicos extends Component
     public function closeModal(): void
     {
         $this->showModal = false;
+        $this->searchUser = ''; // Limpiar búsqueda al cerrar modal
     }
 
 

@@ -82,6 +82,20 @@
                     Listado de llamadas por técnico
                 </h2>
 
+                <!-- Buscador de Usuario -->
+                <div class="mb-4">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input wire:model.live="searchUser" type="text" placeholder="Buscar técnico..."
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                    </div>
+                </div>
+
                 <!-- Listado Agrupado -->
                 <div class="max-h-[500px] overflow-y-auto space-y-3" x-data="{ open: null }">
                     <!-- Total General -->
@@ -213,7 +227,33 @@
                             </div>
                         </div>
                     @empty
-                        <p class="text-gray-500 dark:text-gray-400 text-sm">No hay llamadas registradas.</p>
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                @if ($searchUser)
+                                    No se encontraron técnicos
+                                @else
+                                    No hay llamadas registradas
+                                @endif
+                            </h3>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                @if ($searchUser)
+                                    No hay técnicos que coincidan con "{{ $searchUser }}"
+                                @else
+                                    No se encontraron llamadas para el período seleccionado.
+                                @endif
+                            </p>
+                            @if ($searchUser)
+                                <button wire:click="$set('searchUser', '')"
+                                    class="mt-3 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                    Limpiar búsqueda
+                                </button>
+                            @endif
+                        </div>
                     @endforelse
                 </div>
 

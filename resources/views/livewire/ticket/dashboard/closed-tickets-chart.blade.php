@@ -94,15 +94,20 @@
                     },
                     dataLabels: {
                         enabled: true,
-                        formatter: (val) => (val > 0 ? `${val.toFixed(1)}%` : ''),
+                        formatter: function(val, opts) {
+                            const value = opts.w.globals.series[opts.seriesIndex];
+                            return value > 0 ? `${value}\n(${val.toFixed(1)}%)` : '';
+                        },
                         style: {
                             fontSize: '12px',
                             fontWeight: 600,
-                            colors: [document.documentElement.classList.contains('dark') ? '#f8fafc' :
-                                '#0f172a']
+                            colors: ['#ffffff']
                         },
                         dropShadow: {
-                            enabled: false
+                            enabled: true,
+                            color: '#000000',
+                            blur: 1,
+                            opacity: 0.5
                         }
                     },
                     tooltip: {
