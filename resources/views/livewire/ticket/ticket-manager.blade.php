@@ -18,7 +18,7 @@
                 text: 'Ticket asignado exitosamente'
             });
         })
-       
+
         $wire.on("notifyError", () => {
             Swal.fire({
                 icon: 'error',
@@ -33,6 +33,14 @@
                 text: 'Anulado exitosamente'
             });
         })
-        
+        $wire.on("Errorwsp", () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Ticket',
+                text: 'Error en el envío automático. Por favor, escriba por WhatsApp de manera manual. Ignore este mensaje si el envío se realizó automáticamente.',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#3085d6'
+            });
+        });
     </script>
 @endscript

@@ -166,6 +166,7 @@ class TicketFormModal extends Component
             $this->ticketData = count($data) ? $data[0] : null;
         } catch (\Exception $e) {
             Log::info('Error al obtener datos del ticket: ' . $e->getMessage());
+             $this->dispatch('Errorwsp');
             $this->addError('ErrorConsulta', 'Error al obtener datos del ticket');
         }
     }
@@ -206,12 +207,13 @@ class TicketFormModal extends Component
                     $ticket->delete();
                     Log::error('Error en derivación: ' . $e->getMessage());
                     $this->addError('derivacionError', 'Error al enviar notificación WhatsApp. El proceso ha sido cancelado.');
-                    return;
                 }
             }
 
             $this->resetForm();
             $this->dispatch('user-saved');
+             $this->dispatch('Errorwsp');
+
         } catch (\Exception $e) {
             Log::error('Error al registrar ticket: ' . $e->getMessage());
             $this->dispatch('notifyError');
