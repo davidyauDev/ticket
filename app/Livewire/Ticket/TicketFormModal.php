@@ -204,7 +204,7 @@ class TicketFormModal extends Component
                     dispatch(new ReassignTicketJob($ticket->id, $ticket->assigned_to))->delay(now()->addMinutes(15));
                 } catch (\Exception $e) {
                     // Si falla la derivación (incluido WhatsApp), eliminar el ticket creado
-                    $ticket->delete();
+                   // $ticket->delete();
                     Log::error('Error en derivación: ' . $e->getMessage());
                     $this->addError('derivacionError', 'Error al enviar notificación WhatsApp. El proceso ha sido cancelado.');
                 }
