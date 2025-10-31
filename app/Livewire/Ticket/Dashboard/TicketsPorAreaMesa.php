@@ -14,18 +14,28 @@ class TicketsPorAreaMesa extends Component
     public array $modelChartData = [];
 
     public int $selectedMonth;
+    public string $searchUser = '';
     public bool $showModal = false;
     public ?int $selectedTechnicianId = null;
 
     public function mount(): void
     {
         $this->selectedMonth = 0;
+        $this->searchUser = '';
         $this->loadTopTechnicians();
     }
 
     public function updatedSelectedMonth(): void
     {
         $this->loadTopTechnicians();
+    }
+
+    public function updatedSearchUser(): void
+    {
+        // Solo actualizar los datos del modal si está abierto
+        if ($this->showModal) {
+            $this->loadTechnicianCalls();
+        }
     }
 
     private function loadTopTechnicians(): void
@@ -99,6 +109,17 @@ class TicketsPorAreaMesa extends Component
         $query->whereMonth('created_at', $this->selectedMonth);
     }
 
+    // Aplicar filtro de búsqueda si hay término de búsqueda
+    if (!empty($this->searchUser)) {
+        $query->whereHas('assignedUser', function ($q) {
+            $q->where(function ($subQuery) {
+                $subQuery->where('firstname', 'like', '%' . $this->searchUser . '%')
+                        ->orWhere('lastname', 'like', '%' . $this->searchUser . '%')
+                        ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->searchUser . '%']);
+            });
+        });
+    }
+
     $calls = $query->with([
         'assignedUser:id,firstname,lastname',
         'equipo.modelo:id,descripcion'
@@ -165,7 +186,7 @@ class TicketsPorAreaMesa extends Component
         $grouped[$technicianName]['calls'][] = [
             'id'            => $ticket->id,
             'date'          => $ticket->created_at->format('d/m/Y H:i'),
-            'motivo'    => $ticket->motivo_derivacion ?? 'Sin comentario',
+            'motivo'    => $ticket->motivo_derivacion ?? $ticket->comentario,
             'type'          => $ticket->tipo ?? 'Sin tipo',
             'modelo'        => $modelo,
             'tiempo_total'  => $tiempoEfectivo ?? 'En progreso',

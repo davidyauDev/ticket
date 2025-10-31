@@ -95,8 +95,19 @@ class ReassignTicketJob implements ShouldQueue
     private function notificarPorWhatsApp(User $usuario, Ticket $ticket): void
     {
         Log::info($usuario->phone);
-        $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-            'sessionId' => 'mi-sesion-23',
+        
+        // Obtener la sesión activa de WhatsApp
+        $activeSession = DB::table('whats_app_sessions')
+            ->where('status', 'active')
+            ->first();
+        
+        if (!$activeSession) {
+            Log::error("No hay sesión activa de WhatsApp disponible para notificar al usuario {$usuario->id}");
+            return;
+        }
+        
+        $response = Http::asForm()->post(env('WHATSAPP_API_URL'), [
+            'sessionId' => $activeSession->session_id,
             'to'        => '51' . $usuario->phone,
             'message'   => "Se te asignó un ticket OST #{$ticket->osticket} - {$ticket->motivo_derivacion}\n" .
                 "Agencia: {$ticket->agencia->nombre}\n" .

@@ -206,7 +206,18 @@ class DetalleTicket extends Component
             Log::info("Enviando notificación de derivación a {$this->userAsignado->phone}");
             Log::info("Enviando notificación de derivación a {$this->userAsignado->email}");
 
-            $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
+            // Obtener la sesión activa de WhatsApp
+            $activeSession = DB::table('whats_app_sessions')
+                ->where('status', 'active')
+                ->first();
+
+            if (!$activeSession) {
+                Log::error("No hay sesión activa de WhatsApp disponible para notificar derivación");
+                throw new \Exception('No hay sesión activa de WhatsApp disponible');
+            }
+
+            $response = Http::asForm()->post(env('WHATSAPP_API_URL'), [
+                'sessionId' => $activeSession->session_id,
                 'to'        => '51' . $this->userAsignado->phone,
                 'message'   => "*Ticket asignado OST #{$this->ticket->osticket} - {$this->ticket->motivo_derivacion}*\n" .
                     "Agencia: {$this->ticket->agencia->nombre}\n" .

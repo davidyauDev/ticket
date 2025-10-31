@@ -61,8 +61,19 @@ class ReassignUnresolvedTickets extends Command
                     'estado_id'   => 2,
                 ]);
                 //Mail::to($usuario->email)->queue(new TicketNotificadoMail($ticket));
-                $response = Http::asForm()->post('http://172.19.0.17/whatsapp/api/send', [
-                    'sessionId' => 'mi-sesion-23',
+                
+                // Obtener la sesión activa de WhatsApp
+                $activeSession = DB::table('whats_app_sessions')
+                    ->where('status', 'active')
+                    ->first();
+                
+                if (!$activeSession) {
+                    Log::error("No hay sesión activa de WhatsApp disponible para notificar ticket {$ticket->osticket}");
+                    continue;
+                }
+                
+                $response = Http::asForm()->post(env('WHATSAPP_API_URL', 'http://172.19.0.17/whatsapp/api/send'), [
+                    'sessionId' => $activeSession->session_id,
                     'to'        => '51' . $usuario->phone,
                     'message'   => "Se te asignó un ticket OST #{$ticket->osticket} - {$ticket->motivo_derivacion}\n" .
                         "Agencia: {$ticket->agencia->nombre}\n" .

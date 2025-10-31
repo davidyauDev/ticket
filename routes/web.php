@@ -13,6 +13,7 @@ use App\Livewire\Modelos\ListModelPrioridad;
 use App\Livewire\Settings\SettingsMainComponent;
 use App\Livewire\Ticket\TicketManager;
 use App\Livewire\Users\Index as UsersIndex;
+use App\Livewire\WhatsApp\Index as WhatsAppIndex;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -34,6 +35,10 @@ Route::get('/tickets', TicketManager::class)->middleware('auth')->name('tickets.
  Route::prefix('call-logs')->name('call-logs.')->middleware('auth')->group(function () {
      Route::get('/registro-llamadas', Index::class)->name('index');
      Route::get('/dashboard', Dashboard::class)->name('dashboard');
+ });
+
+ Route::prefix('whatsapp')->name('whatsapp.')->middleware('auth')->group(function () {
+     Route::get('/', WhatsAppIndex::class)->name('index');
  });
 
 Route::get('/areas/{slug}', Areaticket::class)->name('areas.show');

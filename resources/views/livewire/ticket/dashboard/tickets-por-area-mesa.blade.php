@@ -58,10 +58,26 @@
     <div>
         <x-modal wire:model="showModal" class="w-full max-w-6xl ">
             <div class="bg-white dark:bg-gray-900  p-5 space-y-6 " x-data="{ open: null }">
-                <!-- Título -->
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                    Detalle de llamadas
-                </h2>
+                <!-- Título y Buscador -->
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                        Detalle de llamadas
+                    </h2>
+                    
+                    <!-- Buscador en el modal -->
+                    <div class="mb-4">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input wire:model.live="searchUser" type="text" placeholder="Buscar técnico..."
+                                class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Listado Agrupado -->
                 <div class="max-h-[500px] overflow-y-auto space-y-3" x-data="{ open: null }">
@@ -158,7 +174,18 @@
                             </div>
                         </div>
                     @empty
-                        <p class="text-gray-500 dark:text-gray-400 text-sm">No hay llamadas registradas.</p>
+                        <div class="text-center py-8">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                                @if($searchUser)
+                                    No se encontraron llamadas para usuarios que coincidan con "{{ $searchUser }}".
+                                @else
+                                    No hay llamadas registradas.
+                                @endif
+                            </p>
+                        </div>
                     @endforelse
                 </div>
 
