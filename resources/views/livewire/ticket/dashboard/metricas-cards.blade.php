@@ -2,8 +2,8 @@
     <!-- Cards de métricas principales -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Total de Tickets -->
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-             wire:click="mostrarTicketsPendientes">
+        <a href="{{ route('tickets.index') }}" 
+           class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105 block">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-blue-100 text-sm font-medium">Total General</p>
@@ -16,7 +16,7 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </a>
 
         <!-- Tickets Cerrados -->
         <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105"
