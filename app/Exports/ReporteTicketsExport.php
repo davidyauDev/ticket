@@ -18,14 +18,17 @@ class ReporteTicketsExport implements WithMultipleSheets
     }
 
     public function sheets(): array
-{
-    return [
-        new TicketsTecnicosSheet($this->mes),
-        new TicketsDetalleLlamadasSheet($this->mes),
-        new TicketsTopClientesSheet($this->mes),
-        new TicketsTopAgenciasSheet($this->mes),
-        new TicketsTopModelosSheet($this->mes),
-        new TicketsTopEquiposSheet($this->mes),
-    ];
-}
+    {
+        return [
+            new TicketsListFilteredSheet($this->mes),
+            // new TicketsResumenSheet($this->mes),
+            // new TicketsTecnicosSheet($this->mes),
+            // new TicketsAreasSheet($this->mes),
+            // new TicketsDetalleLlamadasSheet($this->mes),
+            // new TicketsTopClientesSheet($this->mes),
+            // new TicketsTopAgenciasSheet($this->mes),
+            // new TicketsTopModelosSheet($this->mes),
+            // new TicketsTopEquiposSheet($this->mes),
+        ];
+    }
 }
