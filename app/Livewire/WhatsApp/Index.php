@@ -43,7 +43,7 @@ class Index extends Component
 
             // 2️⃣ Inicializar cliente en backend
             $initResponse = Http::timeout(30)->post(
-                'http://10.210.101.18:4000/api/client-initialize',
+                'http://172.19.0.17/whatsapp/api/client-initialize',
                 ['sessionId' => $sessionId]
             );
 
@@ -74,7 +74,7 @@ class Index extends Component
 
             // 4️⃣ Obtener QR en SVG
             $qrResponse = Http::timeout(30)->post(
-                'http://10.210.101.18:4000/api/qr',
+                'http://172.19.0.17/whatsapp/api/qr',
                 ['sessionId' => $sessionId]
             );
             
@@ -114,7 +114,7 @@ class Index extends Component
 
             // Obtener QR en SVG usando la sesión existente
             $qrResponse = Http::timeout(30)->post(
-                'http://10.210.101.18:4000/api/qr',
+                'http://172.19.0.17/whatsapp/api/qr',
                 ['sessionId' => $this->currentSessionId]
             );
 
@@ -197,7 +197,7 @@ class Index extends Component
 
             // Enviar mensaje usando form data
             $response = Http::timeout(30)->asForm()->post(
-                'http://10.210.101.18:4000/api/send',
+                'http://172.19.0.17/whatsapp/api/send',
                 [
                     'sessionId' => $this->currentSessionId,
                     'to' => '51915141721',
@@ -243,7 +243,7 @@ class Index extends Component
                 
                 // Llamar al endpoint de logout
                 $logoutResponse = Http::timeout(30)->post(
-                    'http://10.210.101.18:4000/api/client-logout',
+                    'http://172.19.0.17/whatsapp/api/client-logout',
                     ['sessionId' => $this->currentSessionId]
                 );
 
@@ -306,7 +306,7 @@ class Index extends Component
 
             // 2️⃣ Inicializar cliente en backend
             $initResponse = Http::timeout(30)->post(
-                'http://10.210.101.18:4000/api/client-initialize',
+                'http://172.19.0.17/whatsapp/api/client-initialize',
                 ['sessionId' => $sessionId]
             );
 
@@ -348,7 +348,7 @@ class Index extends Component
 
             // 4️⃣ Obtener QR en SVG
             $qrResponse = Http::timeout(30)->post(
-                'http://10.210.101.18:4000/api/qr',
+                'http://172.19.0.17/whatsapp/api/qr',
                 ['sessionId' => $sessionId]
             );
             
