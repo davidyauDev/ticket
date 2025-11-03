@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Mail\TicketNotificadoMail;
 use App\Models\Ticket;
 use App\Models\TicketHistorial;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ReassignTicketJob implements ShouldQueue
 {
@@ -72,8 +74,8 @@ class ReassignTicketJob implements ShouldQueue
                 'ended_at'     => null,
                 'is_current'   => false,
             ]);
-
-            $this->notificarPorWhatsApp($nextAssignee, $ticket);
+            Mail::to($nextAssignee->email)->queue(new TicketNotificadoMail($ticket));
+            //$this->notificarPorWhatsApp($nextAssignee, $ticket);
 
             self::dispatch($ticketId, $nextAssigneeId)
                 ->delay(now()->addMinutes(15));
