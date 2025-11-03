@@ -81,59 +81,7 @@
         
         <!-- Cards de métricas principales -->
         <div class="col-span-12 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Total de Tickets -->
-                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100 text-sm font-medium">Total General</p>
-                            <h3 class="text-3xl font-bold">{{ number_format($totalTickets) }}</h3>
-                            <p class="text-blue-100 text-xs mt-2">Tickets del año {{ date('Y') }}</p>
-                        </div>
-                        <div class="bg-white/20 p-3 rounded-lg">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tickets Cerrados -->
-                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-green-100 text-sm font-medium">Cerrados</p>
-                            <h3 class="text-3xl font-bold">{{ number_format($ticketsCerrados) }}</h3>
-                            <p class="text-green-100 text-xs mt-2">
-                                {{ $totalTickets > 0 ? round(($ticketsCerrados / $totalTickets) * 100, 1) : 0 }}% del total
-                            </p>
-                        </div>
-                        <div class="bg-white/20 p-3 rounded-lg">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tickets Pendientes (Faltan por cerrar) -->
-                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-orange-100 text-sm font-medium">Faltan por Cerrar</p>
-                            <h3 class="text-3xl font-bold">{{ number_format($ticketsPendientes) }}</h3>
-                            <p class="text-orange-100 text-xs mt-2">
-                                {{ $totalTickets > 0 ? round(($ticketsPendientes / $totalTickets) * 100, 1) : 0 }}% del total
-                            </p>
-                        </div>
-                        <div class="bg-white/20 p-3 rounded-lg">
-                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,6A1,1 0 0,0 11,7V12A1,1 0 0,0 11.5,12.87L15.71,15.29A1,1 0 0,0 17.12,13.88L13.5,12.13V7A1,1 0 0,0 12,6Z"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @livewire('ticket.dashboard.metricas-cards', key('metricas-cards'))
         </div>
 
         <div class="col-span-12 xl:col-span-6">

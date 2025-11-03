@@ -49,10 +49,21 @@ class Ticket extends Model
         return $this->belongsTo(Agencia::class);
     }
 
+    public function cliente()
+    {
+        return $this->hasOneThrough(Cliente::class, Agencia::class, 'id', 'id', 'agencia_id', 'cliente_id');
+    }
+
     public function area()
     {
         return $this->belongsTo(Area::class);
     }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+    
     public function assignedUser()
     {
         return $this->belongsTo(User::class, 'assigned_to');
