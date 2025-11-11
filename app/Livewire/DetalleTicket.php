@@ -216,7 +216,7 @@ class DetalleTicket extends Component
                 throw new \Exception('No hay sesión activa de WhatsApp disponible');
             }
 
-            $response = Http::asForm()->post(env('WHATSAPP_API_URL'), [
+            $response = Http::asForm()->post(env('WHATSAPP_API_URL', 'http://172.19.0.17/whatsapp/api/send'), [
                 'sessionId' => $activeSession->session_id,
                 'to'        => '51' . $this->userAsignado->phone,
                 'message'   => "*Ticket asignado OST #{$this->ticket->osticket} - {$this->ticket->motivo_derivacion}*\n" .
