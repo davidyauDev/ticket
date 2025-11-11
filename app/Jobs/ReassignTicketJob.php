@@ -103,6 +103,8 @@ class ReassignTicketJob implements ShouldQueue
             ->where('status', 'active')
             ->first();
         
+
+            Log::info($activeSession->session_id);
         if (!$activeSession) {
             Log::error("No hay sesión activa de WhatsApp disponible para notificar al usuario {$usuario->id}");
             return;
