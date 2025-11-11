@@ -108,7 +108,7 @@ class ReassignTicketJob implements ShouldQueue
             return;
         }
         
-        $response = Http::asForm()->post(env('WHATSAPP_API_URL'), [
+        $response = Http::asForm()->post(env('WHATSAPP_API_URL', 'http://172.19.0.17/whatsapp/api/send'), [
             'sessionId' => $activeSession->session_id,
             'to'        => '51' . $usuario->phone,
             'message'   => "Se te asignó un ticket OST #{$ticket->osticket} - {$ticket->motivo_derivacion}\n" .
