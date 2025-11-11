@@ -70,14 +70,14 @@ class Index extends Component
             $this->currentSessionId = $sessionId; // Guardar la sesión actual
 
             // 3️⃣ Esperar 7 segundos antes de pedir el QR
-            sleep(7);
+            sleep(8);
 
             // 4️⃣ Obtener QR en SVG
             $qrResponse = Http::timeout(30)->post(
                 'http://172.19.0.17/whatsapp/api/qr',
                 ['sessionId' => $sessionId]
             );
-            
+            Log::info("Respuesta QR: " . $qrResponse);
             if ($qrResponse->successful()) {
                 $svg = $qrResponse->body();
                 // Codifica el SVG a Base64 y cambia el tipo MIME

@@ -75,7 +75,7 @@ class ReassignTicketJob implements ShouldQueue
                 'is_current'   => false,
             ]);
             Mail::to($nextAssignee->email)->queue(new TicketNotificadoMail($ticket));
-            //$this->notificarPorWhatsApp($nextAssignee, $ticket);
+            $this->notificarPorWhatsApp($nextAssignee, $ticket);
 
             self::dispatch($ticketId, $nextAssigneeId)
                 ->delay(now()->addMinutes(15));

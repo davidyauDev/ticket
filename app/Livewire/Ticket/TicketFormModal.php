@@ -244,41 +244,41 @@ class TicketFormModal extends Component
             Mail::to($userAsginado->email)->queue(new TicketNotificadoMail($ticket));
 
             // Obtener la sesión activa de WhatsApp
-            // $activeSession = DB::table('whats_app_sessions')
-            //     ->where('status', 'active')
-            //     ->first();
+            $activeSession = DB::table('whats_app_sessions')
+                ->where('status', 'active')
+                ->first();
 
-            // if (!$activeSession) {
-            //     throw new \Exception('No hay sesión activa de WhatsApp disponible');
-            // }
+            if (!$activeSession) {
+                throw new \Exception('No hay sesión activa de WhatsApp disponible');
+            }
 
-            // $response = Http::asForm()->post(env('WHATSAPP_API_URL'), [
-            //     'sessionId' => $activeSession->session_id,
-            //     'to'        => '51' . $userAsginado->phone,
-            //     'message'   => "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
-            //         "Agencia: {$ticket->agencia->nombre}\n" .
-            //         "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
-            //         "*Por favor, revisa el sistema MESA DE AYUDA para más detalles.*\n" .
-            //         "Gracias.",
-            // ]);
+            $response = Http::asForm()->post(env('WHATSAPP_API_URL'), [
+                'sessionId' => $activeSession->session_id,
+                'to'        => '51' . $userAsginado->phone,
+                'message'   => "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
+                    "Agencia: {$ticket->agencia->nombre}\n" .
+                    "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
+                    "*Por favor, revisa el sistema MESA DE AYUDA para más detalles.*\n" .
+                    "Gracias.",
+            ]);
 
 
-            // if ($response->successful()) {
-            //     $data = $response->json();
+            if ($response->successful()) {
+                $data = $response->json();
 
-            //     if ($data['status'] === true) {
-            //         Log::info("WhatsApp enviado correctamente: " . $data['message']);
-            //     } else {
-            //         Log::warning("Error al enviar WhatsApp", $data);
-            //         throw new \Exception('Error al enviar WhatsApp: ' . ($data['message'] ?? 'Dispositivo no inicializado o error en el servicio'));
-            //     }
-            // } else {
-            //     Log::error("Error HTTP al enviar WhatsApp", [
-            //         'status' => $response->status(),
-            //         'body'   => $response->body(),
-            //     ]);
-            //     throw new \Exception('Error HTTP al enviar WhatsApp. Status: ' . $response->status());
-            // }
+                if ($data['status'] === true) {
+                    Log::info("WhatsApp enviado correctamente: " . $data['message']);
+                } else {
+                    Log::warning("Error al enviar WhatsApp", $data);
+                    throw new \Exception('Error al enviar WhatsApp: ' . ($data['message'] ?? 'Dispositivo no inicializado o error en el servicio'));
+                }
+            } else {
+                Log::error("Error HTTP al enviar WhatsApp", [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+                throw new \Exception('Error HTTP al enviar WhatsApp. Status: ' . $response->status());
+            }
         }
         $ticket->motivo_derivacion = $this->motivo_derivacion;
         $ticket->save();
