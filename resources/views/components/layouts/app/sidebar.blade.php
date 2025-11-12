@@ -134,6 +134,7 @@
                 <div style="display: none;">
                     <ul class="mt-2 space-y-1 ml-9"></ul>
                 </div>
+                @if (auth()->user()?->role === 'admin')
                 <a href="{{ route('whatsapp.index') }}" wire:navigate
                     class="menu-item group {{ request()->routeIs('whatsapp.index') ? 'bg-gray-100 dark:bg-zinc-800' : '' }}">
                     <!-- Icono -->
@@ -149,6 +150,7 @@
                         WhatsApp
                     </span>
                 </a>
+                @endif
             </div>
             <!-- Settings -->
             @if (auth()->user()?->role === 'admin' ||
