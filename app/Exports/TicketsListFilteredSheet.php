@@ -35,7 +35,8 @@ class TicketsListFilteredSheet implements FromCollection, WithHeadings, WithMapp
             'agencia',
             'assignedUser',
             'createdBy',
-            'estado'
+            'estado',
+            'historiales' // Para obtener comentarios de historial
         ]);
 
         return $query->latest()->get();
@@ -60,7 +61,8 @@ class TicketsListFilteredSheet implements FromCollection, WithHeadings, WithMapp
             'Falla Reportada',
             'Tipo',
             'Tipo Soporte',
-            'Comentarios'
+            'Comentarios',
+            'Último Comentario Cerrado'
         ];
     }
 
@@ -83,6 +85,14 @@ class TicketsListFilteredSheet implements FromCollection, WithHeadings, WithMapp
             }
         }
 
+        // Obtener el último comentario con estado cerrado (estado_id = 5)
+        $ultimoComentarioCerrado = optional(
+            $ticket->historiales
+                ->where('estado_id', 5)
+                ->sortByDesc('created_at')
+                ->first()
+        )->comentario ?? '-----';
+
         return [
             $ticket->id,
             $ticket->codigo_formateado ?? $ticket->codigo,
@@ -100,7 +110,8 @@ class TicketsListFilteredSheet implements FromCollection, WithHeadings, WithMapp
             $ticket->falla_reportada ?? 'Sin información',
             $ticket->tipo ?? 'N/A',
             $ticket->tipoSoporte->nombre ?? 'Derivado',
-            $ticket->comentario ?? 'Sin comentarios'
+            $ticket->comentario ?? 'Sin comentarios',
+            $ultimoComentarioCerrado
         ];
     }
 
