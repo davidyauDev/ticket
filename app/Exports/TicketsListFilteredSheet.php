@@ -59,6 +59,7 @@ class TicketsListFilteredSheet implements FromCollection, WithHeadings, WithMapp
             'Fecha de Creación',
             'Falla Reportada',
             'Tipo',
+            'Tipo Soporte',
             'Comentarios'
         ];
     }
@@ -98,6 +99,7 @@ class TicketsListFilteredSheet implements FromCollection, WithHeadings, WithMapp
             $ticket->created_at ? $ticket->created_at->format('d/m/Y H:i') : 'Sin fecha',
             $ticket->falla_reportada ?? 'Sin información',
             $ticket->tipo ?? 'N/A',
+            $ticket->tipoSoporte->nombre ?? 'Derivado',
             $ticket->comentario ?? 'Sin comentarios'
         ];
     }

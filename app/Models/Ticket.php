@@ -39,6 +39,11 @@ class Ticket extends Model
         return $this->hasMany(TicketHistorial::class);
     }
 
+    public function tipoSoporte()
+    {
+        return $this->belongsTo(TipoSoporte::class);
+    } 
+
     public function equipo()
     {
         return $this->belongsTo(Equipo::class);
