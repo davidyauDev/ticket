@@ -62,7 +62,8 @@ class TicketsListFilteredSheet implements FromCollection, WithHeadings, WithMapp
             'Tipo',
             'Tipo Soporte',
             'Comentarios',
-            'Último Comentario Cerrado'
+            'Último Comentario Cerrado',
+            'Motivo_derivacion'
         ];
     }
 
@@ -111,7 +112,8 @@ class TicketsListFilteredSheet implements FromCollection, WithHeadings, WithMapp
             $ticket->tipo ?? 'N/A',
             $ticket->tipoSoporte->nombre ?? 'Derivado',
             $ticket->comentario ?? 'Sin comentarios',
-            $ultimoComentarioCerrado
+            $ultimoComentarioCerrado,
+            $ticket->motivo_derivacion ?? 'no derivado'
         ];
     }
 
