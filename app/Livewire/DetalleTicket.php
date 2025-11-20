@@ -125,6 +125,12 @@ class DetalleTicket extends Component
 
     public function ActualizarTicket()
     {
+        // Validar que el comentario no esté vacío
+        if (empty(trim($this->comentario))) {
+            $this->addError('comentario', 'El comentario es obligatorio.');
+            return;
+        }
+
         DB::beginTransaction();
         try {
             if ($this->estado_id == Estado::DERIVADO) {

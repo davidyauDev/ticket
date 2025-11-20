@@ -389,6 +389,9 @@
                                         <textarea wire:model="comentario"
                                             class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             rows="3" placeholder="Detalles adicionales..."></textarea>
+                                        @error('comentario')
+                                            <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <!-- Archivo -->
                                     <div>
@@ -420,12 +423,6 @@
                                     <div class="flex justify-end mt-4">
                                         <button wire:click="ActualizarTicket" wire:loading.attr="disabled"
                                             wire:target="ActualizarTicket" x-data
-                                            x-on:click="Swal.fire({
-                                    title: 'Actualizando...',
-                                    text: 'Por favor espera.',
-                                    allowOutsideClick: false,
-                                    didOpen: () => { Swal.showLoading() }
-                                })"
                                             class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-medium rounded-lg transition">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor">
