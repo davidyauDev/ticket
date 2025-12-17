@@ -155,12 +155,13 @@ class TicketFormModal extends Component
                     ->orderBy('created_at', 'desc')
                     ->first();
 
-                if ($ultimoTicket && $ultimoTicket->estado_id != 5) {
+                if ($ultimoTicket && !in_array($ultimoTicket->estado_id, [4, 5])) {
                     $this->ticketPendiente = true;
                     $this->ticketEnProceso = $ultimoTicket->id;
                     $this->ticketEnProcesoOst = $ultimoTicket->osticket;
                     return;
                 }
+
             }
 
 
