@@ -46,9 +46,11 @@ class ReassignTicketJob implements ShouldQueue
         $usuariosPrevios = TicketHistorial::where('ticket_id', $ticket->id)->pluck('asignado_a')->toArray();
 
         $responsables = DB::table('responsables_modelo')
-            ->where('id_modelo', $ticket->id_modelo)
-            ->orderBy('prioridad', 'asc')
-            ->get();
+            ->join('users', 'responsables_modelo.id_user', '=', 'users.id')
+            ->where('responsables_modelo.id_modelo', $ticket->id_modelo)
+            ->where('users.available', true)
+            ->orderBy('responsables_modelo.prioridad', 'asc')
+            ->get(['responsables_modelo.*', 'users.available']);
 
         $proximoResponsableModelo = $responsables
             ->whereNotIn('id_user', $usuariosPrevios)
@@ -97,19 +99,19 @@ class ReassignTicketJob implements ShouldQueue
     private function notificarPorWhatsApp(User $usuario, Ticket $ticket): void
     {
         Log::info($usuario->phone);
-        
+
         // Obtener la sesión activa de WhatsApp
         $activeSession = DB::table('whats_app_sessions')
             ->where('status', 'active')
             ->first();
-        
 
-            Log::info($activeSession->session_id);
+
+        Log::info($activeSession->session_id);
         if (!$activeSession) {
             Log::error("No hay sesión activa de WhatsApp disponible para notificar al usuario {$usuario->id}");
             return;
         }
-        
+
         $response = Http::asForm()->post(env('WHATSAPP_API_URL', 'http://172.19.0.17/whatsapp/api/send'), [
             'sessionId' => $activeSession->session_id,
             'to'        => '51' . $usuario->phone,
