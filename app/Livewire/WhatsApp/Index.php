@@ -10,14 +10,14 @@ use Illuminate\Support\Str;
 class Index extends Component
 {
     public $apiResponse;
-    public $qrCodeSvg; // <- para el SVG
+    public $qrCodeSvg;
     public $isLoading = false;
-    public $currentSessionId; // <- para guardar la sesión actual
-    public $sessionGuardada = false; // <- para controlar cuando la sesión está guardada
+    public $currentSessionId;
+    public $sessionGuardada = false;
 
     public function mount()
     {
-        // Verificar si hay una sesión activa al cargar el componente
+        // ...existing code...
         $activeSession = WhatsAppSession::where('is_current', true)
                                         ->where('status', 'active')
                                         ->first();
@@ -25,10 +25,10 @@ class Index extends Component
         if ($activeSession) {
             $this->currentSessionId = $activeSession->session_id;
             $this->sessionGuardada = true;
-            $this->apiResponse = "✅ Sesión activa encontrada: {$activeSession->session_id}";
-            Log::info("Sesión activa encontrada al cargar: {$activeSession->session_id}");
+            $this->apiResponse = "Sesion activa encontrada: {$activeSession->session_id}";
+            Log::info("Sesion activa encontrada al cargar: {$activeSession->session_id}");
         } else {
-            // No asignar nada a $apiResponse para que la interfaz inicial se muestre
+            // ...existing code...
             $this->apiResponse = null;
         }
     }
@@ -41,38 +41,38 @@ class Index extends Component
         try {
             $sessionId = 'mi-sesion-' . Str::random(8);
 
-            // 2️⃣ Inicializar cliente en backend
+            // Inicializar cliente en backend
             $initResponse = Http::timeout(30)->post(
                 'http://172.19.0.17/whatsapp/api/client-initialize',
                 ['sessionId' => $sessionId]
             );
 
             if (! $initResponse->successful()) {
-                $this->apiResponse = "❌ Error de conexión al servidor (HTTP {$initResponse->status()})";
+                $this->apiResponse = "Error de conexion al servidor (HTTP {$initResponse->status()})";
                 $this->isLoading = false;
                 return;
             }
 
             $data = $initResponse->json();
             
-            // Verificar si la respuesta es exitosa según el formato especificado
+            // Verificar si la respuesta es exitosa segun el formato especificado
             if (!isset($data['success']) || $data['success'] !== true) {
-                $this->apiResponse = "❌ Error al inicializar el dispositivo. Por favor, inténtalo de nuevo.";
+                $this->apiResponse = "Error al inicializar el dispositivo. Por favor, intentalo de nuevo.";
                 $this->isLoading = false;
                 return;
             }
 
-            // Guardar sesión en BD solo si la inicialización fue exitosa
+            // Guardar sesion en BD solo si la inicializacion fue exitosa
             WhatsAppSession::create(['session_id' => $sessionId]);
 
-            // Mostrar mensaje de éxito
-            $this->apiResponse = "✅ {$data['message']} (Session: {$sessionId})";
+            // Mostrar mensaje de exito
+            $this->apiResponse = "{$data['message']} (Session: {$sessionId})";
             $this->currentSessionId = $sessionId; // Guardar la sesión actual
 
-            // 3️⃣ Esperar 7 segundos antes de pedir el QR
+            // Esperar 7 segundos antes de pedir el QR
             sleep(8);
 
-            // 4️⃣ Obtener QR en SVG
+            // Obtener QR en SVG
             $qrResponse = Http::timeout(30)->post(
                 'http://172.19.0.17/whatsapp/api/qr',
                 ['sessionId' => $sessionId]
@@ -85,10 +85,10 @@ class Index extends Component
                 $this->qrCodeSvg = 'data:image/svg+xml;base64,' . $base64_svg;
                 Log::info($this->qrCodeSvg);
             } else {
-                $this->apiResponse .= " ⚠️ No se pudo obtener QR (HTTP {$qrResponse->status()})";
+                $this->apiResponse .= " No se pudo obtener QR (HTTP {$qrResponse->status()})";
             }
         } catch (\Exception $e) {
-            $this->apiResponse = "🚨 Error inesperado: " . $e->getMessage() . ". Por favor, inténtalo de nuevo.";
+            $this->apiResponse = "Error inesperado: " . $e->getMessage() . ". Por favor, intentalo de nuevo.";
             Log::error("Error en crearSesion: " . $e->getMessage());
         } finally {
             $this->isLoading = false;
@@ -97,9 +97,9 @@ class Index extends Component
 
     public function regenerarQR()
     {
-        // Solo regenerar QR si ya existe una sesión
+        // Solo regenerar QR si ya existe una sesion
         if (!$this->currentSessionId) {
-            $this->apiResponse = "⚠️ No hay una sesión activa. Crea una nueva sesión primero.";
+            $this->apiResponse = "No hay una sesion activa. Crea una nueva sesion primero.";
             return;
         }
 
@@ -107,7 +107,7 @@ class Index extends Component
         $this->isLoading = true;
 
         try {
-            $this->apiResponse = "🔄 Regenerando QR para sesión: {$this->currentSessionId}";
+            $this->apiResponse = "Regenerando QR para sesion: {$this->currentSessionId}";
             
             // Esperar un poco antes de pedir el QR
             sleep(3);
@@ -123,14 +123,14 @@ class Index extends Component
                 // Codifica el SVG a Base64 y cambia el tipo MIME
                 $base64_svg = base64_encode($svg);
                 $this->qrCodeSvg = 'data:image/svg+xml;base64,' . $base64_svg;
-                $this->apiResponse = "✅ Nuevo QR generado para sesión: {$this->currentSessionId}";
+                $this->apiResponse = "Nuevo QR generado para sesion: {$this->currentSessionId}";
                 Log::info('QR regenerado: ' . $this->qrCodeSvg);
             } else {
-                $this->apiResponse = "❌ No se pudo regenerar el QR (HTTP {$qrResponse->status()}). Por favor, inténtalo de nuevo.";
+                $this->apiResponse = "No se pudo regenerar el QR (HTTP {$qrResponse->status()}). Por favor, intentalo de nuevo.";
                 Log::error("Error regenerando QR", ['status' => $qrResponse->status(), 'body' => $qrResponse->body()]);
             }
         } catch (\Exception $e) {
-            $this->apiResponse = "🚨 Error inesperado al regenerar QR: " . $e->getMessage() . ". Por favor, inténtalo de nuevo.";
+            $this->apiResponse = "Error inesperado al regenerar QR: " . $e->getMessage() . ". Por favor, intentalo de nuevo.";
             Log::error("Excepción regenerando QR: " . $e->getMessage());
         } finally {
             $this->isLoading = false;
@@ -140,7 +140,7 @@ class Index extends Component
     public function guardarSesion()
     {
         if (!$this->currentSessionId) {
-            $this->apiResponse = "⚠️ No hay una sesión activa para guardar.";
+            $this->apiResponse = "No hay una sesion activa para guardar.";
             return;
         }
 
@@ -161,7 +161,7 @@ class Index extends Component
                     'is_current' => true,
                     'last_connected_at' => now()
                 ]);
-                $this->apiResponse = "✅ Sesión {$this->currentSessionId} actualizada y marcada como activa.";
+                $this->apiResponse = "Sesion {$this->currentSessionId} actualizada y marcada como activa.";
             } else {
                 // Crear nueva sesión con estado activo
                 WhatsAppSession::create([
@@ -170,15 +170,15 @@ class Index extends Component
                     'is_current' => true,
                     'last_connected_at' => now()
                 ]);
-                $this->apiResponse = "✅ Sesión {$this->currentSessionId} guardada y marcada como activa.";
+                $this->apiResponse = "Sesion {$this->currentSessionId} guardada y marcada como activa.";
             }
             
             // Activar el estado de sesión guardada
             $this->sessionGuardada = true;
             
-            Log::info("Sesión guardada: {$this->currentSessionId}");
+            Log::info("Sesion guardada: {$this->currentSessionId}");
         } catch (\Exception $e) {
-            $this->apiResponse = "🚨 Error al guardar sesión: " . $e->getMessage();
+            $this->apiResponse = "Error al guardar sesion: " . $e->getMessage();
             Log::error("Error guardando sesión: " . $e->getMessage());
         }
     }
@@ -186,14 +186,14 @@ class Index extends Component
     public function enviarMensajePrueba()
     {
         if (!$this->currentSessionId) {
-            $this->apiResponse = "⚠️ No hay una sesión activa. Vincula WhatsApp primero.";
+            $this->apiResponse = "No hay una sesion activa. Vincula WhatsApp primero.";
             return;
         }
 
         $this->isLoading = true;
 
         try {
-            $this->apiResponse = "📤 Enviando mensaje de prueba...";
+            $this->apiResponse = "Enviando mensaje de prueba...";
 
             // Enviar mensaje usando form data
             $response = Http::timeout(30)->asForm()->post(
@@ -210,21 +210,21 @@ class Index extends Component
                 
                 // Verificar si el envío fue exitoso
                 if (isset($data['success']) && $data['success'] === true) {
-                    $this->apiResponse = "✅ Mensaje de prueba enviado exitosamente.";
+                    $this->apiResponse = "Mensaje de prueba enviado exitosamente.";
                     Log::info("Mensaje enviado exitosamente", ['response' => $data]);
                 } else {
-                    $this->apiResponse = "❌ Error al enviar mensaje: " . ($data['message'] ?? 'Error desconocido');
+                    $this->apiResponse = "Error al enviar mensaje: " . ($data['message'] ?? 'Error desconocido');
                     Log::error("Error en respuesta del mensaje", ['response' => $data]);
                 }
             } else {
-                $this->apiResponse = "❌ Error de conexión al enviar mensaje (HTTP {$response->status()}). Por favor, inténtalo de nuevo.";
+                $this->apiResponse = "Error de conexion al enviar mensaje (HTTP {$response->status()}). Por favor, intentalo de nuevo.";
                 Log::error("Error enviando mensaje", [
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
             }
         } catch (\Exception $e) {
-            $this->apiResponse = "🚨 Error inesperado al enviar mensaje: " . $e->getMessage() . ". Por favor, inténtalo de nuevo.";
+            $this->apiResponse = "Error inesperado al enviar mensaje: " . $e->getMessage() . ". Por favor, intentalo de nuevo.";
             Log::error("Excepción enviando mensaje: " . $e->getMessage());
         } finally {
             $this->isLoading = false;
@@ -233,13 +233,13 @@ class Index extends Component
 
     public function nuevaSesion()
     {
-        // Activar loading desde el inicio
+        // ...existing code...
         $this->isLoading = true;
         
-        // Si hay una sesión activa, hacer logout primero
+        // ...existing code...
         if ($this->currentSessionId) {
             try {
-                $this->apiResponse = "🔄 Cerrando sesión actual...";
+                $this->apiResponse = "Cerrando sesion actual...";
                 
                 // Llamar al endpoint de logout
                 $logoutResponse = Http::timeout(30)->post(
@@ -252,50 +252,50 @@ class Index extends Component
                     
                     // Verificar si el logout fue exitoso
                     if (isset($data['success']) && $data['success'] === true) {
-                        $this->apiResponse = "✅ Sesión cerrada exitosamente. Creando nueva sesión...";
-                        Log::info("Logout exitoso para sesión: {$this->currentSessionId}", ['response' => $data]);
+                        $this->apiResponse = "Sesion cerrada exitosamente. Creando nueva sesion...";
+                        Log::info("Logout exitoso para sesion: {$this->currentSessionId}", ['response' => $data]);
                     } else {
-                        $this->apiResponse = "⚠️ Advertencia al cerrar sesión: " . ($data['message'] ?? 'Respuesta inesperada') . ". Creando nueva sesión...";
+                        $this->apiResponse = "Advertencia al cerrar sesion: " . ($data['message'] ?? 'Respuesta inesperada') . ". Creando nueva sesion...";
                         Log::warning("Respuesta inesperada en logout", ['response' => $data]);
                     }
                 } else {
-                    $this->apiResponse = "⚠️ Error al cerrar sesión (HTTP {$logoutResponse->status()}). Creando nueva sesión...";
+                    $this->apiResponse = "Error al cerrar sesion (HTTP {$logoutResponse->status()}). Creando nueva sesion...";
                     Log::error("Error en logout", [
                         'status' => $logoutResponse->status(),
                         'body' => $logoutResponse->body()
                     ]);
                 }
             } catch (\Exception $e) {
-                $this->apiResponse = "⚠️ Error inesperado al cerrar sesión: " . $e->getMessage() . ". Creando nueva sesión...";
-                Log::error("Excepción en logout: " . $e->getMessage());
+                $this->apiResponse = "Error inesperado al cerrar sesion: " . $e->getMessage() . ". Creando nueva sesion...";
+                Log::error("Excepcion en logout: " . $e->getMessage());
             }
             
-            // Pequeña pausa para mostrar el mensaje
+            // ...existing code...
             sleep(1);
         }
 
-        // Desactivar la sesión anterior en la base de datos
+        // ...existing code...
         if ($this->currentSessionId) {
             try {
                 WhatsAppSession::where('session_id', $this->currentSessionId)->update([
                     'status' => 'inactive',
                     'is_current' => false
                 ]);
-                Log::info("Sesión desactivada en BD: {$this->currentSessionId}");
+                Log::info("Sesion desactivada en BD: {$this->currentSessionId}");
             } catch (\Exception $e) {
-                Log::error("Error al desactivar sesión en BD: " . $e->getMessage());
+                Log::error("Error al desactivar sesion en BD: " . $e->getMessage());
             }
         }
 
-        // Resetear solo las variables necesarias (manteniendo isLoading = true)
+        // ...existing code...
         $this->qrCodeSvg = null;
         $this->currentSessionId = null;
         $this->sessionGuardada = false;
         
-        // Mostrar mensaje de que está creando nueva sesión
-        $this->apiResponse = "🔄 Inicializando nueva sesión...";
+        // Mostrar mensaje de que esta creando nueva sesion
+        $this->apiResponse = "Inicializando nueva sesion...";
         
-        // Automáticamente iniciar la creación de una nueva sesión
+        // Automaticamente iniciar la creacion de una nueva sesion
         $this->crearSesionInterna();
     }
 
@@ -304,49 +304,49 @@ class Index extends Component
         try {
             $sessionId = 'mi-sesion-' . Str::random(8);
 
-            // 2️⃣ Inicializar cliente en backend
+            // Inicializar cliente en backend
             $initResponse = Http::timeout(30)->post(
                 'http://172.19.0.17/whatsapp/api/client-initialize',
                 ['sessionId' => $sessionId]
             );
 
             if (! $initResponse->successful()) {
-                $this->apiResponse = "❌ Error de conexión al servidor (HTTP {$initResponse->status()})";
+                $this->apiResponse = "Error de conexion al servidor (HTTP {$initResponse->status()})";
                 $this->isLoading = false;
                 return;
             }
 
             $data = $initResponse->json();
             
-            // Verificar si la respuesta es exitosa según el formato especificado
+            // Verificar si la respuesta es exitosa segun el formato especificado
             if (!isset($data['success']) || $data['success'] !== true) {
-                $this->apiResponse = "❌ Error al inicializar el dispositivo. Por favor, inténtalo de nuevo.";
+                $this->apiResponse = "Error al inicializar el dispositivo. Por favor, intentalo de nuevo.";
                 $this->isLoading = false;
                 return;
             }
 
-            // Guardar sesión en BD solo si la inicialización fue exitosa
+            // Guardar sesion en BD solo si la inicializacion fue exitosa
             // Primero desactivar todas las sesiones anteriores
             WhatsAppSession::where('is_current', true)->update([
                 'is_current' => false,
                 'status' => 'inactive'
             ]);
             
-            // Crear nueva sesión como pendiente (se activará cuando se guarde)
+            // Crear nueva sesion como pendiente (se activara cuando se guarde)
             WhatsAppSession::create([
                 'session_id' => $sessionId,
                 'status' => 'pending', // pendiente hasta que se escanee el QR
                 'is_current' => false
             ]);
 
-            // Mostrar mensaje de éxito
-            $this->apiResponse = "✅ {$data['message']} (Session: {$sessionId})";
+            // Mostrar mensaje de exito
+            $this->apiResponse = "{$data['message']} (Session: {$sessionId})";
             $this->currentSessionId = $sessionId; // Guardar la sesión actual
 
-            // 3️⃣ Esperar 7 segundos antes de pedir el QR
+            // Esperar 7 segundos antes de pedir el QR
             sleep(7);
 
-            // 4️⃣ Obtener QR en SVG
+            // Obtener QR en SVG
             $qrResponse = Http::timeout(30)->post(
                 'http://172.19.0.17/whatsapp/api/qr',
                 ['sessionId' => $sessionId]
@@ -359,10 +359,10 @@ class Index extends Component
                 $this->qrCodeSvg = 'data:image/svg+xml;base64,' . $base64_svg;
                 Log::info($this->qrCodeSvg);
             } else {
-                $this->apiResponse .= " ⚠️ No se pudo obtener QR (HTTP {$qrResponse->status()})";
+                $this->apiResponse .= " No se pudo obtener QR (HTTP {$qrResponse->status()})";
             }
         } catch (\Exception $e) {
-            $this->apiResponse = "🚨 Error inesperado: " . $e->getMessage() . ". Por favor, inténtalo de nuevo.";
+            $this->apiResponse = "Error inesperado: " . $e->getMessage() . ". Por favor, intentalo de nuevo.";
             Log::error("Error en crearSesionInterna: " . $e->getMessage());
         } finally {
             $this->isLoading = false;
