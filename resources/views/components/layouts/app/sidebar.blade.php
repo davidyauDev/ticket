@@ -153,12 +153,6 @@
                 @endif
             </div>
             <!-- Settings -->
-            @if (auth()->user()?->role === 'admin' ||
-            auth()->user()?->role === 'Supervisor' ||
-            auth()->user()?->area_id === 5 ||
-            auth()->user()?->area_id === 6 ||
-            auth()->user()?->area_id === 7 ||
-            auth()->user()?->area_id === 8)
             <div class="mb-6">
                 <p class="mb-2 text-xs uppercase text-gray-400">Settings</p>
                 <a href="{{ route('settings.index') }}" wire:navigate
@@ -178,8 +172,8 @@
                         Settings
                     </span>
                 </a>
-
-                 <a href="{{ route('settings.modelos') }}" wire:navigate
+                @if (auth()->user()?->role === 'admin')
+                    <a href="{{ route('settings.modelos') }}" wire:navigate
                     class="menu-item group {{ request()->routeIs('settings.modelos') ? 'bg-gray-100 dark:bg-zinc-800' : '' }}">
                     <!-- Icono con cambio de color dinámico -->
                     <span
@@ -191,10 +185,10 @@
                         class="menu-item-text ml-2 {{ request()->routeIs('settings.modelos') ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-400' }}">
                         Modelos
                     </span>
-                </a>
+                    </a>
+                @endif
                 
             </div>
-            @endif
         </nav>
     </aside>
     <!-- Main Content -->
