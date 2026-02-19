@@ -21,7 +21,7 @@ class Index extends Component
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'available' => $user->available,
+                'available' => (bool) $user->available,
             ],
         ];
     }
@@ -38,7 +38,7 @@ class Index extends Component
         $user->save();
 
         if (!empty($this->users)) {
-            $this->users[0]['available'] = $user->available;
+            $this->users[0]['available'] = (bool) $user->available;
         }
 
         $this->dispatch('availability-updated');
