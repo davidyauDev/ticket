@@ -5,7 +5,7 @@
                 <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
                     Gestión de Registros de llamadas de Ticket
                 </h3>
-                @if (auth()->user()?->area_id == 1 || auth()->user()->role == 'admin')
+                @if (auth()->user()?->area_id == 1 || auth()->user()->role == 'admin' || auth()->user()->id == 6)
                     <div class="flex gap-2">
                         <button wire:click="exportExcel"
                             class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white shadow-theme-xs hover:bg-green-700 transition-colors duration-200">
