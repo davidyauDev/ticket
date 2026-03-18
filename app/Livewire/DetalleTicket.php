@@ -58,19 +58,20 @@ class DetalleTicket extends Component
                 'u.id',
                 'u.name',
                 'u.lastname',
+                'rm.id_user as rm_user_id',
                 'rm.prioridad'
             )
             ->where('u.area_id', 2)
             ->where('u.available', true)
-            ->orderByRaw('CASE WHEN rm.prioridad IS NULL THEN 1 ELSE 0 END')
+            ->orderByRaw('CASE WHEN rm.id_user IS NULL THEN 1 ELSE 0 END')
             ->orderBy('rm.prioridad', 'asc')
             ->orderBy('u.name', 'asc')
             ->get();
 
 
         if ($this->responsables->isNotEmpty()) {
-            $firstWithPriority = $this->responsables->first(fn($row) => $row->prioridad !== null);
-            $this->usuario_derivacion = ($firstWithPriority ?? $this->responsables->first())->id;
+            $firstRelated = $this->responsables->first(fn($row) => $row->rm_user_id !== null);
+            $this->usuario_derivacion = ($firstRelated ?? $this->responsables->first())->id;
         }
     }
 
