@@ -50,24 +50,27 @@ class DetalleTicket extends Component
         $this->estados = Estado::all();
 
         $this->responsables = DB::table('users as u')
-    ->leftJoin('responsables_modelo as rm', function ($join) {
-        $join->on('rm.id_user', '=', 'u.id')
-             ->where('rm.id_modelo', '=', $this->ticket->modelo_id);
-    })
-    ->select(
-        'u.id',
-        'u.name',
-        'u.lastname',
-        'rm.prioridad'
-    )
-    ->where('u.area_id', 2)
-    ->where('u.available', true)
-    ->orderBy('rm.prioridad', 'asc')
-    ->get();
+            ->leftJoin('responsables_modelo as rm', function ($join) {
+                $join->on('rm.id_user', '=', 'u.id')
+                    ->where('rm.id_modelo', '=', $this->ticket->modelo_id);
+            })
+            ->select(
+                'u.id',
+                'u.name',
+                'u.lastname',
+                'rm.prioridad'
+            )
+            ->where('u.area_id', 2)
+            ->where('u.available', true)
+            ->orderByRaw('CASE WHEN rm.prioridad IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('rm.prioridad', 'asc')
+            ->orderBy('u.name', 'asc')
+            ->get();
 
 
         if ($this->responsables->isNotEmpty()) {
-            $this->usuario_derivacion = $this->responsables->first()->id;
+            $firstWithPriority = $this->responsables->first(fn($row) => $row->prioridad !== null);
+            $this->usuario_derivacion = ($firstWithPriority ?? $this->responsables->first())->id;
         }
     }
 
