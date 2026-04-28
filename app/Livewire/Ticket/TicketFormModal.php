@@ -205,10 +205,10 @@ class TicketFormModal extends Component
                     $this->asignarDerivacion($ticket->id);
                     dispatch(new ReassignTicketJob($ticket->id, $ticket->assigned_to))->delay(now()->addMinutes(15));
                 } catch (\Exception $e) {
-                    // Si falla la derivación (incluido WhatsApp), eliminar el ticket creado
+                    // Si falla la derivacion por un error general, eliminar el ticket creado
                     $ticket->delete();
                     Log::error('Error en derivación: ' . $e->getMessage());
-                    $this->addError('derivacionError', 'Error al enviar notificación WhatsApp. El proceso ha sido cancelado.');
+                    $this->addError('derivacionError', 'Error al derivar el ticket. El proceso ha sido cancelado.');
                 }
             }
 
@@ -244,41 +244,49 @@ class TicketFormModal extends Component
 
             Mail::to($userAsginado->email)->queue(new TicketNotificadoMail($ticket));
 
-            // Obtener la sesión activa de WhatsApp
-            $activeSession = DB::table('whats_app_sessions')
-                ->where('status', 'active')
-                ->first();
+            $message = "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
+                "Agencia: {$ticket->agencia->nombre}\n" .
+                "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
+                "*Por favor, revisa el sistema MESA DE AYUDA para más detalles.*\n" .
+                "Gracias.";
 
-            if (!$activeSession) {
-                throw new \Exception('No hay sesión activa de WhatsApp disponible');
-            }
+            $phone = '51' . preg_replace('/\D+/', '', (string) $userAsginado->phone);
+            $fallbackUrl = "https://wa.me/{$phone}?text=" . urlencode($message);
 
-            $response = Http::asForm()->post(env('WHATSAPP_API_URL', 'http://172.19.0.17/whatsapp/api/send'), [
-                'sessionId' => $activeSession->session_id,
-                'to'        => '51' . $userAsginado->phone,
-                'message'   => "*Ticket asignado OST #{$ticket->osticket} - {$ticket->motivo_derivacion}*\n" .
-                    "Agencia: {$ticket->agencia->nombre}\n" .
-                    "Técnico: {$ticket->tecnico_nombres} {$ticket->tecnico_apellidos}\n" .
-                    "*Por favor, revisa el sistema MESA DE AYUDA para más detalles.*\n" .
-                    "Gracias.",
-            ]);
+            try {
+                $activeSession = DB::table('whats_app_sessions')
+                    ->where('status', 'active')
+                    ->first();
 
-
-            if ($response->successful()) {
-                $data = $response->json();
-
-                if ($data['status'] === true) {
-                    Log::info("WhatsApp enviado correctamente: " . $data['message']);
-                } else {
-                    Log::warning("Error al enviar WhatsApp", $data);
-                    throw new \Exception('Error al enviar WhatsApp: ' . ($data['message'] ?? 'Dispositivo no inicializado o error en el servicio'));
+                if (!$activeSession) {
+                    throw new \Exception('No hay sesión activa de WhatsApp disponible');
                 }
-            } else {
-                Log::error("Error HTTP al enviar WhatsApp", [
-                    'status' => $response->status(),
-                    'body'   => $response->body(),
+
+                $response = Http::asForm()->post(env('WHATSAPP_API_URL', 'http://172.19.0.17/whatsapp/api/send'), [
+                    'sessionId' => $activeSession->session_id,
+                    'to'        => $phone,
+                    'message'   => $message,
                 ]);
-                throw new \Exception('Error HTTP al enviar WhatsApp. Status: ' . $response->status());
+
+                if ($response->successful()) {
+                    $data = $response->json();
+
+                    if (($data['status'] ?? false) === true) {
+                        Log::info("WhatsApp enviado correctamente: " . ($data['message'] ?? 'OK'));
+                    } else {
+                        Log::warning("Error al enviar WhatsApp", $data);
+                        throw new \Exception('Error al enviar WhatsApp: ' . ($data['message'] ?? 'Dispositivo no inicializado o error en el servicio'));
+                    }
+                } else {
+                    Log::error("Error HTTP al enviar WhatsApp", [
+                        'status' => $response->status(),
+                        'body'   => $response->body(),
+                    ]);
+                    throw new \Exception('Error HTTP al enviar WhatsApp. Status: ' . $response->status());
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Fallback WhatsApp Web activado: ' . $e->getMessage());
+                $this->dispatch('whatsapp-fallback', url: $fallbackUrl);
             }
         }
         $ticket->motivo_derivacion = $this->motivo_derivacion;
