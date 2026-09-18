@@ -208,6 +208,7 @@
                     <option value="Consulta">Consulta</option>
                     <option value="Reclamo">Reclamo</option>
                     <option value="Soporte">Soporte</option>
+                    <option value="Soporte">Otros</option>
                 </select>
             </div>
             <!-- Tipo -->
