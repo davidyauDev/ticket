@@ -51,6 +51,13 @@ class TicketList extends Component
         $this->resetPage();
     }
 
+    public function limpiarFechas(): void
+    {
+        $this->startDate = null;
+        $this->endDate = null;
+        $this->resetPage();
+    }
+
     public function exportExcel()
     {
         $user = Auth::user();
@@ -70,7 +77,8 @@ class TicketList extends Component
                 ->when($this->filterType === 'paused', fn($q) => $q->where('estado_id', 6))
                 ->when($this->filterType === 'anuled', fn($q) => $q->where('estado_id', 4))
                 ->when(!in_array($this->filterType, ['solved', 'pending', 'paused', 'anuled']) && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
-                ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
+                ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
+                ->when($this->endDate, fn($q) => $q->whereDate('created_at', '<=', $this->endDate));
         } else {
             // Usuarios normales: filtrados por tipo y área
             $tickets->when($this->tipo === 'mis', function ($q) use ($user) {
@@ -87,7 +95,8 @@ class TicketList extends Component
                 ->when($this->filterType === 'pending', fn($q) => $q->where('estado_id', 1))
                 ->when($this->filterType === 'paused', fn($q) => $q->where('estado_id', 6))
                 ->when(!in_array($this->filterType, ['solved', 'pending', 'paused']) && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
-                ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
+                ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
+                ->when($this->endDate, fn($q) => $q->whereDate('created_at', '<=', $this->endDate));
         }
 
         // Obtener todos los tickets sin paginación
@@ -181,7 +190,8 @@ class TicketList extends Component
                 ->when($this->filterType === 'anuled', fn($q) => $q->where('estado_id', 4))
 
                 ->when(!in_array($this->filterType, ['solved', 'pending', 'paused', 'anuled']) && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
-                ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
+                ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
+                ->when($this->endDate, fn($q) => $q->whereDate('created_at', '<=', $this->endDate));
         } else {
 
             // Usuarios normales: filtrados por tipo y área
@@ -199,7 +209,8 @@ class TicketList extends Component
                 ->when($this->filterType === 'pending', fn($q) => $q->where('estado_id', 1))
                 ->when($this->filterType === 'paused', fn($q) => $q->where('estado_id', 6))
                 ->when(!in_array($this->filterType, ['solved', 'pending', 'paused']) && $this->filterType, fn($q) => $q->where('tipo', $this->filterType))
-                ->when($this->startDate && $this->endDate, fn($q) => $q->whereBetween('created_at', [$this->startDate, $this->endDate]));
+                ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
+                ->when($this->endDate, fn($q) => $q->whereDate('created_at', '<=', $this->endDate));
         }
 
         $tickets = $tickets->latest()->paginate($this->perPage);
