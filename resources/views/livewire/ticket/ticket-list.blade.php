@@ -99,13 +99,23 @@
                         <div class="flex flex-col gap-3 border-x border-gray-200 px-4 py-3 sm:flex-row sm:items-end dark:border-gray-800">
                             <div>
                                 <label for="ticket-created-start" class="mb-1 block text-sm text-gray-600 dark:text-gray-400">Creado desde</label>
-                                <input id="ticket-created-start" type="date" wire:model.live="startDate"
-                                    class="h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                                <div class="flex items-center gap-2">
+                                    <input id="ticket-created-start" type="date" wire:model.live="startDate"
+                                        class="h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                                    <button type="button" onclick="document.getElementById('ticket-created-start').showPicker?.()"
+                                        aria-label="Abrir calendario de fecha inicial" title="Abrir calendario"
+                                        class="h-10 rounded-lg border border-gray-300 px-3 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">📅</button>
+                                </div>
                             </div>
                             <div>
                                 <label for="ticket-created-end" class="mb-1 block text-sm text-gray-600 dark:text-gray-400">Creado hasta</label>
-                                <input id="ticket-created-end" type="date" wire:model.live="endDate"
-                                    class="h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                                <div class="flex items-center gap-2">
+                                    <input id="ticket-created-end" type="date" wire:model.live="endDate"
+                                        class="h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                                    <button type="button" onclick="document.getElementById('ticket-created-end').showPicker?.()"
+                                        aria-label="Abrir calendario de fecha final" title="Abrir calendario"
+                                        class="h-10 rounded-lg border border-gray-300 px-3 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">📅</button>
+                                </div>
                             </div>
                             @if ($startDate || $endDate)
                                 <button type="button" wire:click="limpiarFechas"
